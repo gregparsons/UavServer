@@ -7,7 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		001526C41A9E90BE0059BC0F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001526C31A9E90BE0059BC0F /* main.cpp */; };
+		0012438B1A9EC90700580506 /* GpUavServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001243871A9EC90700580506 /* GpUavServer.cpp */; };
+		0012438C1A9EC90700580506 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001243891A9EC90700580506 /* main.cpp */; };
+		0012438D1A9EC90700580506 /* makefile in Sources */ = {isa = PBXBuildFile; fileRef = 0012438A1A9EC90700580506 /* makefile */; };
+		001526D61A9E96E60059BC0F /* GpUavController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001526D41A9E96E60059BC0F /* GpUavController.cpp */; };
+		001526D91A9E97020059BC0F /* GpUavAsset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001526D71A9E97020059BC0F /* GpUavAsset.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +27,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		001243871A9EC90700580506 /* GpUavServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GpUavServer.cpp; path = ../GpUavServer.cpp; sourceTree = "<group>"; };
+		001243881A9EC90700580506 /* GpUavServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GpUavServer.h; path = ../GpUavServer.h; sourceTree = "<group>"; };
+		001243891A9EC90700580506 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		0012438A1A9EC90700580506 /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; };
 		001526C01A9E90BE0059BC0F /* UavServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = UavServer; sourceTree = BUILT_PRODUCTS_DIR; };
-		001526C31A9E90BE0059BC0F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		001526D41A9E96E60059BC0F /* GpUavController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpUavController.cpp; sourceTree = "<group>"; };
+		001526D51A9E96E60059BC0F /* GpUavController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpUavController.h; sourceTree = "<group>"; };
+		001526D71A9E97020059BC0F /* GpUavAsset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpUavAsset.cpp; sourceTree = "<group>"; };
+		001526D81A9E97020059BC0F /* GpUavAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpUavAsset.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +52,10 @@
 		001526B71A9E90BE0059BC0F = {
 			isa = PBXGroup;
 			children = (
-				001526C21A9E90BE0059BC0F /* UavServer */,
+				001526D21A9E96930059BC0F /* Controller */,
+				001526D11A9E96840059BC0F /* Fly */,
+				001526C21A9E90BE0059BC0F /* Server */,
+				001526D31A9E96AF0059BC0F /* Support */,
 				001526C11A9E90BE0059BC0F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,12 +68,41 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		001526C21A9E90BE0059BC0F /* UavServer */ = {
+		001526C21A9E90BE0059BC0F /* Server */ = {
 			isa = PBXGroup;
 			children = (
-				001526C31A9E90BE0059BC0F /* main.cpp */,
+				001243881A9EC90700580506 /* GpUavServer.h */,
+				001243871A9EC90700580506 /* GpUavServer.cpp */,
 			);
+			name = Server;
 			path = UavServer;
+			sourceTree = "<group>";
+		};
+		001526D11A9E96840059BC0F /* Fly */ = {
+			isa = PBXGroup;
+			children = (
+				001526D81A9E97020059BC0F /* GpUavAsset.h */,
+				001526D71A9E97020059BC0F /* GpUavAsset.cpp */,
+			);
+			name = Fly;
+			sourceTree = "<group>";
+		};
+		001526D21A9E96930059BC0F /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				001526D51A9E96E60059BC0F /* GpUavController.h */,
+				001526D41A9E96E60059BC0F /* GpUavController.cpp */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		001526D31A9E96AF0059BC0F /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				001243891A9EC90700580506 /* main.cpp */,
+				0012438A1A9EC90700580506 /* makefile */,
+			);
+			name = Support;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -118,7 +161,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				001526C41A9E90BE0059BC0F /* main.cpp in Sources */,
+				001526D91A9E97020059BC0F /* GpUavAsset.cpp in Sources */,
+				0012438B1A9EC90700580506 /* GpUavServer.cpp in Sources */,
+				0012438C1A9EC90700580506 /* main.cpp in Sources */,
+				001526D61A9E96E60059BC0F /* GpUavController.cpp in Sources */,
+				0012438D1A9EC90700580506 /* makefile in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,6 +249,11 @@
 		001526C81A9E90BE0059BC0F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Users/aaa/Spider/__dev/uav/libraries/,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -209,6 +261,11 @@
 		001526C91A9E90BE0059BC0F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Users/aaa/Spider/__dev/uav/libraries/,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -232,6 +289,7 @@
 				001526C91A9E90BE0059BC0F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
