@@ -10,22 +10,26 @@
 
 #include <mavlink/c_library/common/mavlink.h>
 #include <iostream>
+#include <unistd.h>		//usleep
 
 #include "GpUavController.h"
+#include "GpMavlink.h"
+
+#include "GpIpAddress.h"
 
 using namespace std;
 
 
 void sendMavlinkMessage(mavlink_message_t & msg){
 	
-	
 	cout << "GpUavController::sendMavlinkMessage()" << endl;
 	
-	
-	
-	
-	
-	
+	GpMavlink gpMavlink;
+
+	for(;;){
+		gpMavlink.sendTestMessage();
+		usleep(500000);
+	}
 }
 
 
