@@ -20,28 +20,15 @@ class GpMavlink{
 	
 public:
 	
-	GpMavlink();
-	~GpMavlink();
-	
 	void send();
 	
-	
-	
-	
 	void printMavMessage(const mavlink_message_t & msg);
-	
-	
 	void printMavChannelsOverride(const mavlink_rc_channels_override_t & ch);
 	
 	void sendTestMessage();
-	
 	void receiveTestMessage(mavlink_message_t & mesg);
 	
-	
-	
-	
 	static GpNetworkTransmitter net;
-	
 	
 };
 

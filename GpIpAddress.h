@@ -1,6 +1,8 @@
-// #define GP_FLY_IP_ADDRESS "172.26.48.1"
-#define GP_FLY_IP_ADDRESS "127.0.0.1"
-// #define GP_FLY_IP_ADDRESS "192.168.113.16"
 
-// #define GP_TEST_CONTROL_ADDR "127.0.0.1"
-// #define GP_TEST_UAV_ADDR "127.0.0.1"
+#ifndef __controllerHello__GpIpAddress__
+#define __controllerHello__GpIpAddress__
+
+#define GP_FLY_IP_ADDRESS "127.0.0.1"
+const std::string SENDPORT="6666";
+
+#endif

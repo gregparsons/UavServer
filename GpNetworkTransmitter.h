@@ -20,7 +20,7 @@
 #include <netdb.h>
 #include <sys/socket.h>		//sendto()
 
-
+#include "GpIpAddress.h"
 #include <mavlink/c_library/common/mavlink.h>
 
 class GpControllerEvent;
@@ -40,7 +40,7 @@ public:
 	void transmitEvent(mavlink_message_t & mesg);
 
 	// Receiver/Listener
-	void listenOnNetwork();
+	void listen();
 	
 private:
 	std::string _destIp;

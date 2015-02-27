@@ -28,7 +28,7 @@ void sendMavlinkMessage(mavlink_message_t & msg){
 
 	for(;;){
 		gpMavlink.sendTestMessage();
-		usleep(500000);
+		usleep(500);
 	}
 }
 

@@ -8,28 +8,11 @@
 
 #include <iostream>
 #include "GpMavlink.h"
-
-
 #include "GpIpAddress.h"
-
-
-
 
 using namespace std;
 
-
-
-
-
 GpNetworkTransmitter GpMavlink::net(GP_FLY_IP_ADDRESS);
-
-
-
-
-GpMavlink::GpMavlink(){}
-GpMavlink::~GpMavlink(){
-	//delete net;
-}
 
 void GpMavlink::send(){
 	
@@ -58,7 +41,7 @@ void GpMavlink::printMavMessage(const mavlink_message_t & msg)
 	std::cout << "Mav Message\n";
 	std::cout << "magic: " << std::bitset<8>(msg.magic) << "\n";
 	std::cout << "len: " << std::bitset<8>(msg.len) << "\n";
-	std::cout << "seq: " << std::bitset<8>(msg.seq) << "\n";
+	std::cout << "seq: " << int(msg.seq) << "\n";
 	std::cout << "sender sysid: " << std::bitset<8>(msg.sysid) << "\n";
 	std::cout << "sender compid: " << std::bitset<8>(msg.compid) << "\n";
 	std::cout << "msgid: " << std::bitset<8>(msg.msgid) << "\n";
@@ -120,9 +103,13 @@ void GpMavlink::sendTestMessage(){
 	channels.chan1_raw = 5;
 	channels.chan2_raw = 64000;
 	channels.chan3_raw = UINT16_MAX;
+	channels.chan4_raw = UINT16_MAX;
+	channels.chan5_raw = UINT16_MAX;
+	channels.chan6_raw = UINT16_MAX;
+	channels.chan7_raw = UINT16_MAX;
+	channels.chan8_raw = UINT16_MAX;
 	channels.target_component = 11;
 	channels.target_system = 9;
-	
 
 	// Encode
 	
@@ -131,25 +118,14 @@ void GpMavlink::sendTestMessage(){
 	mavMessage.compid = 7;
 
 	// mavlink_msg_rc_channels_override_encode(<#uint8_t system_id#>, <#uint8_t component_id#>, <#mavlink_message_t *msg#>, <#const mavlink_rc_channels_override_t *rc_channels_override#>)
+
 	mavlink_msg_rc_channels_override_encode(5, 7, &mavMessage, &channels);
 	
 	cout << "Sending: " << endl;
 	printMavMessage(mavMessage);
 	printMavChannelsOverride(channels);
 	
-	
-	
-	
-	
-	
-	
-	
 	net.transmitEvent(mavMessage);
-	
-	
-	
-	
-	
 	
 }
 

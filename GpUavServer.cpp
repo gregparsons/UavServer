@@ -25,13 +25,12 @@
 // Startmes()
 
 bool GpUavServer::start(){
-	
 
 	std::cout << "Server started" <<std::endl;
 	
 	GpMavlink gpMavlink;
 	GpNetworkTransmitter net;
-	net.listenOnNetwork();
+	net.listen();
 /*
 		mavlink_message_t message;
 		gpMavlink.receiveTestMessage(message);
