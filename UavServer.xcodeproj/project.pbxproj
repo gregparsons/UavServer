@@ -332,9 +332,9 @@
 				001526D21A9E96930059BC0F /* Controller */,
 				001526D11A9E96840059BC0F /* Fly */,
 				001526C21A9E90BE0059BC0F /* Server */,
+				00667E421A9ED3CD009E8692 /* mavlink */,
 				001526D31A9E96AF0059BC0F /* Support */,
 				001526C11A9E90BE0059BC0F /* Products */,
-				00667E421A9ED3CD009E8692 /* mavlink */,
 			);
 			sourceTree = "<group>";
 		};
