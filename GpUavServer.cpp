@@ -160,11 +160,14 @@ bool GpUavServer::start(){
 		addrLen = sizeof(inboundAddress);		//address len for accept should be size of address struct, but on return it gets set to bytes of the actual string (or struct?) address
 		client_fd = accept(listen_fd, (struct sockaddr *)&inboundAddress, &addrLen);
 		
-		// Print IP address
+		/*
+		 // Print IP address
 		char s[INET6_ADDRSTRLEN];
 		inet_ntop(resSave->ai_family, get_in_addr((struct sockaddr *)&inboundAddress), s, inboundAddress.ss_len);
 		cout << "Address: " << s << endl;
-
+*/
+		 
+		 
 		if(client_fd == -1){
 			cout << "Error: accept(): " << errno << endl;
 			switch (errno) {
@@ -202,6 +205,15 @@ bool GpUavServer::start(){
 					exit(1);
 				}
 				cout << "numBytes: " << numBytes << endl;
+				
+				
+				
+				
+				
+				
+				
+				
+				
 			}
 			
 			

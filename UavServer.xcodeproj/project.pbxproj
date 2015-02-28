@@ -14,6 +14,10 @@
 		001526D91A9E97020059BC0F /* GpUavAsset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001526D71A9E97020059BC0F /* GpUavAsset.cpp */; };
 		00667E3D1A9ECB4C009E8692 /* GpMavlink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00667E3B1A9ECB4C009E8692 /* GpMavlink.cpp */; };
 		00667E411A9ED1AA009E8692 /* GpNetworkTransmitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00667E401A9ED1AA009E8692 /* GpNetworkTransmitter.cpp */; };
+		009C06141AA1A46400AC1CD1 /* GpGameController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009C06131AA1A46400AC1CD1 /* GpGameController.cpp */; };
+		009C0EC21AA1A55C00AC1CD1 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009C0EC11AA1A55C00AC1CD1 /* SDL2.framework */; };
+		009C0EC51AA1A78200AC1CD1 /* GpControllerEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009C0EC41AA1A78200AC1CD1 /* GpControllerEvent.cpp */; };
+		009C0EC81AA1A9E500AC1CD1 /* GpControllerNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009C0EC61AA1A9E500AC1CD1 /* GpControllerNetwork.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -312,6 +316,13 @@
 		00667F581A9ED3CE009E8692 /* testsuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testsuite.h; sourceTree = "<group>"; };
 		00667F591A9ED3CE009E8692 /* ualberta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ualberta.h; sourceTree = "<group>"; };
 		00667F5A1A9ED3CE009E8692 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
+		009C06121AA1A46400AC1CD1 /* GpGameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpGameController.h; sourceTree = "<group>"; };
+		009C06131AA1A46400AC1CD1 /* GpGameController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpGameController.cpp; sourceTree = "<group>"; };
+		009C0EC11AA1A55C00AC1CD1 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../_frameworks/SDL2.framework; sourceTree = "<group>"; };
+		009C0EC31AA1A78200AC1CD1 /* GpControllerEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpControllerEvent.h; sourceTree = "<group>"; };
+		009C0EC41AA1A78200AC1CD1 /* GpControllerEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpControllerEvent.cpp; sourceTree = "<group>"; };
+		009C0EC61AA1A9E500AC1CD1 /* GpControllerNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpControllerNetwork.cpp; sourceTree = "<group>"; };
+		009C0EC71AA1A9E500AC1CD1 /* GpControllerNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpControllerNetwork.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -319,6 +330,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				009C0EC21AA1A55C00AC1CD1 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,6 +382,13 @@
 			children = (
 				001526D51A9E96E60059BC0F /* GpUavController.h */,
 				001526D41A9E96E60059BC0F /* GpUavController.cpp */,
+				009C06121AA1A46400AC1CD1 /* GpGameController.h */,
+				009C06131AA1A46400AC1CD1 /* GpGameController.cpp */,
+				009C0EC31AA1A78200AC1CD1 /* GpControllerEvent.h */,
+				009C0EC41AA1A78200AC1CD1 /* GpControllerEvent.cpp */,
+				009C0EC71AA1A9E500AC1CD1 /* GpControllerNetwork.h */,
+				009C0EC61AA1A9E500AC1CD1 /* GpControllerNetwork.cpp */,
+				009C0EC11AA1A55C00AC1CD1 /* SDL2.framework */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -817,11 +836,14 @@
 			files = (
 				001526D91A9E97020059BC0F /* GpUavAsset.cpp in Sources */,
 				0012438B1A9EC90700580506 /* GpUavServer.cpp in Sources */,
+				009C06141AA1A46400AC1CD1 /* GpGameController.cpp in Sources */,
+				009C0EC51AA1A78200AC1CD1 /* GpControllerEvent.cpp in Sources */,
 				0012438C1A9EC90700580506 /* main.cpp in Sources */,
 				00667E411A9ED1AA009E8692 /* GpNetworkTransmitter.cpp in Sources */,
 				00667E3D1A9ECB4C009E8692 /* GpMavlink.cpp in Sources */,
 				001526D61A9E96E60059BC0F /* GpUavController.cpp in Sources */,
 				0012438D1A9EC90700580506 /* makefile in Sources */,
+				009C0EC81AA1A9E500AC1CD1 /* GpControllerNetwork.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -905,6 +927,10 @@
 		001526C81A9E90BE0059BC0F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/aaa/Spider/__dev/_frameworks,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -917,6 +943,10 @@
 		001526C91A9E90BE0059BC0F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/aaa/Spider/__dev/_frameworks,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
