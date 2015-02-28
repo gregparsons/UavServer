@@ -6,25 +6,24 @@
 //
 // ********************************************************************************
 
-#define SERVER_PORT "5678"
+
 #define MAX_CONNECTION_BACKLOG 10
 
 
 #include <iostream>
-#include "GpUavServer.h"
-//#include "GpMavlink.h"
-//#include "GpNetworkTransmitter.h"
 #include <bitset>
 
-//Net Includes
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>	//
 #include <signal.h>
 #include <unistd.h>		//fork()
-// #define MAVLINK_USE_CONVENIENCE_FUNCTIONS
 #include <mavlink/c_library/common/mavlink.h>
+
+#include "GpUavServer.h"
+#include "GpIpAddress.h"
+#include "GpNetworkTransmitter.h"
 
 using namespace std;
 
@@ -33,8 +32,6 @@ void signalHandler(int signal)
 	while(waitpid(-1, NULL, WNOHANG) > 0);
 }
 
-
-// Startmes()
 
 bool GpUavServer::start(){
 
@@ -48,16 +45,16 @@ bool GpUavServer::start(){
 		gpMavlink.receiveTestMessage(message);
 		
 */
-	
+
 
 	int listen_fd = -1, client_fd = -1;
-	struct addrinfo hintAddrInfo, *servInfo = nullptr, *tempInfo = nullptr;
+	struct addrinfo hintAddrInfo, *resSave = nullptr, *res = nullptr;
 	struct sockaddr_storage inboundAddress;
-	socklen_t socketSize = 0;
+	socklen_t addrLen = 0;
 	struct sigaction signalAction;
-	char ipv6[INET6_ADDRSTRLEN];
 	int result = 0;
 	int yes = 1;
+	
 	
 	memset(&hintAddrInfo, 0, sizeof(addrinfo));
 	hintAddrInfo.ai_family = AF_UNSPEC;		//any protocol family
@@ -65,34 +62,42 @@ bool GpUavServer::start(){
 	//hintAddrInfo.ai_protocol = IPPROTO_TCP;
 	hintAddrInfo.ai_flags = AI_PASSIVE;		//
 	
-	result = getaddrinfo(nullptr, SERVER_PORT, &hintAddrInfo, &servInfo);
+	
+	
+	
+	// Get network interface IP addresses
+	
+	result = getaddrinfo(GP_FLY_IP_ADDRESS, GP_CONTROL_PORT, &hintAddrInfo, &resSave);
 	if(result < 0){ //error
 		cout << "getaddrinfo() error" << endl;
 		return 1;
 	}
 	
-	//Loop through all local interfaces, returned in servInfo from getaddrinfo
-	for(tempInfo = servInfo; tempInfo != nullptr; tempInfo = tempInfo->ai_next){
 
+	for(res = resSave; res != nullptr; res = res->ai_next){
+
+		
 		// Socket
 		
-		listen_fd = socket(servInfo->ai_family, servInfo->ai_socktype, tempInfo->ai_protocol);
+		
+		
+		listen_fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 		if(listen_fd == -1){ //error, else file descriptor
 			cout << "Socket error" << endl;
 			continue;
 		}
-
-		// Socket Options
-		
 		result = setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 		if(result == -1){
 			cout << "socket options error" << endl;
 			exit(1);
 		}
 		
+		
 		// Bind
 		
-		result = ::bind(listen_fd, tempInfo->ai_addr, tempInfo->ai_addrlen);		//std::bind conflicts w/o :: using namespace std
+		
+		
+		result = ::bind(listen_fd, res->ai_addr, res->ai_addrlen);		
 		if(result == -1){
 			cout << "Bind Error" << endl;
 			exit(1);
@@ -103,13 +108,17 @@ bool GpUavServer::start(){
 	}
 	
 	// Either found a good socket or there are none
-	if(tempInfo == nullptr){
+	if(res == nullptr){
 		cout << "Failed to bind" << endl;
 		return 2;
 	}
-	freeaddrinfo(servInfo);	//done with this
+	freeaddrinfo(resSave);	//done with this
+	
+	
 	
 	// Listen
+	
+	
 	
 	result = listen
 	(listen_fd, MAX_CONNECTION_BACKLOG);
@@ -117,6 +126,10 @@ bool GpUavServer::start(){
 		cout << "Listen error" << endl;
 		exit(1);
 	}
+	
+	
+	
+	
 	
 	signalAction.sa_handler = signalHandler;	//"reap dead processes"
 	sigemptyset(&signalAction.sa_mask);
@@ -136,13 +149,30 @@ bool GpUavServer::start(){
 	
 	for(;;){
 		
-		socketSize = sizeof(inboundAddress);
+		
+		
 
 		// Accept
 		
-		client_fd = accept(listen_fd, (struct sockaddr *)&inboundAddress, &socketSize);
+		
+		
+		
+		addrLen = sizeof(inboundAddress);		//address len for accept should be size of address struct, but on return it gets set to bytes of the actual string (or struct?) address
+		client_fd = accept(listen_fd, (struct sockaddr *)&inboundAddress, &addrLen);
+		
+		// Print IP address
+		char s[INET6_ADDRSTRLEN];
+		inet_ntop(resSave->ai_family, get_in_addr((struct sockaddr *)&inboundAddress), s, inboundAddress.ss_len);
+		cout << "Address: " << s << endl;
+
 		if(client_fd == -1){
-			cout << "Error: accept" << endl;
+			cout << "Error: accept(): " << errno << endl;
+			switch (errno) {
+				case EBADF:		//errno.h
+					break;
+				default:
+					break;
+			}
 			continue;
 		}
 		
@@ -151,75 +181,43 @@ bool GpUavServer::start(){
 		result = fork();		//returns child PID to parent and 0 to child, error = -1
 		if(result == 0){
 			
-			cout << "Child process spawned" << endl;
 			
-			//This is child; close copied child listener
-			
-			close(listen_fd);	//child doesn't need listener socket
+			// CHILD PROCESS
+			// Keep client connection open. HOW TO CLOSE?
 			
 			
 			
-			// client_fd is whom we talk to now in the child
-			// Do stuff here, read() ?
+			//cout << "Child process spawned" << endl;
 			
 			
+			close(listen_fd);	//Close copy of parent's listener socket.
 			size_t length = 18;
 			char buffer[length];
 			
+			for(;;){
 			
-			size_t numBytes = recv(client_fd, &buffer, length, 0);
-			if(numBytes == -1){
-				cout << "Error: recv()" << endl;
-				exit(1);
+				size_t numBytes = recv(client_fd, &buffer, length, 0);
+				if(numBytes == -1){
+					cout << "Error: recv()" << endl;
+					exit(1);
+				}
+				cout << "numBytes: " << numBytes << endl;
 			}
 			
-			cout << "numBytes: " << numBytes << endl;
 			
-			// Close child
 			
+			// Close child process
 			close(client_fd);
-			exit(0);			//child exits
+			exit(0);
 			
 		}
-		close(listen_fd);		//back in parent
-		
-		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-
-
+	}	// for(;;) Parent listen_fd loop.
 
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	// close(listen_fd);
+
 	
 	return true;
 }

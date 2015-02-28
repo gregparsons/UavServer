@@ -18,7 +18,7 @@ GpNetworkTransmitter::GpNetworkTransmitter(){
 	_hintInfo.ai_family = AF_UNSPEC;			//force IPV4??
 	_hintInfo.ai_socktype = SOCK_DGRAM;			//UDP
 	_hintInfo.ai_flags = AI_PASSIVE;			//use this IP
-	int ok = getaddrinfo(nullptr, SENDPORT.c_str(), &_hintInfo, &_senderInfo);		//should be _receiverInfo
+	int ok = getaddrinfo(nullptr, GP_CONTROL_PORT, &_hintInfo, &_senderInfo);		//should be _receiverInfo
 	if(ok != 0)	{ return; }			//fail
 	
 	// Socket
@@ -48,7 +48,7 @@ GpNetworkTransmitter::GpNetworkTransmitter(std::string destAddress):_destIp(dest
 	_hintInfo.ai_family = AF_UNSPEC;
 	_hintInfo.ai_socktype = SOCK_DGRAM;			//UDP
 	
-	int ok = getaddrinfo(destAddress.c_str(), SENDPORT.c_str(), &_hintInfo, &_senderInfo);
+	int ok = getaddrinfo(destAddress.c_str(), GP_CONTROL_PORT, &_hintInfo, &_senderInfo);
 	if(0 != ok){
 		std::cout << "Bad IP address" << std::endl;
 		exit(-1);
@@ -131,3 +131,17 @@ void GpNetworkTransmitter::listen(){
 	free(buffer);
 	
 }
+
+
+
+// get sockaddr, IPv4 or IPv6:
+void *get_in_addr(struct sockaddr *sa)
+{
+	if (sa->sa_family == AF_INET) {
+		return &(((struct sockaddr_in*)sa)->sin_addr);
+	}
+	
+	return &(((struct sockaddr_in6*)sa)->sin6_addr);
+}
+
+

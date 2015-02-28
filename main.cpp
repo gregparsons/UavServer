@@ -57,7 +57,7 @@ int main(int argc, const char * argv[]) {
 
 void
 printUsage(){
-	std::cout << "Usage: [control], [fly], [router]" << std::endl;
+	std::cout << "Usage: [control], [fly], [server]" << std::endl;
 }
 
 void

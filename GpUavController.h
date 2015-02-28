@@ -14,7 +14,7 @@ class GpUavController
 {
 public:
 	bool start();
-	
+	int controllerSend();
 private:
 	
 };
