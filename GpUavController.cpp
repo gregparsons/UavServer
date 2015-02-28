@@ -5,7 +5,7 @@
 //  2/25/15
 //
 // ********************************************************************************
-
+/*
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>				//INET6_ADDRSTRLEN
@@ -13,18 +13,18 @@
 #include <arpa/inet.h>
 #include <signal.h>
 #include <iostream>
-#include <unistd.h>					//usleep
 #include <mavlink/c_library/common/mavlink.h>
+*/
+#include <unistd.h>					//usleep, fork
+#include <iostream>
 
 #include "GpUavController.h"
-#include "GpMavlink.h"
-#include "GpIpAddress.h"
-#include "GpNetworkTransmitter.h"
+
+//#include "GpMavlink.h"
+//#include "GpIpAddress.h"
+//#include "GpNetworkTransmitter.h"
 #include "GpGameController.h"
 
-
-
-using namespace std;
 
 
 
@@ -32,7 +32,7 @@ using namespace std;
 
 bool GpUavController::start(){
 	
-	cout << "GpUavController::start()" << endl;
+	std::cout << "GpUavController::start()" << std::endl;
 	
 	// 1. Start up game controller.
 	int f;
@@ -49,6 +49,8 @@ bool GpUavController::start(){
 	
 	
 	// Loop:
+	
+	
 	// 3. Receive events from game controller
 	
 	// 4. Encapsulate events in Mavlink message format
@@ -58,37 +60,10 @@ bool GpUavController::start(){
 	
 	
 	
-	//mavlink_message_t mesg;
-	//sendMavlinkMessage(mesg);
-	// controllerSend();
-	
-	
-	
 	return true;
 }
 
 
-
-
-
-
-
-
-
-
-
-void sendMavlinkMessage(mavlink_message_t & msg){
-	/*
-	cout << "GpUavController::sendMavlinkMessage()" << endl;
-	
-	GpMavlink gpMavlink;
-
-	for(;;){
-		gpMavlink.sendTestMessage();
-		usleep(500);
-	}
-	 */
-}
 
 
 
