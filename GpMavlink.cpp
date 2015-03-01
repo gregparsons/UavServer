@@ -12,7 +12,7 @@
 
 using namespace std;
 
-GpNetworkTransmitter GpMavlink::net(GP_FLY_IP_ADDRESS);
+// GpNetworkTransmitter GpMavlink::net(GP_FLY_IP_ADDRESS);
 
 void GpMavlink::send(){
 	
@@ -125,16 +125,40 @@ void GpMavlink::sendTestMessage(){
 	printMavMessage(mavMessage);
 	printMavChannelsOverride(channels);
 	
-	net.transmitEvent(mavMessage);
+	
+	
+	
+	
+	
+	
+	// net.transmitEvent(mavMessage);
+	
+	
+	
+	
+	
+	
 	
 }
 
+
+void GpMavlink::receiveBytes(uint8_t* & bytes, int byteCount){
+	
+	if(MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN == byteCount){
+	
+		mavlink_message_t message;
+		memcpy(&message, bytes, MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN);
+		
+		printMavMessage(message);
+		
+	}
+}
 
 void GpMavlink::receiveTestMessage(mavlink_message_t & mesg){
 	
 	
 	// Decode
-	// mavlink_msg_rc_channels_override_decode(<#const mavlink_message_t *msg#>, <#mavlink_rc_channels_override_t *rc_channels_override#>)
+	// mavlink_msg_rc_channels_override_decode(const mavlink_message_t *msg, <#mavlink_rc_channels_override_t *rc_channels_override#>)
 
 	mavlink_rc_channels_override_t incomingObject;
 	mavlink_msg_rc_channels_override_decode(&mesg, &incomingObject);

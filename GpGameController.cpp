@@ -17,8 +17,7 @@
 #include <iostream>
 #include "GpGameController.h"
 #include "GpControllerEvent.h"
-#include "GpControllerNetwork.h"
-
+#include "GpMavlink.h"
 
 using namespace std;
 
@@ -67,7 +66,7 @@ bool GpGameController::initSDL(SDL_GameController **gameController){
  
  */
  
-void GpGameController::runGameController(){
+void GpGameController::runGameController(GpControllerNetwork & controlNet){
 	
 	SDL_GameController *gameController = nullptr;
 
@@ -130,8 +129,6 @@ void GpGameController::runGameController(){
 
 								}
 
-
-								
 								
 								
 								// CONTROLLER EVENT READY FOR TRANSMIT
@@ -144,7 +141,9 @@ void GpGameController::runGameController(){
 								
 								// "GpControllerNetwork.h"
 								mavlink_message_t blankMessage;
-								GpControllerNetwork::sendTCP(blankMessage, MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN);
+								
+								
+								controlNet.sendTCP(blankMessage, MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN);
 
 							}
 							break;

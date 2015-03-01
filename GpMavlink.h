@@ -14,7 +14,7 @@
 #define __UavServer__GpMavlink__
 
 #include <mavlink/c_library/common/mavlink.h>
-#include "GpNetworkTransmitter.h"
+// #include "GpNetworkTransmitter.h"
 
 class GpMavlink{
 	
@@ -22,13 +22,17 @@ public:
 	
 	void send();
 	
-	void printMavMessage(const mavlink_message_t & msg);
+	static void printMavMessage(const mavlink_message_t & msg);
+	static void receiveBytes(uint8_t* & bytes, int byteCount);
+
+	
+	
 	void printMavChannelsOverride(const mavlink_rc_channels_override_t & ch);
 	
 	void sendTestMessage();
 	void receiveTestMessage(mavlink_message_t & mesg);
 	
-	static GpNetworkTransmitter net;
+//	static GpNetworkTransmitter net;
 	
 };
 

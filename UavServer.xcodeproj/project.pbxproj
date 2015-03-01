@@ -10,10 +10,9 @@
 		0012438B1A9EC90700580506 /* GpUavServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001243871A9EC90700580506 /* GpUavServer.cpp */; };
 		0012438C1A9EC90700580506 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001243891A9EC90700580506 /* main.cpp */; };
 		0012438D1A9EC90700580506 /* makefile in Sources */ = {isa = PBXBuildFile; fileRef = 0012438A1A9EC90700580506 /* makefile */; };
-		001526D61A9E96E60059BC0F /* GpUavController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001526D41A9E96E60059BC0F /* GpUavController.cpp */; };
+		001526D61A9E96E60059BC0F /* GpGroundController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001526D41A9E96E60059BC0F /* GpGroundController.cpp */; };
 		001526D91A9E97020059BC0F /* GpUavAsset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001526D71A9E97020059BC0F /* GpUavAsset.cpp */; };
 		00667E3D1A9ECB4C009E8692 /* GpMavlink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00667E3B1A9ECB4C009E8692 /* GpMavlink.cpp */; };
-		00667E411A9ED1AA009E8692 /* GpNetworkTransmitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00667E401A9ED1AA009E8692 /* GpNetworkTransmitter.cpp */; };
 		009C06141AA1A46400AC1CD1 /* GpGameController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009C06131AA1A46400AC1CD1 /* GpGameController.cpp */; };
 		009C0EC21AA1A55C00AC1CD1 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009C0EC11AA1A55C00AC1CD1 /* SDL2.framework */; };
 		009C0EC51AA1A78200AC1CD1 /* GpControllerEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009C0EC41AA1A78200AC1CD1 /* GpControllerEvent.cpp */; };
@@ -38,15 +37,13 @@
 		001243891A9EC90700580506 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		0012438A1A9EC90700580506 /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; };
 		001526C01A9E90BE0059BC0F /* UavServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = UavServer; sourceTree = BUILT_PRODUCTS_DIR; };
-		001526D41A9E96E60059BC0F /* GpUavController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpUavController.cpp; sourceTree = "<group>"; };
-		001526D51A9E96E60059BC0F /* GpUavController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpUavController.h; sourceTree = "<group>"; };
+		001526D41A9E96E60059BC0F /* GpGroundController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpGroundController.cpp; sourceTree = "<group>"; };
+		001526D51A9E96E60059BC0F /* GpGroundController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpGroundController.h; sourceTree = "<group>"; };
 		001526D71A9E97020059BC0F /* GpUavAsset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpUavAsset.cpp; sourceTree = "<group>"; };
 		001526D81A9E97020059BC0F /* GpUavAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpUavAsset.h; sourceTree = "<group>"; };
 		00667E3B1A9ECB4C009E8692 /* GpMavlink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpMavlink.cpp; sourceTree = "<group>"; };
 		00667E3C1A9ECB4C009E8692 /* GpMavlink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpMavlink.h; sourceTree = "<group>"; };
 		00667E3E1A9ED1AA009E8692 /* GpIpAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpIpAddress.h; sourceTree = "<group>"; };
-		00667E3F1A9ED1AA009E8692 /* GpNetworkTransmitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpNetworkTransmitter.h; sourceTree = "<group>"; };
-		00667E401A9ED1AA009E8692 /* GpNetworkTransmitter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpNetworkTransmitter.cpp; sourceTree = "<group>"; };
 		00667E451A9ED3CD009E8692 /* ardupilotmega.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ardupilotmega.h; sourceTree = "<group>"; };
 		00667E461A9ED3CD009E8692 /* mavlink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mavlink.h; sourceTree = "<group>"; };
 		00667E471A9ED3CD009E8692 /* mavlink_msg_ahrs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mavlink_msg_ahrs.h; sourceTree = "<group>"; };
@@ -341,9 +338,9 @@
 			isa = PBXGroup;
 			children = (
 				00667E3A1A9ECB2F009E8692 /* Network */,
+				001526C21A9E90BE0059BC0F /* Server */,
 				001526D21A9E96930059BC0F /* Controller */,
 				001526D11A9E96840059BC0F /* Fly */,
-				001526C21A9E90BE0059BC0F /* Server */,
 				00667E421A9ED3CD009E8692 /* mavlink */,
 				001526D31A9E96AF0059BC0F /* Support */,
 				001526C11A9E90BE0059BC0F /* Products */,
@@ -380,8 +377,8 @@
 		001526D21A9E96930059BC0F /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				001526D51A9E96E60059BC0F /* GpUavController.h */,
-				001526D41A9E96E60059BC0F /* GpUavController.cpp */,
+				001526D51A9E96E60059BC0F /* GpGroundController.h */,
+				001526D41A9E96E60059BC0F /* GpGroundController.cpp */,
 				009C0EC71AA1A9E500AC1CD1 /* GpControllerNetwork.h */,
 				009C0EC61AA1A9E500AC1CD1 /* GpControllerNetwork.cpp */,
 				006A71F11AA1B957009A8C93 /* Game Controller */,
@@ -402,8 +399,6 @@
 			isa = PBXGroup;
 			children = (
 				00667E3E1A9ED1AA009E8692 /* GpIpAddress.h */,
-				00667E3F1A9ED1AA009E8692 /* GpNetworkTransmitter.h */,
-				00667E401A9ED1AA009E8692 /* GpNetworkTransmitter.cpp */,
 				00667E3C1A9ECB4C009E8692 /* GpMavlink.h */,
 				00667E3B1A9ECB4C009E8692 /* GpMavlink.cpp */,
 			);
@@ -847,9 +842,8 @@
 				009C06141AA1A46400AC1CD1 /* GpGameController.cpp in Sources */,
 				009C0EC51AA1A78200AC1CD1 /* GpControllerEvent.cpp in Sources */,
 				0012438C1A9EC90700580506 /* main.cpp in Sources */,
-				00667E411A9ED1AA009E8692 /* GpNetworkTransmitter.cpp in Sources */,
 				00667E3D1A9ECB4C009E8692 /* GpMavlink.cpp in Sources */,
-				001526D61A9E96E60059BC0F /* GpUavController.cpp in Sources */,
+				001526D61A9E96E60059BC0F /* GpGroundController.cpp in Sources */,
 				0012438D1A9EC90700580506 /* makefile in Sources */,
 				009C0EC81AA1A9E500AC1CD1 /* GpControllerNetwork.cpp in Sources */,
 			);

@@ -23,29 +23,32 @@
 
 #include "GpUavServer.h"
 #include "GpIpAddress.h"
-#include "GpNetworkTransmitter.h"
+#include "GpMavlink.h"
 
 using namespace std;
 
-void signalHandler(int signal)
+/**
+ *  signalHandler(): Clean up zombie processes.
+ *
+ */
+void
+signalHandler(int signal)
 {
 	while(waitpid(-1, NULL, WNOHANG) > 0);
+	cout << "signalHandler()" << endl;
 }
 
 
-bool GpUavServer::start(){
+bool
+GpUavServer::start(){
 
 	std::cout << "Server started" <<std::endl;
-	
-//	GpMavlink gpMavlink;
-//	GpNetworkTransmitter net;
-//	net.listen();
-/*
-		mavlink_message_t message;
-		gpMavlink.receiveTestMessage(message);
-		
-*/
 
+
+	
+	// TCP Socket Setup
+	
+	
 
 	int listen_fd = -1, client_fd = -1;
 	struct addrinfo hintAddrInfo, *resSave = nullptr, *res = nullptr;
@@ -55,32 +58,24 @@ bool GpUavServer::start(){
 	int result = 0;
 	int yes = 1;
 	
-	
 	memset(&hintAddrInfo, 0, sizeof(addrinfo));
 	hintAddrInfo.ai_family = AF_UNSPEC;		//any protocol family
 	hintAddrInfo.ai_socktype = SOCK_STREAM;	//stream = TCP
-	//hintAddrInfo.ai_protocol = IPPROTO_TCP;
 	hintAddrInfo.ai_flags = AI_PASSIVE;		//
 	
-	
-	
-	
-	// Get network interface IP addresses
-	
-	result = getaddrinfo(GP_FLY_IP_ADDRESS, GP_CONTROL_PORT, &hintAddrInfo, &resSave);
+	result = getaddrinfo(GP_CONTROLLER_SERVER_IP.c_str(), GP_CONTROLLER_SERVER_PORT.c_str(), &hintAddrInfo, &resSave);
 	if(result < 0){ //error
 		cout << "getaddrinfo() error" << endl;
 		return 1;
 	}
 	
 
-	for(res = resSave; res != nullptr; res = res->ai_next){
 
-		
-		// Socket
-		
-		
-		
+	// Socket
+	
+
+	for(res = resSave; res != nullptr; res = res->ai_next){
+	
 		listen_fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 		if(listen_fd == -1){ //error, else file descriptor
 			cout << "Socket error" << endl;
@@ -95,19 +90,17 @@ bool GpUavServer::start(){
 		
 		// Bind
 		
-		
-		
 		result = ::bind(listen_fd, res->ai_addr, res->ai_addrlen);		
 		if(result == -1){
 			cout << "Bind Error" << endl;
 			exit(1);
 		}
-		
 		break;
 		
 	}
 	
 	// Either found a good socket or there are none
+	
 	if(res == nullptr){
 		cout << "Failed to bind" << endl;
 		return 2;
@@ -118,8 +111,6 @@ bool GpUavServer::start(){
 	
 	// Listen
 	
-	
-	
 	result = listen
 	(listen_fd, MAX_CONNECTION_BACKLOG);
 	if(result == -1){
@@ -129,45 +120,34 @@ bool GpUavServer::start(){
 	
 	
 	
+	// Handle zombie processes
 	
-	
-	signalAction.sa_handler = signalHandler;	//"reap dead processes"
+	signalAction.sa_handler = signalHandler;
 	sigemptyset(&signalAction.sa_mask);
 	signalAction.sa_flags = SA_RESTART;
 	result = sigaction(SIGCHLD, &signalAction, nullptr);
 	if(result == -1){
-		
 		cout << "Error: sigaction" << endl;
 		exit(1);
-		
 	}
 	
+	
+	
+	
+	// Listener Loop
+	
+	
+	
 	cout << "Server: waiting for connections" << endl;
-	
-	
-	// Main Loop
-	
 	for(;;){
-		
-		
 		
 
 		// Accept
 		
 		
-		
-		
 		addrLen = sizeof(inboundAddress);		//address len for accept should be size of address struct, but on return it gets set to bytes of the actual string (or struct?) address
 		client_fd = accept(listen_fd, (struct sockaddr *)&inboundAddress, &addrLen);
 		
-		/*
-		 // Print IP address
-		char s[INET6_ADDRSTRLEN];
-		inet_ntop(resSave->ai_family, get_in_addr((struct sockaddr *)&inboundAddress), s, inboundAddress.ss_len);
-		cout << "Address: " << s << endl;
-*/
-		 
-		 
 		if(client_fd == -1){
 			cout << "Error: accept(): " << errno << endl;
 			switch (errno) {
@@ -179,37 +159,46 @@ bool GpUavServer::start(){
 			continue;
 		}
 		
-		// good FD
+		
+		
+		// Fork
+		
 		
 		result = fork();		//returns child PID to parent and 0 to child, error = -1
 		if(result == 0){
 			
 			
-			// CHILD PROCESS
-			// Keep client connection open. HOW TO CLOSE?
+			
+			// Child / recv()
 			
 			
-			
-			//cout << "Child process spawned" << endl;
-			
-			
-			close(listen_fd);	//Close copy of parent's listener socket.
-			size_t length = 18;
-			char buffer[length];
+			close(listen_fd);
+			size_t length = MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN;
+			uint8_t buffer[length];
 			
 			for(;;){
 			
-				size_t numBytes = recv(client_fd, &buffer, length, 0);
+				size_t numBytes = recv(client_fd, &buffer, length, 0);		//blocks if no data, returns zero if no data and shutdown occurred
+				cout << "numBytes: " << numBytes << endl;
+
 				if(numBytes == -1){
 					cout << "Error: recv()" << endl;
 					exit(1);
 				}
-				cout << "numBytes: " << numBytes << endl;
+				else if(numBytes == 0){
+					//shutdown
+					exit(0);
+
+				
+				}
 				
 				
+				//Do something with received bytes;
 				
 				
-				
+				//GpMavlink::printMavMessage(const mavlink_message_t &msg);
+				uint8_t *buf = buffer;
+				GpMavlink::receiveBytes(buf, numBytes);
 				
 				
 				

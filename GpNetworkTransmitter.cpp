@@ -13,7 +13,7 @@
 
 // Receive constructor
 GpNetworkTransmitter::GpNetworkTransmitter(){
-	
+/*
 	memset(&_hintInfo, 0, sizeof(_hintInfo));
 	_hintInfo.ai_family = AF_UNSPEC;			//force IPV4??
 	_hintInfo.ai_socktype = SOCK_DGRAM;			//UDP
@@ -38,12 +38,14 @@ GpNetworkTransmitter::GpNetworkTransmitter(){
 		}
 		break;	//either found a good one or done looking
 	}
+ 
+*/
 }
 
 
 // Send constructor
 GpNetworkTransmitter::GpNetworkTransmitter(std::string destAddress):_destIp(destAddress){
-	
+/*
 	memset(&_hintInfo, 0, sizeof(_hintInfo));	//zeroize
 	_hintInfo.ai_family = AF_UNSPEC;
 	_hintInfo.ai_socktype = SOCK_DGRAM;			//UDP
@@ -69,6 +71,7 @@ GpNetworkTransmitter::GpNetworkTransmitter(std::string destAddress):_destIp(dest
 		_socketFd = 0;
 		return;
 	}
+ */
 }
 
 GpNetworkTransmitter::~GpNetworkTransmitter(){

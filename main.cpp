@@ -10,7 +10,7 @@
 #include <iostream>
 #include "GpUavServer.h"
 #include "GpUavAsset.h"
-#include "GpUavController.h"
+#include "GpGroundController.h"
 
 void printUsage();
 void exit_program(int signal);
@@ -36,7 +36,7 @@ int main(int argc, const char * argv[]) {
 		if(arg1 == "control")
 		{
 			std::cout << "Starting game controller output." << std::endl;
-			GpUavController controller;
+			GpGroundController controller;
 			controller.start();
 		
 		}

@@ -17,37 +17,32 @@
 #include <iostream>
 #include <unistd.h>					//usleep
 
-// #include "GpMavlink.h"
-#include "GpIpAddress.h"
-// #include "GpControllerNetwork.h"
-
-
 #include "GpControllerNetwork.h"
+#include "GpMavlink.h"
 
-int GpControllerNetwork::sendTCP(mavlink_message_t & message, int size)
-{
+
+
+bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & port){
 	
-	
-	
-	int control_fd = 0;
-	struct addrinfo hints, *res = nullptr, *resSave = nullptr;
+	//int control_fd = 0;
+	struct addrinfo hints,  *resSave = nullptr; /* *res = nullptr */
 	int result = 0;
-	ssize_t numBytes = 0;
+
 	
 	// memset(&hints, 0, sizeof(hints));
 	bzero(&hints, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;		//AF_INET = tcp, udp
 	hints.ai_socktype = SOCK_STREAM;
 	
-	result = getaddrinfo(GP_FLY_IP_ADDRESS, GP_CONTROL_PORT, &hints, &res);
+	result = getaddrinfo(ip.c_str(), port.c_str(), &hints, &_res);
 	if(result == -1){
 		std::cout << "Error: getaddrinfo" << std::endl;
 	}
 	
-
 	
 	
-	resSave = res;
+	
+	resSave = _res;
 	
 	do {
 		
@@ -59,8 +54,8 @@ int GpControllerNetwork::sendTCP(mavlink_message_t & message, int size)
 		
 		
 		
-		control_fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-		if(control_fd < 0){
+		_control_fd = socket(_res->ai_family, _res->ai_socktype, _res->ai_protocol);
+		if(_control_fd < 0){
 			continue;
 			
 		}
@@ -72,37 +67,48 @@ int GpControllerNetwork::sendTCP(mavlink_message_t & message, int size)
 		
 		
 		
-		result = connect(control_fd, res->ai_addr, res->ai_addrlen);
+		result = connect(_control_fd, _res->ai_addr, _res->ai_addrlen);
 		if(result == 0){
-
+			
 			break;
-
+			
 		}
 		
 		
-		close(control_fd);
-		res = res->ai_next;
-	} while (res != nullptr);
+		close(_control_fd);
+		_res = _res->ai_next;
+	} while (_res != nullptr);
 	
 	
 	
 	
-	if(res == nullptr){
+	if(_res == nullptr){
 		
 		std::cout << "Error: connect 2" << std::endl;
-		return 2;
+		return false;
 	}
 	
 	freeaddrinfo(resSave);
 	
+	
+	return true;
+}
+
+int GpControllerNetwork::sendTCP(mavlink_message_t & message, int size)
+{
+	
+	
+	
+	ssize_t numBytes = 0;
+	
 
 	
 	
 	
 	
 	
-	for(int i=0; i< 999999 ; i++)
-	{
+//	for(int i=0; i< 999999 ; i++)
+//	{
 		
 		// Mavlink
 		
@@ -122,12 +128,13 @@ int GpControllerNetwork::sendTCP(mavlink_message_t & message, int size)
 		mavMessage.compid = 7;
 		mavlink_msg_rc_channels_override_encode(5, 7, &mavMessage, &channels);
 		
+		GpMavlink::printMavMessage(mavMessage);
+
 		
-		
-		// numBytes = send(control_fd, &mavMessage, (ssize_t)(MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN),0);
+		// numBytes = send(_control_fd, &mavMessage, (ssize_t)(MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN),0);
 		
 
-		numBytes = sendto(control_fd, &mavMessage, (ssize_t)(MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN), 0, res->ai_addr, res->ai_addrlen);
+		numBytes = sendto(_control_fd, &mavMessage, (ssize_t)(MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN), 0, _res->ai_addr, _res->ai_addrlen);
 		
 		
 		if(numBytes == -1){
@@ -141,13 +148,13 @@ int GpControllerNetwork::sendTCP(mavlink_message_t & message, int size)
 		//Do it at 100hz, 10000us = 1/100 sec
 		
 		numBytes = 0;
-		usleep(10000);
+//		usleep(10000);
 		
 		
 		
-	}
+//	}
 	
-	close(control_fd);
+//	close(_control_fd);
 	return 0;
 	
 	

@@ -9,14 +9,13 @@
 #ifndef __controllerHello__GpGameController__
 #define __controllerHello__GpGameController__
 
-
-// #include </Users/aaa/176b/SDL/SDL2-2.0.3/include/SDL.h>
 #include <SDL2/SDL.h>
 
+#include "GpControllerNetwork.h"
 
 class GpGameController{
 public:
-	static void runGameController();
+	static void runGameController(GpControllerNetwork & controlNet);
 private:
 	static bool initSDL(SDL_GameController **gameController);
 	

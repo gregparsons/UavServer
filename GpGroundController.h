@@ -7,16 +7,22 @@
 // ********************************************************************************
 
 
-#ifndef __UavServer__GpUavController__
-#define __UavServer__GpUavController__
+#ifndef __UavServer__GpGroundController__
+#define __UavServer__GpGroundController__
 
-class GpUavController
+class GpGroundController
 {
 public:
 	bool start();
 	int controllerSend();
 private:
 	
+	
+	/**
+	 *  signalHandler(): Clean up zombie processes.
+	 *
+	 */
+	static void signalHandler(int signal);
 };
 
 #endif /* defined(__UavServer__GpUavControl__) */
