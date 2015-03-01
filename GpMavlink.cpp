@@ -9,6 +9,7 @@
 #include <iostream>
 #include "GpMavlink.h"
 #include "GpIpAddress.h"
+#include "GpControllerEvent.h"
 
 using namespace std;
 
@@ -53,16 +54,7 @@ void GpMavlink::printMavMessage(const mavlink_message_t & msg)
 }
 
 
-void GpMavlink::printMavChannelsOverride(const mavlink_rc_channels_override_t & ch)
-{
-	std::cout << "Channels Override Struct\n";
-	std::cout << "ch1: " << ch.chan1_raw << "\n";
-	std::cout << "ch2: " << ch.chan2_raw << "\n";
-	std::cout << "ch3: " << ch.chan3_raw << "\n";
-	std::cout << "target component: " << ch.target_component << "\n";
-	std::cout << "target system: " << ch.target_system << "\n";
-	std::cout << std::endl;
-}
+
 
 
 
@@ -116,9 +108,7 @@ void GpMavlink::sendTestMessage(){
 	mavlink_message_t mavMessage;
 	mavMessage.sysid = 5;
 	mavMessage.compid = 7;
-
 	// mavlink_msg_rc_channels_override_encode(<#uint8_t system_id#>, <#uint8_t component_id#>, <#mavlink_message_t *msg#>, <#const mavlink_rc_channels_override_t *rc_channels_override#>)
-
 	mavlink_msg_rc_channels_override_encode(5, 7, &mavMessage, &channels);
 	
 	cout << "Sending: " << endl;
@@ -142,17 +132,7 @@ void GpMavlink::sendTestMessage(){
 }
 
 
-void GpMavlink::receiveBytes(uint8_t* & bytes, int byteCount){
-	
-	if(MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN == byteCount){
-	
-		mavlink_message_t message;
-		memcpy(&message, bytes, MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN);
-		
-		printMavMessage(message);
-		
-	}
-}
+
 
 void GpMavlink::receiveTestMessage(mavlink_message_t & mesg){
 	
@@ -173,3 +153,91 @@ void GpMavlink::receiveTestMessage(mavlink_message_t & mesg){
 	
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ *  [Static] Convert controller event data to mavlink message of type MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE
+ *
+ */
+void GpMavlink::encodeControllerEventAsMavlink(int left_x, int left_y, int right_x, int right_y, int timestamp, mavlink_message_t & mavlinkMessage) {
+
+	mavlink_rc_channels_override_t rcChannelOverrideMessage;
+	memset(&rcChannelOverrideMessage, 0, MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN);
+	
+	///< RC channel 1 value, in microseconds. A value of UINT16_MAX means to ignore this field.	rcChannelOverrideMessage.chan1_raw = left_x;
+	rcChannelOverrideMessage.chan1_raw = left_x;
+	rcChannelOverrideMessage.chan2_raw = left_y;
+	rcChannelOverrideMessage.chan3_raw = right_x;
+	rcChannelOverrideMessage.chan4_raw = right_y;
+	rcChannelOverrideMessage.chan5_raw = UINT16_MAX;
+	rcChannelOverrideMessage.chan6_raw = UINT16_MAX;
+	rcChannelOverrideMessage.chan7_raw = UINT16_MAX;
+	rcChannelOverrideMessage.chan8_raw = UINT16_MAX;
+	rcChannelOverrideMessage.target_component = 1;
+	rcChannelOverrideMessage.target_system = 1;
+	
+	/*
+	mavlinkMessage.sysid = 5;
+	mavlinkMessage.compid = 7;
+	*/
+	
+	uint8_t systemId = 1;				// HARD CODED SYSTEM ID!!!!
+	uint8_t compId = 1;
+	
+	
+	// mavlink_msg_rc_channels_override_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t *msg, const mavlink_rc_channels_override_t *rc_channels_override)
+	mavlink_msg_rc_channels_override_encode(systemId, compId, &mavlinkMessage, &rcChannelOverrideMessage);
+	
+	// Now mavlinkMessage has the ready-to-send mavlink message. This function returns with it filled.
+	
+	printMavChannelsOverride(rcChannelOverrideMessage);
+	
+	
+}
+
+
+
+void GpMavlink::decodeMavlinkBytesToControlEvent(uint8_t* & bytes, size_t byteCount){
+	
+	// 1. bytes to mavlink_message_t
+	
+	mavlink_message_t mavMsg;
+	memcpy(&mavMsg, bytes, byteCount);
+	
+	
+	// 2. Mavlink_message_t to mavlink_rc_channels_override_t
+	
+	mavlink_rc_channels_override_t mavMsgControl;
+	mavlink_msg_rc_channels_override_decode(&mavMsg, &mavMsgControl);
+	
+	printMavChannelsOverride(mavMsgControl);
+	
+	
+}
+
+
+void GpMavlink::printMavChannelsOverride(const mavlink_rc_channels_override_t & ch)
+{
+	
+	///< RC channel 1 value, in microseconds. A value of UINT16_MAX means to ignore this field.
+	std::cout << "Channels Override:\n";
+	std::cout << "ch1: " << (int)ch.chan1_raw << "\n";
+	std::cout << "ch2: " << (int)ch.chan2_raw << "\n";
+	std::cout << "ch3: " << (int)ch.chan3_raw << "\n";
+	std::cout << "ch4: " << (int)ch.chan4_raw << "\n";
+	std::cout << "target component: " << ch.target_component << "\n";
+	std::cout << "target system: " << ch.target_system << "\n";
+	std::cout << std::endl;
+}

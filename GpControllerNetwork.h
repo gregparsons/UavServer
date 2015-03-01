@@ -22,7 +22,7 @@ public:
 	bool gpConnect(const std::string & ip, const std::string & port);
 	
 	
-	int sendTCP(mavlink_message_t & message, int size);
+	int sendTCP(mavlink_message_t & message);
 	
 
 private:

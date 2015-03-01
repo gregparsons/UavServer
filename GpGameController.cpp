@@ -16,17 +16,17 @@
 #include <mavlink/c_library/common/mavlink.h>
 #include <iostream>
 #include "GpGameController.h"
-#include "GpControllerEvent.h"
+// #include "GpControllerEvent.h"
 #include "GpMavlink.h"
 
 using namespace std;
 
 const int CONTROLLER_DEAD_ZONE = 5000;
 
+
 /**
- Initializes gameController pointer either to a nullptr or a pointer to the connected
- SDL_GameController.
- 
+ *  Init SDL for game controller
+ *
  */
 bool GpGameController::initSDL(SDL_GameController **gameController){
 	
@@ -37,8 +37,6 @@ bool GpGameController::initSDL(SDL_GameController **gameController){
 		success = false;
 	}
 	else{
-		
-//		cout << "SDL init ok. Checking for controllers..." << endl;
 		
 		if(SDL_NumJoysticks() < 1){
 			cout << "No controllers connected." << endl;
@@ -87,9 +85,7 @@ void GpGameController::runGameController(GpControllerNetwork & controlNet){
 		
 		if(gameController != nullptr){
 			
-			GpControllerEvent gpEvent;	//init a blank event
-//			GpNetworkTransmitter networkTransmitter(GP_FLY_IP_ADDRESS);
-			
+			// GpControllerEvent gpEvent;	//init a blank event
 			
 			while(!quit){
 				
@@ -120,30 +116,33 @@ void GpGameController::runGameController(GpControllerNetwork & controlNet){
 									axisValue[e.caxis.axis] = newVal;
 									
 									
+									
+									
+									mavlink_message_t mavlinkMsg;
+									bzero(&mavlinkMsg, sizeof(mavlink_message_t));
+						
+									GpMavlink::encodeControllerEventAsMavlink(axisValue[0], axisValue[1], axisValue[2], axisValue[3], e.caxis.timestamp, mavlinkMsg);	//fill channel message
+
+									controlNet.sendTCP(mavlinkMsg);
+
+									
+									
+									
+									/*
 									//Fill in the GpControllerEvent class for packaging in prep for network serialization
 									gpEvent.setLX(axisValue[0]);
 									gpEvent.setLY(axisValue[1]);
 									gpEvent.setRX(axisValue[2]);
 									gpEvent.setRY(axisValue[3]);
 									gpEvent.setTimestamp(e.caxis.timestamp);
-
+									 */
 								}
 
 								
-								
-								// CONTROLLER EVENT READY FOR TRANSMIT
-								
-								
-								
-								std::cout << "Sending: [" << gpEvent.timestamp() << "] LX " << gpEvent.leftX() << ", LY " << gpEvent.leftY() << ", RX " << gpEvent.rightX() << ", RY " << gpEvent.rightY() << std::endl;
-								// networkTransmitter.transmitEvent(&gpEvent);
+								// std::cout << "Sending: [" << gpEvent.timestamp() << "] LX " << gpEvent.leftX() << ", LY " << gpEvent.leftY() << ", RX " << gpEvent.rightX() << ", RY " << gpEvent.rightY() << std::endl;
+
 								
 								
-								// "GpControllerNetwork.h"
-								mavlink_message_t blankMessage;
-								
-								
-								controlNet.sendTCP(blankMessage, MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN);
 
 							}
 							break;

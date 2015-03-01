@@ -16,19 +16,20 @@
 #include <mavlink/c_library/common/mavlink.h>
 // #include "GpNetworkTransmitter.h"
 
+class GpControllerEvent;
+
 class GpMavlink{
 	
 public:
+	static void encodeControllerEventAsMavlink(int left_x, int left_y, int right_x, int right_y, int timestamp, mavlink_message_t & mavlinkMessage);
+	static void decodeMavlinkBytesToControlEvent(uint8_t* & bytes, size_t byteCount);
+	static void printMavChannelsOverride(const mavlink_rc_channels_override_t & ch);
 	
-	void send();
-	
-	static void printMavMessage(const mavlink_message_t & msg);
-	static void receiveBytes(uint8_t* & bytes, int byteCount);
 
 	
-	
-	void printMavChannelsOverride(const mavlink_rc_channels_override_t & ch);
-	
+	//junk
+	void send();
+	static void printMavMessage(const mavlink_message_t & msg);
 	void sendTestMessage();
 	void receiveTestMessage(mavlink_message_t & mesg);
 	

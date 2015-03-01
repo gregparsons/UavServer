@@ -198,8 +198,7 @@ GpUavServer::start(){
 				
 				//GpMavlink::printMavMessage(const mavlink_message_t &msg);
 				uint8_t *buf = buffer;
-				GpMavlink::receiveBytes(buf, numBytes);
-				
+				GpMavlink::decodeMavlinkBytesToControlEvent(buf, numBytes);
 				
 				
 				

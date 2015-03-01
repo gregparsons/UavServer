@@ -49,12 +49,15 @@ bool GpGroundController::start(){
 	// 0. Create full-duplex TCP connection.
 	
 	GpControllerNetwork groundNet;
-	groundNet.gpConnect(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT);
+	bool connectResult = groundNet.gpConnect(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT);
+	if(connectResult == false){
+		std::cout<< "connect fail" << std::endl;
+		return false;
+	}
 	
 	
 	
-	
-	// 1. Fork and start game controller (as write-only).
+	// 1. Fork and start game controller (as write-only to server).
 	
 	int f;
 	if((f=fork()) > 0){
@@ -75,6 +78,8 @@ bool GpGroundController::start(){
 	
 	return true;
 }
+
+
 
 /**
  *  signalHandler(): Clean up zombie processes.
