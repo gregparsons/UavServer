@@ -16,8 +16,8 @@
 #include <mavlink/c_library/common/mavlink.h>
 #include <iostream>
 #include "GpGameController.h"
-// #include "GpControllerEvent.h"
 #include "GpMavlink.h"
+#include "GpMessage.h"
 
 using namespace std;
 
@@ -118,6 +118,11 @@ void GpGameController::runGameController(GpControllerNetwork & controlNet){
 									
 									
 									
+									
+									
+									/*
+									
+									
 									mavlink_message_t mavlinkMsg;
 									bzero(&mavlinkMsg, sizeof(mavlink_message_t));
 						
@@ -125,6 +130,18 @@ void GpGameController::runGameController(GpControllerNetwork & controlNet){
 
 									controlNet.sendTCP(mavlinkMsg);
 
+									
+									*/
+									uint16_t size = 200;
+									uint8_t bytes[200];
+									uint8_t *ptr = bytes;
+									bzero(ptr, size);
+									GpMessage message {2, 9009, ptr};
+									message.serialize(ptr, size);
+									message.deserialize(ptr, size);
+									
+//									GpMessage(<#uint8_t messageType#>, <#uint8_t payloadSize#>, <#uint8_t *&payload#>)
+									
 									
 									
 									

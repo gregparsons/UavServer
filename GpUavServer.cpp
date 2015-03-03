@@ -9,10 +9,8 @@
 
 #define MAX_CONNECTION_BACKLOG 10
 
-
 #include <iostream>
 #include <bitset>
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
