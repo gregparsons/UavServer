@@ -9,6 +9,7 @@
 #ifndef __UavServer__GpMessage__
 #define __UavServer__GpMessage__
 
+#define GP_MSG_HEADER_LEN 3 //bytes
 
 /**
  *  GpMessage

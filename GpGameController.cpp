@@ -132,15 +132,26 @@ void GpGameController::runGameController(GpControllerNetwork & controlNet){
 
 									
 									*/
-									uint16_t size = 200;
-									uint8_t bytes[200];
-									uint8_t *ptr = bytes;
-									bzero(ptr, size);
-									GpMessage message {2, 9009, ptr};
-									message.serialize(ptr, size);
-									message.deserialize(ptr, size);
 									
-//									GpMessage(<#uint8_t messageType#>, <#uint8_t payloadSize#>, <#uint8_t *&payload#>)
+									
+									uint8_t message[] = "hello greg what's happening?";
+
+									// Variable size buffer to hold message and message header
+									uint16_t bufferSize = sizeof(message) + GP_MSG_HEADER_LEN;
+									uint8_t buffer[bufferSize];
+									bzero(buffer, sizeof(buffer));
+									
+									uint8_t *ptr = buffer;
+									uint8_t *messageRef = message;
+									
+									uint16_t messageSize = sizeof(message);
+									GpMessage gpMesg {2, messageSize, messageRef};	//create message based on the actual payload and payload size
+
+									gpMesg.serialize(ptr, bufferSize);		//serialize to buffer
+									
+									GpMessage gpMesg2;
+									gpMesg2.deserialize(ptr, bufferSize);
+									
 									
 									
 									

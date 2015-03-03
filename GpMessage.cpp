@@ -6,6 +6,8 @@
 //
 // ********************************************************************************
 
+
+
 #include <iostream>
 
 #include "GpMessage.h"
@@ -29,40 +31,65 @@ void GpMessage::serialize(uint8_t *&bytes, uint16_t &buffer_size){
 	std::cout << "Serialize: " << (int)_message_type << ", " << (int)_payloadSize << std::endl;
 	
 	if(buffer_size >= 3){
+		int byteCount = 0;
 		uint8_t *ptr = bytes;
 
 		
 		
-		*ptr = _message_type;
-		*ptr++;
+		*ptr++ = _message_type;
+		
+		byteCount++;
+		
 		
 		bitStuff16(ptr, _payloadSize);
-		std::cout << "Hello" << std::endl;
+		byteCount+=2;
+		
+		uint8_t *payPtr = _payload;
+		
+		if(_payload != nullptr){
+			for(; byteCount<buffer_size && byteCount < (_payloadSize + GP_MSG_HEADER_LEN); byteCount++){
+				
+				memcpy(ptr++, payPtr++, 1);
+			}
+		}
+		
+		//std::cout << "Hello" << std::endl;
 	
 	}
-	buffer_size = 3;
 }
 
 void GpMessage::deserialize(uint8_t *&bytes, uint16_t &buffer_size){
 	
 	if(buffer_size >= 3){
-		
+		int byteCount =0;
 		uint8_t *ptr = bytes;
 		
 		_message_type =	*ptr;	//1 byte
 		*ptr++;
+		byteCount++;
 		
 		bitUnstuff16(ptr, _payloadSize);
-		 
+		byteCount+=2;
+		
+		if(_payload != nullptr)
+			delete _payload;
+		_payload = new uint8_t[_payloadSize];
+
 		
 		
+		uint8_t *payPtr = _payload;
+		
+		
+		for(; byteCount<buffer_size && byteCount < (_payloadSize + GP_MSG_HEADER_LEN); byteCount++){
+			memcpy(payPtr++,ptr++, 1);
+		}
 		
 	}
-	buffer_size = 3;
-	
-	std::cout << "Deserialize: " << (int)_message_type << ", " << (int)_payloadSize << std::endl;
+	std::cout << "Deserialize: " << (int)_message_type << ", " << (int)_payloadSize << ", " << _payload <<  std::endl;
 }
 
+
+// push a short and increment the pointer passed by 2 bytes
 void bitStuff16(uint8_t *&buffer, const uint16_t & value){
 
 	uint16_t temp = htons(value);
@@ -71,12 +98,15 @@ void bitStuff16(uint8_t *&buffer, const uint16_t & value){
 	*ptr++ = temp;
 	*ptr = temp >> 8;
 
+	buffer+=2;
 }
 
+// pull a short, increment pointer by 2 bytes
 void bitUnstuff16(uint8_t *&buffer, uint16_t & value){
 	uint8_t *ptr = buffer;
 	uint16_t temp = 0;
 	memcpy(&temp, ptr, 2);
 	value = ntohs(temp);
-	
+
+	buffer+=2;
 }

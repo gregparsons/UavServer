@@ -152,12 +152,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpMessage.cpp"
-            timestampString = "447040113.061874"
+            timestampString = "447042850.797663"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
-            landmarkName = "GpMessage::serialize(uint8_t *&amp;bytes, uint16_t &amp;buffer_size)"
+            startingLineNumber = "88"
+            endingLineNumber = "88"
+            landmarkName = "GpMessage::deserialize(uint8_t *&amp;bytes, uint16_t &amp;buffer_size)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -168,28 +168,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpMessage.cpp"
-            timestampString = "447040113.061874"
+            timestampString = "447042615.637958"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
-            landmarkName = "GpMessage::serialize(uint8_t *&amp;bytes, uint16_t &amp;buffer_size)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GpMessage.cpp"
-            timestampString = "447040113.061874"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
-            landmarkName = "GpMessage::serialize(uint8_t *&amp;bytes, uint16_t &amp;buffer_size)"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "GpMessage::deserialize(uint8_t *&amp;bytes, uint16_t &amp;buffer_size)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
