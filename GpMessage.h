@@ -11,17 +11,20 @@
 
 #define GP_MSG_HEADER_LEN 3 //bytes
 
+class GpMessage_Login;
+
 /**
  *  GpMessage
  *
  *  Class to construct a single application-layer message to/from client and server over TCP or UDP.
  *
  */
+enum { GP_MSG_TYPE_GENERIC, GP_MSG_TYPE_LOGIN, GP_MSG_TYPE_LOGOUT, GP_MSG_TYPE_COMMAND};
 
 class GpMessage {
 public:
-	enum { GP_MESG_GENERIC, GP_MESG_LOGIN, GP_MESG_LOGOUT, GP_MESG_COMMAND};
 	GpMessage();
+	GpMessage(GpMessage_Login & loginMessage);
 	GpMessage(uint8_t messageType, uint16_t payloadSize, uint8_t *&payload);
 	~GpMessage();
 
@@ -29,7 +32,7 @@ public:
 	void deserialize(uint8_t *&bytes, uint16_t & size);
 	
 private:
-	uint8_t _message_type = GP_MESG_GENERIC;
+	uint16_t _message_type = GP_MSG_TYPE_GENERIC;
 	uint16_t _payloadSize = 0;					//16 bits,
 	uint8_t *_payload = nullptr;					//byte buffer
 

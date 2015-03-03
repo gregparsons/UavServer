@@ -19,6 +19,8 @@
 
 #include "GpControllerNetwork.h"
 #include "GpMavlink.h"
+#include "GpMessage.h"
+#include "GpMessage_Login.h"
 
 
 /**
@@ -78,13 +80,46 @@ bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & 
 
 
 
+bool GpControllerNetwork::gpAuthenticateUser(std::string username, std::string key2048){
+	
+	//encrypt something with the symmetric key I share with the server
+	//server decrypts to know I'm who I am.
+
+	std::cout << "GpControllerNetwork::gpAuthenticateUser NOT IMPLEMENTED YET!" << std::endl;
+
+	GpMessage_Login loginMessage(username, key2048);
+	GpMessage message(loginMessage);
+	
+	uint16_t msgSize = GP_MSG_LOGIN_LEN+GP_MSG_HEADER_LEN;
+	uint8_t msg[msgSize];
+	bzero(msg, msgSize);
+	uint8_t *msgPtr = msg;
+	
+	message.serialize(msgPtr, msgSize);
+	
+	sendTCP(msgPtr, msgSize);
+
+	
+	
+	
+	
+	
+	
+	return true;
+}
+
+
+
+
+
+
 
 
 /**
  *  Send a mavlink-formatted message over TCP to current socket.
  *
  */
-int GpControllerNetwork::sendTCP(mavlink_message_t & message)
+ssize_t GpControllerNetwork::sendTCP(mavlink_message_t & message)
 {
 	// sendto
 	
@@ -92,15 +127,34 @@ int GpControllerNetwork::sendTCP(mavlink_message_t & message)
 	numBytes = sendto(_control_fd, &message, message.len, 0, _res->ai_addr, _res->ai_addrlen);
 	if(numBytes == -1){
 		std::cout << "Error: send()" << std::endl;
-		exit(1);
 	}
 	else
 		std::cout << numBytes << " bytes sent" << std::endl;
 	
 
-	return 0;
+	return numBytes;
 	
 	
 	
 }
+
+ssize_t GpControllerNetwork::sendTCP(uint8_t *&appPacket, uint16_t &pktSize){
+
+	int numBytes = 0;
+	size_t size = (size_t)pktSize;
+
+	numBytes = sendto(_control_fd, appPacket, size, 0, _res->ai_addr, _res->ai_addrlen);
+	if(numBytes == -1){
+		std::cout << "[GpControllerNetwork::sendTCP] sendto() error: " << errno <<  std::endl;
+	}
+	else
+		std::cout << numBytes << " bytes sent" << std::endl;
+	
+	return numBytes;
+	
+	
+	
+}
+
+
 

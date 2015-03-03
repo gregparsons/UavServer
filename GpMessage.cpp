@@ -11,17 +11,45 @@
 #include <iostream>
 
 #include "GpMessage.h"
+#include "GpMessage_Login.h"
 
 void bitStuff16(uint8_t *&buffer, const uint16_t & value);
 void bitUnstuff16(uint8_t *&buffer, uint16_t & value);
 
 
 GpMessage::GpMessage(){};
+GpMessage::GpMessage(GpMessage_Login & loginMessage){
+	
+	_message_type = GP_MSG_TYPE_LOGIN;
+	_payloadSize = GP_MSG_LOGIN_LEN;
+	
+	if(_payload !=nullptr)
+		delete _payload;
+	_payload = new uint8_t[_payloadSize];
+	bzero(_payload, _payloadSize);
+	
+	
+	uint8_t *bufPtr = _payload;
+	
+	int numBytes = loginMessage.serialize(bufPtr);
+	if(0 == numBytes){	//ref returns ptr to serialized login message
+
+		std::cout << "[GpMessage::GpMessage]" << std::endl;
+
+	}
+	
+}
 GpMessage::GpMessage(uint8_t messageType, uint16_t payloadSize, uint8_t *&payload):_message_type(messageType),_payloadSize(payloadSize),_payload(payload) {
 
 };
 
-GpMessage::~GpMessage(){};
+GpMessage::~GpMessage(){
+
+	if(_payload != nullptr)
+		delete _payload;
+
+};
+
 
 /*
  Provide a buffer and the buffer size. When written, size is changed to actual bytes written.
@@ -44,15 +72,20 @@ void GpMessage::serialize(uint8_t *&bytes, uint16_t &buffer_size){
 		bitStuff16(ptr, _payloadSize);
 		byteCount+=2;
 		
-		uint8_t *payPtr = _payload;
 		
+		memcpy(ptr, _payload, _payloadSize);
+		ptr+= _payloadSize;
+/*
+		
+		uint8_t *payPtr = _payload;
+ 
 		if(_payload != nullptr){
 			for(; byteCount<buffer_size && byteCount < (_payloadSize + GP_MSG_HEADER_LEN); byteCount++){
 				
 				memcpy(ptr++, payPtr++, 1);
 			}
 		}
-		
+*/
 		//std::cout << "Hello" << std::endl;
 	
 	}
@@ -65,7 +98,7 @@ void GpMessage::deserialize(uint8_t *&bytes, uint16_t &buffer_size){
 		uint8_t *ptr = bytes;
 		
 		_message_type =	*ptr;	//1 byte
-		*ptr++;
+		*ptr++;					//should be incrementing ptr instead of *ptr???
 		byteCount++;
 		
 		bitUnstuff16(ptr, _payloadSize);

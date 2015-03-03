@@ -23,6 +23,8 @@
 #include "GpGameController.h"
 #include "GpIpAddress.h"
 #include "GpControllerNetwork.h"
+#include "GpMessage_Login.h"
+#include "GpMessage.h"
 
 
 bool GpGroundController::start(){
@@ -46,25 +48,33 @@ bool GpGroundController::start(){
 	
 	
 	
-	// 0. Create full-duplex TCP connection.
+	// 0. Connect to Server
 	
-	GpControllerNetwork groundNet;
-	bool connectResult = groundNet.gpConnect(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT);
+	GpControllerNetwork network;
+	bool connectResult = network.gpConnect(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT);
 	if(connectResult == false){
 		std::cout<< "connect fail" << std::endl;
 		return false;
 	}
 	
 	
+	// Do Login
 	
-	// 1. Fork and start game controller (as write-only to server).
+	
+	network.gpAuthenticateUser("myUsername up to 64 bytes", "My really long password key 2048 byte hash");
+	
+	
+	
+	/*
+	
+	// 1. Connect Game Controller
 	
 	int f;
 	if((f=fork()) > 0){
 	
 		// Game controller process
 		GpGameController gameController;
-		gameController.runGameController(groundNet);
+		gameController.runGameController(network);
 	
 	}
 	
@@ -74,7 +84,7 @@ bool GpGroundController::start(){
 	// 2. Do other administrative read / communications on another socket.
 	
 	
-	
+	*/
 	
 	return true;
 }

@@ -17,6 +17,8 @@ public:
 	int controllerSend();
 private:
 	
+	bool _isLoggedIn = false;
+	
 	
 	/**
 	 *  signalHandler(): Clean up zombie processes.

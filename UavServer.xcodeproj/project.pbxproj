@@ -13,6 +13,7 @@
 		001526D91A9E97020059BC0F /* GpUavAsset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001526D71A9E97020059BC0F /* GpUavAsset.cpp */; };
 		00410B031AA5261400295B54 /* GpMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00410B011AA5261400295B54 /* GpMessage.cpp */; };
 		00667E3D1A9ECB4C009E8692 /* GpMavlink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00667E3B1A9ECB4C009E8692 /* GpMavlink.cpp */; };
+		006AF70B1AA58DAC00F58EA6 /* GpMessage_Login.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006AF7091AA58DAC00F58EA6 /* GpMessage_Login.cpp */; };
 		009C06141AA1A46400AC1CD1 /* GpGameController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009C06131AA1A46400AC1CD1 /* GpGameController.cpp */; };
 		009C0EC21AA1A55C00AC1CD1 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009C0EC11AA1A55C00AC1CD1 /* SDL2.framework */; };
 		009C0EC51AA1A78200AC1CD1 /* GpControllerEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009C0EC41AA1A78200AC1CD1 /* GpControllerEvent.cpp */; };
@@ -10799,6 +10800,8 @@
 		00667F581A9ED3CE009E8692 /* testsuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testsuite.h; sourceTree = "<group>"; };
 		00667F591A9ED3CE009E8692 /* ualberta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ualberta.h; sourceTree = "<group>"; };
 		00667F5A1A9ED3CE009E8692 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
+		006AF7091AA58DAC00F58EA6 /* GpMessage_Login.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpMessage_Login.cpp; sourceTree = "<group>"; };
+		006AF70A1AA58DAC00F58EA6 /* GpMessage_Login.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpMessage_Login.h; sourceTree = "<group>"; };
 		009C06121AA1A46400AC1CD1 /* GpGameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpGameController.h; sourceTree = "<group>"; };
 		009C06131AA1A46400AC1CD1 /* GpGameController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpGameController.cpp; sourceTree = "<group>"; };
 		009C0EC11AA1A55C00AC1CD1 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../_frameworks/SDL2.framework; sourceTree = "<group>"; };
@@ -28557,6 +28560,8 @@
 				00667E3B1A9ECB4C009E8692 /* GpMavlink.cpp */,
 				00410B021AA5261400295B54 /* GpMessage.h */,
 				00410B011AA5261400295B54 /* GpMessage.cpp */,
+				006AF70A1AA58DAC00F58EA6 /* GpMessage_Login.h */,
+				006AF7091AA58DAC00F58EA6 /* GpMessage_Login.cpp */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -28996,6 +29001,7 @@
 				0012438B1A9EC90700580506 /* GpUavServer.cpp in Sources */,
 				009C06141AA1A46400AC1CD1 /* GpGameController.cpp in Sources */,
 				009C0EC51AA1A78200AC1CD1 /* GpControllerEvent.cpp in Sources */,
+				006AF70B1AA58DAC00F58EA6 /* GpMessage_Login.cpp in Sources */,
 				0012438C1A9EC90700580506 /* main.cpp in Sources */,
 				00667E3D1A9ECB4C009E8692 /* GpMavlink.cpp in Sources */,
 				001526D61A9E96E60059BC0F /* GpGroundController.cpp in Sources */,
