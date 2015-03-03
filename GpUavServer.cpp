@@ -22,6 +22,8 @@
 #include "GpUavServer.h"
 #include "GpIpAddress.h"
 #include "GpMavlink.h"
+#include "GpMessage.h"
+#include "GpMessage_Login.h"
 
 using namespace std;
 
@@ -186,20 +188,51 @@ GpUavServer::start(){
 				else if(numBytes == 0){
 					//shutdown
 					exit(0);
-
+				} else {
+					
+					uint8_t *firstByte = buffer;
+					
+					switch (*firstByte) {
+						case GP_MSG_TYPE_LOGIN:
+						{
+							
+							if(numBytes < GP_MSG_LOGIN_USER_LEN + GP_MSG_HEADER_LEN){
+								continue;
+							}
+							
+							
+							std::cout << "[server-size socket recv()] Login message: " << numBytes << " bytes" << std::endl;
+							
+							break;
+						}
+						case GP_MSG_TYPE_COMMAND:
+						{
+							//GpMavlink::printMavMessage(const mavlink_message_t &msg);
+							uint8_t *buf = buffer;
+							GpMavlink::decodeMavlinkBytesToControlEvent(buf, numBytes);
+							break;
+							
+							
+						}
+						case GP_MSG_TYPE_LOGOUT:
+						{
+							//
+							break;
+						}
+						case GP_MSG_TYPE_GENERIC:
+						{
+							//
+							break;
+						}
+						default:
+							break;
+							
+						
+					}
 				
+					usleep(1000);
+					
 				}
-				
-				
-				//Do something with received bytes;
-				
-				
-				//GpMavlink::printMavMessage(const mavlink_message_t &msg);
-				uint8_t *buf = buffer;
-				GpMavlink::decodeMavlinkBytesToControlEvent(buf, numBytes);
-				
-				
-				
 			}
 			
 			
