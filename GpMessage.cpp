@@ -56,7 +56,7 @@ GpMessage::~GpMessage(){
  
  */
 void GpMessage::serialize(uint8_t *&bytes, uint16_t &buffer_size){
-	std::cout << "Serialize: " << (int)_message_type << ", " << (int)_payloadSize << std::endl;
+	// std::cout << "Serialize: " << (int)_message_type << ", " << (int)_payloadSize << std::endl;
 	
 	if(buffer_size >= 3){
 		int byteCount = 0;

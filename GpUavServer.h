@@ -31,8 +31,12 @@ public:
 private:
 
 	bool startNetwork();
-	void forkClientRecv(int & client_fd);
-
+//	void forkClientRecv(int & client_fd);
+	void threadClientRecv();
+	
+	
+	
+	
 	int _client_fd = 0;		// socket for this client (when using fork())
 	int _listen_fd = 0;		// socket used to listen for new clients
 	

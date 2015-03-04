@@ -21,6 +21,8 @@
 #include <unistd.h>		//fork()
 #include <vector>
 
+#include <thread>
+
 #include "GpUavServer.h"
 #include "GpIpAddress.h"
 #include "GpMavlink.h"
@@ -29,6 +31,18 @@
 #include "GpDatabase.h"
 
 using namespace std;
+
+
+
+void foo(){
+	std::cout << "Hello thread" <<std::endl;
+	
+	return;
+	
+}
+
+
+
 
 
 /**
@@ -173,19 +187,32 @@ GpUavServer::startNetwork(){
 		}
 		
 		
-		// Fork
-		//result = 0;
-		result = fork();		//returns child PID to parent and 0 to child, error = -1
-		if(result == 0)
-		{
-			// Child fork block
-			
-			close(_listen_fd);
-			forkClientRecv(_client_fd);
-		}
+		//std::thread clientThread(foo);
+		std::thread clientThread (&GpUavServer::threadClientRecv, this);
+		clientThread.detach();
+		
+		std::cout << "[GpUavServer::startNetwork] after starting thread" << endl;
+		
+		//clientThread.join();
+
 	}
 }
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  *  forkClientRecv
@@ -196,14 +223,12 @@ GpUavServer::startNetwork(){
  *  @param int & _client_fd
  *  @returns void
  */
-void GpUavServer::forkClientRecv(int & _client_fd)
+//void GpUavServer::forkClientRecv(int & _client_fd)
+void GpUavServer::threadClientRecv()
 {
 	
-	int i=1;
-	while(i){
-		;
-	}
-	
+
+	std::cout << "[GpUavServer::threadClientRecv] starting thread: " << std::this_thread::get_id() << std::endl;
 	
 
 	// 2 BUFFERS: receive, message
@@ -243,21 +268,21 @@ void GpUavServer::forkClientRecv(int & _client_fd)
 GP_RECEIVE:
 		
 		bytesInRecvBuffer = recv(_client_fd, recvInPtr, length, 0);		//blocks if no data, returns zero if no data and shutdown occurred
-		cout << "Read: " << bytesInRecvBuffer << " bytes" << endl;
 		recvInPtr += bytesInRecvBuffer;
-		
-		
-		
-		
 		if(bytesInRecvBuffer == -1){
 			cout << "Error: recv()" << endl;
-			exit(1);
+			//exit(1);
+			return;
 		}
 		else if(bytesInRecvBuffer == 0){
 			//shutdown, if zero bytes are read recv blocks, doesn't return 0 except if connection closed.
-			exit(0);
+			//exit(0);
+			return;
 		}
+
 		
+		cout << "\nRead: " << bytesInRecvBuffer << " bytes" << endl;
+
 		
 		
 		GpMessage newMessage;
