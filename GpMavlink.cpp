@@ -7,9 +7,11 @@
 // ********************************************************************************
 
 #include <iostream>
+#include <string.h>			//memset, bzero
 #include "GpMavlink.h"
 #include "GpIpAddress.h"
 #include "GpControllerEvent.h"
+
 
 using namespace std;
 

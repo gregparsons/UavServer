@@ -20,6 +20,7 @@
 #include <signal.h>
 #include <unistd.h>		//fork()
 #include <vector>
+#include <string.h>			//memset, bzero
 
 #include <thread>
 
