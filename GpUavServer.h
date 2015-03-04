@@ -26,11 +26,15 @@ public:
 	
 	void processMessage(GpMessage & msg);
 
-	
+	bool sendMessageToController(GpMessage & msg);
+
 private:
 
-	
-	
+	bool startNetwork();
+	void forkClientRecv(int & client_fd);
+
+	int _client_fd = 0;		// socket for this client (when using fork())
+	int _listen_fd = 0;		// socket used to listen for new clients
 	
 };
 

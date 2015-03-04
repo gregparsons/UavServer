@@ -75,18 +75,8 @@ void GpMessage::serialize(uint8_t *&bytes, uint16_t &buffer_size){
 		
 		memcpy(ptr, _payload, _payloadSize);
 		ptr+= _payloadSize;
-/*
-		
-		uint8_t *payPtr = _payload;
- 
-		if(_payload != nullptr){
-			for(; byteCount<buffer_size && byteCount < (_payloadSize + GP_MSG_HEADER_LEN); byteCount++){
-				
-				memcpy(ptr++, payPtr++, 1);
-			}
-		}
-*/
-		//std::cout << "Hello" << std::endl;
+
+		buffer_size = GP_MSG_HEADER_LEN + _payloadSize;
 	
 	}
 }

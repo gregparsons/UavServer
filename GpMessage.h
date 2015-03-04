@@ -10,6 +10,7 @@
 #define __UavServer__GpMessage__
 
 #define GP_MSG_HEADER_LEN 3 //bytes
+#define GP_MSG_MAX_LEN 512 //bytes
 
 class GpMessage_Login;
 
@@ -19,7 +20,7 @@ class GpMessage_Login;
  *  Class to construct a single application-layer message to/from client and server over TCP or UDP.
  *
  */
-enum { GP_MSG_TYPE_GENERIC, GP_MSG_TYPE_LOGIN, GP_MSG_TYPE_LOGOUT, GP_MSG_TYPE_COMMAND};
+enum { GP_MSG_TYPE_GENERIC, GP_MSG_TYPE_LOGIN, GP_MSG_TYPE_LOGOUT, GP_MSG_TYPE_COMMAND, GP_MSG_TYPE_AUTHENTICATED_BY_SERVER};
 
 class GpMessage {
 public:
