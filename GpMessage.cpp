@@ -13,8 +13,8 @@
 #include "GpMessage.h"
 #include "GpMessage_Login.h"
 
-void bitStuff16(uint8_t *&buffer, const uint16_t & value);
-void bitUnstuff16(uint8_t *&buffer, uint16_t & value);
+// void bitStuff16(uint8_t *&buffer, const uint16_t & value);
+// void bitUnstuff16(uint8_t *&buffer, uint16_t & value);
 
 
 GpMessage::GpMessage(){};
@@ -98,24 +98,29 @@ void GpMessage::deserialize(uint8_t *&bytes, uint16_t &buffer_size){
 		uint8_t *ptr = bytes;
 		
 		_message_type =	*ptr;	//1 byte
-		*ptr++;					//should be incrementing ptr instead of *ptr???
+		ptr++;					//should be incrementing ptr instead of *ptr???
 		byteCount++;
 		
-		bitUnstuff16(ptr, _payloadSize);
+		bitUnstuff16(ptr, _payloadSize);		// 		ptr+=2; done by bitstuff
 		byteCount+=2;
 		
-		if(_payload != nullptr)
-			delete _payload;
+		
+		//if(_payload != NULL)
+		//	delete _payload;
 		_payload = new uint8_t[_payloadSize];
 
 		
 		
-		uint8_t *payPtr = _payload;
+		//uint8_t *payPtr = _payload;
 		
 		
+		memcpy(_payload, ptr, _payloadSize);
+		
+		/*
 		for(; byteCount<buffer_size && byteCount < (_payloadSize + GP_MSG_HEADER_LEN); byteCount++){
 			memcpy(payPtr++,ptr++, 1);
 		}
+		 */
 		
 	}
 	std::cout << "Deserialize: " << (int)_message_type << ", " << (int)_payloadSize << ", " << _payload <<  std::endl;
@@ -123,7 +128,7 @@ void GpMessage::deserialize(uint8_t *&bytes, uint16_t &buffer_size){
 
 
 // push a short and increment the pointer passed by 2 bytes
-void bitStuff16(uint8_t *&buffer, const uint16_t & value){
+void GpMessage::bitStuff16(uint8_t *&buffer, const uint16_t & value){
 
 	uint16_t temp = htons(value);
 	uint8_t *ptr = buffer;
@@ -135,7 +140,7 @@ void bitStuff16(uint8_t *&buffer, const uint16_t & value){
 }
 
 // pull a short, increment pointer by 2 bytes
-void bitUnstuff16(uint8_t *&buffer, uint16_t & value){
+void GpMessage::bitUnstuff16(uint8_t *&buffer, uint16_t & value){
 	uint8_t *ptr = buffer;
 	uint16_t temp = 0;
 	memcpy(&temp, ptr, 2);

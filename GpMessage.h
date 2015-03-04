@@ -30,12 +30,16 @@ public:
 
 	void serialize(uint8_t *&bytes, uint16_t & size);
 	void deserialize(uint8_t *&bytes, uint16_t & size);
-	
-private:
+
 	uint16_t _message_type = GP_MSG_TYPE_GENERIC;
 	uint16_t _payloadSize = 0;					//16 bits,
 	uint8_t *_payload = nullptr;					//byte buffer
 
+	
+	static void bitStuff16(uint8_t *&buffer, const uint16_t & value);
+	static void bitUnstuff16(uint8_t *&buffer, uint16_t & value);
+	
+private:
 	
 	
 };

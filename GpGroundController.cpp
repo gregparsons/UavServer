@@ -31,6 +31,8 @@ bool GpGroundController::start(){
 	
 	std::cout << "GpGroundController::start()" << std::endl;
 	
+	
+	
 	// Handle zombie processes
 	
 	struct sigaction signalAction;
@@ -59,7 +61,7 @@ bool GpGroundController::start(){
 	
 	
 	// Do Login
-	
+
 	
 	network.gpAuthenticateUser("myUsername up to 64 bytes", "My really long password key 2048 byte hash");
 	

@@ -33,22 +33,23 @@ GpMessage_Login::GpMessage_Login(uint8_t *&rawNetBytes){
 }
 
 
+std::string GpMessage_Login::username(){
+	return std::string(reinterpret_cast<char const*>(_user64), sizeof(_user64));
+}
+
+std::string GpMessage_Login::key(){
+	return std::string(reinterpret_cast<char const*>(_key2048), sizeof(_key2048));
+}
+
+
+
+
 // Serialize username and password, return in buffer.
 
 uint32_t GpMessage_Login::serialize(uint8_t *&buffer){
 
 	if(buffer == nullptr)
 		return 0;
-	
-/*
-	//buffer must be sizeof GP_MSG_LOGIN_LEN
-	
-	int len = sizeof((*buffer));
-	
-	if(len != GP_MSG_LOGIN_LEN){
-		std::cout << "[GpMessage_Login::serialize] Buffer not the right size: GP_MSG_LOGIN_LEN" << std::endl;
-	}
-*/	
 	
 	uint8_t *ptr = buffer;
 	
@@ -71,6 +72,15 @@ uint32_t GpMessage_Login::serialize(uint8_t *&buffer){
 
 bool GpMessage_Login::deserialize(uint8_t *&rawNetBytes){
 	
+	uint8_t *ptr = rawNetBytes;
 	
+	bzero(_user64, sizeof(_user64));
+	memcpy(_user64, ptr, sizeof(_user64));
+	
+	ptr+= sizeof(_user64);
+	
+	bzero(_key2048, sizeof(_key2048));
+	memcpy(_key2048, ptr, sizeof(_key2048));
+
 	return true;
 }

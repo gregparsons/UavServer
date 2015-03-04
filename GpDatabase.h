@@ -30,8 +30,8 @@ class GpDatabase {
 	
 	
 public:
-	bool authenticateUser(int id);
-	bool authenticateAsset(int id);
+	static bool authenticateUser(std::string username, std::string key);
+	static bool authenticateAsset(int id);
 	
 
 	

@@ -12,7 +12,7 @@
 
 
 
-
+class GpMessage;
 
 
 class GpUavServer
@@ -22,6 +22,10 @@ public:
 	
 	bool start();
 	
+	void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message);
+	
+	void processMessage(GpMessage & msg);
+
 	
 private:
 

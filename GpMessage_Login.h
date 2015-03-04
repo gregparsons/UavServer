@@ -28,6 +28,9 @@ public:
 	uint32_t serialize(uint8_t *&buffer);
 	bool deserialize(uint8_t *& rawNetBytes);
 
+	std::string username();
+	std::string key();
+	
 private:
 	
 	uint8_t _user64[GP_MSG_LOGIN_USER_LEN];
