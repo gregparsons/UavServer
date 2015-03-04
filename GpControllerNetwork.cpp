@@ -17,6 +17,7 @@
 #include <iostream>
 #include <unistd.h>					//usleep
 #include <thread>
+#include <string.h>					//bzero(), could just use memcpy
 
 #include "GpControllerNetwork.h"
 #include "GpMavlink.h"
@@ -36,6 +37,7 @@ bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & 
 	struct addrinfo hints,  *resSave = nullptr; /* *res = nullptr */
 	int result = 0;
 
+	
 	// memset(&hints, 0, sizeof(hints));
 	bzero(&hints, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;		//AF_INET = tcp, udp
