@@ -16,6 +16,7 @@
 #include <signal.h>
 #include <iostream>
 #include <unistd.h>					//usleep
+#include <thread>
 
 #include "GpControllerNetwork.h"
 #include "GpMavlink.h"
@@ -56,11 +57,12 @@ bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & 
 			continue;
 		}
 		
+		
 		// Connect
 		
 		result = connect(_control_fd, _res->ai_addr, _res->ai_addrlen);
 		if(result == 0){
-			break;
+			break;			// break if good connect
 		}
 		close(_control_fd);
 		_res = _res->ai_next;
@@ -71,6 +73,23 @@ bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & 
 		return false;
 	}
 	freeaddrinfo(resSave);
+	
+
+	// Still going? Got a good connection.
+	
+	
+	
+	// Start Listener
+	
+	std::cout << "[GpControllerNetwork::gpConnect] Starting listen thread" << std::endl;
+	std::thread listenThread(&GpControllerNetwork::listen, this);
+	listenThread.detach(); //??
+	std::cout << "[GpControllerNetwork::gpConnect] listen thread started" << std::endl;
+	
+	
+	
+	
+	
 	return true;
 }
 
@@ -170,3 +189,16 @@ ssize_t GpControllerNetwork::sendTCP(uint8_t *&appPacket, uint16_t &pktSize){
 
 
 
+
+
+void GpControllerNetwork::listen(){
+
+	uint8_t *buffer = _buffer;
+	size_t numBytes = 0;
+	for(;;){
+		numBytes = recv(_control_fd, buffer, sizeof(_buffer), 0);
+		if(numBytes >0)
+			std::cout << "[GpControllerNetwork::listen] Received " << numBytes << " bytes" << std::endl;
+	}
+	
+}

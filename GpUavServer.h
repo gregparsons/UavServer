@@ -28,6 +28,8 @@ public:
 
 	bool sendMessageToController(GpMessage & msg);
 
+	void sendHeartbeat();
+	
 private:
 
 	bool startNetwork();

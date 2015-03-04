@@ -15,6 +15,10 @@ class GpGroundController
 public:
 	bool start();
 	int controllerSend();
+	
+	void listen();
+	
+	
 private:
 	
 	bool _isLoggedIn = false;

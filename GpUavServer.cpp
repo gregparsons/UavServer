@@ -34,10 +34,28 @@ using namespace std;
 
 
 
-void foo(){
-	std::cout << "Hello thread" <<std::endl;
+
+
+void GpUavServer::sendHeartbeat(){
 	
-	return;
+	for(;;){
+	
+		// FAKE MESSAGE
+		std::cout << "Sending fake message as heartbeat" << std::endl;
+		
+		
+		
+		
+		// Send login complete message to client
+		uint8_t *payload = nullptr;
+		GpMessage msgLoginComplete(GP_MSG_TYPE_AUTHENTICATED_BY_SERVER, 0, payload);
+		
+		if(false == sendMessageToController(msgLoginComplete)){
+			std::cout << "[GpUavServer::processMessage] Error sending login confirmation" << std::endl;
+		}
+		
+		usleep(3000000);
+	}
 	
 }
 
@@ -54,6 +72,10 @@ void foo(){
 bool GpUavServer::start(){
 	
 	std::cout << "Server starting..." <<std::endl;
+	
+	
+	
+	
 	
 	return startNetwork();
 	
@@ -187,7 +209,33 @@ GpUavServer::startNetwork(){
 		}
 		
 		
-		//std::thread clientThread(foo);
+		
+		
+		// TEST SERVER HEARTBEAT
+		
+		
+		std::thread serverHeartbeat(&GpUavServer::sendHeartbeat, this);
+		serverHeartbeat.detach();
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		// RECEIVE THREAD -- START
+		
 		std::thread clientThread (&GpUavServer::threadClientRecv, this);
 		clientThread.detach();
 		

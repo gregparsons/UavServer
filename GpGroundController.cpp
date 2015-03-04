@@ -18,6 +18,8 @@
 #include <unistd.h>					//usleep, fork
 #include <iostream>
 #include <signal.h>
+#include <thread>
+
 
 #include "GpGroundController.h"
 #include "GpGameController.h"
@@ -32,7 +34,7 @@ bool GpGroundController::start(){
 	std::cout << "GpGroundController::start()" << std::endl;
 	
 	
-	
+	/*
 	// Handle zombie processes
 	
 	struct sigaction signalAction;
@@ -44,7 +46,7 @@ bool GpGroundController::start(){
 		std::cout << "Error: sigaction" << std::endl;
 		exit(1);
 	}
-	
+	*/
 	
 	
 	
@@ -66,27 +68,8 @@ bool GpGroundController::start(){
 	network.gpAuthenticateUser("myUsername up to 64 bytes", "My really long password key 2048 byte hash");
 	
 	
-	
-	/*
-	
-	// 1. Connect Game Controller
-	
-	int f;
-	if((f=fork()) > 0){
-	
-		// Game controller process
-		GpGameController gameController;
-		gameController.runGameController(network);
-	
-	}
-	
-	
-	
-	
-	// 2. Do other administrative read / communications on another socket.
-	
-	
-	*/
+	while(1);
+
 	
 	return true;
 }

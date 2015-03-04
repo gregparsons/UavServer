@@ -13,6 +13,8 @@
 #ifndef __UavServer__GpControllerNetwork__
 #define __UavServer__GpControllerNetwork__
 
+#define GP_CONTROLLER_NET_MAX_BUFFER_LEN 512
+
 #include <mavlink/c_library/common/mavlink.h>
 #include <string>
 
@@ -26,10 +28,15 @@ public:
 	ssize_t sendTCP(mavlink_message_t & message);
 	ssize_t sendTCP(uint8_t *&appPacket, uint16_t & pktSize);
 	
+	
+	void listen();
 
 private:
 	int _control_fd = 0;
 	struct addrinfo *_res = nullptr;
+	
+	uint8_t _buffer[GP_CONTROLLER_NET_MAX_BUFFER_LEN];
+	
 };
 
 
