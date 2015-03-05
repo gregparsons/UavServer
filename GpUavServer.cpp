@@ -90,13 +90,14 @@ bool GpUavServer::start(){
  *  signalHandler(): Clean up zombie processes.
  *
  */
+/*
 void
 signalHandler(int signal)
 {
 	while(waitpid(-1, NULL, WNOHANG) > 0);
 	cout << "signalHandler()" << endl;
 }
-
+*/
 
 
 
@@ -118,7 +119,7 @@ GpUavServer::startNetwork(){
 	int yes = 1;
 	
 	// Handle zombie processes
-	
+	/*
 	signalAction.sa_handler = signalHandler;
 	sigemptyset(&signalAction.sa_mask);
 	signalAction.sa_flags = SA_RESTART;
@@ -127,7 +128,7 @@ GpUavServer::startNetwork(){
 		cout << "Error: sigaction" << endl;
 		exit(1);
 	}
-	
+	*/
 	
 	// Network Begin
 	

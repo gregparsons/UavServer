@@ -7,6 +7,7 @@
 // ********************************************************************************
 
 #include <iostream>
+#include <bitset>
 #include <string.h>			//memset, bzero
 #include "GpMavlink.h"
 #include "GpIpAddress.h"
