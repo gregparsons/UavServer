@@ -58,7 +58,7 @@ bool GpGroundController::start(){
 	GpControllerNetwork network;
 	bool connectResult = network.gpConnect(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT);
 	if(connectResult == false){
-		std::cout<< "connect fail" << std::endl;
+		std::cout<< "Controller connect fail: " << strerror(errno)<<  std::endl;
 		return false;
 	}
 	

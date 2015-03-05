@@ -71,7 +71,7 @@ bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & 
 	} while (_res != nullptr);
 	
 	if(_res == nullptr){
-		std::cout << "Error: connect 2" << std::endl;
+		std::cout << "Error: connect 2" << strerror(errno) << std::endl;
 		return false;
 	}
 	freeaddrinfo(resSave);
