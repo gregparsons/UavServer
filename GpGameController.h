@@ -9,7 +9,7 @@
 #ifndef __controllerHello__GpGameController__
 #define __controllerHello__GpGameController__
 
-#include <SDL2/SDL.h>
+#include "SDL2/SDL.h"
 
 // class SDL_GameController;
 

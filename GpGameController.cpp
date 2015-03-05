@@ -15,7 +15,7 @@
 
 #include <mavlink/c_library/common/mavlink.h>
 #include <iostream>
-#include <SDL2/SDL.h>
+#include "SDL2/SDL.h"
 
 #include "GpGameController.h"
 #include "GpMavlink.h"
