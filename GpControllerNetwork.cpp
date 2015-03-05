@@ -178,7 +178,7 @@ ssize_t GpControllerNetwork::sendTCP(uint8_t *&appPacket, uint16_t &pktSize){
 	
 	numBytes = sendto(_control_fd, appPacket, size, 0, _res->ai_addr, _res->ai_addrlen);
 	if(numBytes == -1){
-		std::cout << "[GpControllerNetwork::sendTCP] sendto() error: " << errno <<  std::endl;
+		std::cout << "[GpControllerNetwork::sendTCP] sendto() error: " << strerror(errno) <<  std::endl;
 	}
 	else
 		std::cout << numBytes << " bytes sent" << std::endl;

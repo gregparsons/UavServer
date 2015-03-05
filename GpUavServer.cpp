@@ -165,7 +165,7 @@ GpUavServer::startNetwork(){
 		
 		result = ::bind(_listen_fd, res->ai_addr, res->ai_addrlen);
 		if(result == -1){
-			cout << "Bind Error: " << errno << endl;
+			cout << "Bind Error: " << strerror(errno) << endl;
 			exit(1);
 		}
 		break;
@@ -200,7 +200,7 @@ GpUavServer::startNetwork(){
 		_client_fd = accept(_listen_fd, (struct sockaddr *)&inboundAddress, &addrLen);
 		
 		if(_client_fd == -1){
-			cout << "Error: accept(): " << errno << endl;
+			cout << "Error: accept(): " << strerror(errno) << endl;
 			switch (errno) {
 				case EBADF:		//errno.h
 					break;
