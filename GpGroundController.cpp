@@ -19,6 +19,7 @@
 #include <iostream>
 #include <signal.h>
 #include <thread>
+#include <sys/wait.h>
 
 
 #include "GpGroundController.h"
@@ -80,6 +81,7 @@ bool GpGroundController::start(){
  *  signalHandler(): Clean up zombie processes.
  *
  */
+
 void
 GpGroundController::signalHandler(int signal)
 {
