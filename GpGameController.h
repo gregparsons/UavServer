@@ -11,6 +11,8 @@
 
 #include <SDL2/SDL.h>
 
+// class SDL_GameController;
+
 #include "GpControllerNetwork.h"
 
 class GpGameController{
