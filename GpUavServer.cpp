@@ -33,6 +33,7 @@
 #include "GpMessage_Login.h"
 #include "GpDatabase.h"
 
+
 using namespace std;
 
 
@@ -44,17 +45,17 @@ void GpUavServer::sendHeartbeat(){
 	for(;;){
 	
 		// FAKE MESSAGE
-		std::cout << "Sending fake message as heartbeat" << std::endl;
+		std::cout << "[" << __func__ << "] "  << "Sending fake message as heartbeat" << std::endl;
 		
 		
 		
 		
 		// Send login complete message to client
 		uint8_t *payload = nullptr;
-		GpMessage msgLoginComplete(GP_MSG_TYPE_AUTHENTICATED_BY_SERVER, 0, payload);
+		GpMessage msgLoginComplete(GP_MSG_TYPE_HEARTBEAT, 0, payload);
 		
 		if(false == sendMessageToController(msgLoginComplete)){
-			std::cout << "[GpUavServer::processMessage] Error sending login confirmation" << std::endl;
+			std::cout << "[" << __func__ << "] "  << "Error sending login confirmation" << std::endl;
 		}
 		
 		usleep(3000000);
@@ -74,7 +75,7 @@ void GpUavServer::sendHeartbeat(){
  */
 bool GpUavServer::start(){
 	
-	std::cout << "Server starting..." <<std::endl;
+	std::cout << "[" << __func__ << "] "  << "Server starting..." <<std::endl;
 	
 	
 	
@@ -245,7 +246,7 @@ GpUavServer::startNetwork(){
 		std::thread clientThread (&GpUavServer::threadClientRecv, this);
 		clientThread.detach();
 		
-		std::cout << "[GpUavServer::startNetwork] after starting thread" << endl;
+		std::cout << "[" << __func__ << "] "  << "[GpUavServer::startNetwork] after starting thread" << endl;
 		
 		//clientThread.join();
 
@@ -261,28 +262,11 @@ GpUavServer::startNetwork(){
 
 
 
-
-
-
-
-
-
-
-/**
- *  forkClientRecv
- *
- *  Performs the forked client recv(). Exits the child process upon completion (which should not be 
- *  until client disconnects).
- *
- *  @param int & _client_fd
- *  @returns void
- */
-//void GpUavServer::forkClientRecv(int & _client_fd)
 void GpUavServer::threadClientRecv()
 {
 	
 
-	std::cout << "[GpUavServer::threadClientRecv] starting thread: " << std::this_thread::get_id() << std::endl;
+	std::cout << "[" << __func__ << "] "  << "[GpUavServer::threadClientRecv] starting thread: " << std::this_thread::get_id() << std::endl;
 	
 
 	// 2 BUFFERS: receive, message
@@ -352,7 +336,7 @@ GP_RECEIVE:
 				// Start a message
 				messageLenMax = newMessage._payloadSize + GP_MSG_HEADER_LEN;
 				msgBytesStillNeeded = messageLenMax;
-				long bytesToTransfer = min(bytesInRecvBuffer, msgBytesStillNeeded);		//first time, copy as many as possible from packet buffer
+				long bytesToTransfer = std::min(bytesInRecvBuffer, msgBytesStillNeeded);		//first time, copy as many as possible from packet buffer
 				memcpy(&messageBuffer, recvOutPtr, bytesToTransfer);
 				messageLenCurrent = bytesToTransfer;
 				recvOutPtr += bytesToTransfer;					//increment fill line of message buffer
@@ -365,7 +349,7 @@ GP_RECEIVE:
 				
 				//copy the min of available and needed from PACKET to MESSAGE buffer
 				long bytesStillNeeded = messageLenMax - messageLenCurrent;
-				long bytesToTransfer = min(bytesInRecvBuffer, bytesStillNeeded);
+				long bytesToTransfer = std::min(bytesInRecvBuffer, bytesStillNeeded);
 				
 				memcpy(&messageBuffer, recvOutPtr, bytesToTransfer);
 				messageLenCurrent += bytesToTransfer;
@@ -379,7 +363,7 @@ GP_RECEIVE:
 			if(messageLenCurrent == messageLenMax)
 			{
 				newMessage._payload = msgHead+3;	//okay, but this is about to get cleared with arrival of next packet, message here is the entire message, not the payload
-				std::cout << "Received message with type: " << newMessage._message_type << " and payload size: " << newMessage._payloadSize << std::endl;
+				std::cout << "[" << __func__ << "] "  << "Received message with type: " << newMessage._message_type << " and payload size: " << newMessage._payloadSize << std::endl;
 				
 				
 				// Parse and process the message
@@ -436,7 +420,7 @@ void GpUavServer::processMessage(GpMessage & msg){
 	switch (msg._message_type) {
 		case GP_MSG_TYPE_COMMAND:
 		{
-			std::cout << "[GpUavServer::processMessage] Processing COMMAND message" << std::endl;
+			std::cout << "[" << __func__ << "] "  << "[GpUavServer::processMessage] Processing COMMAND message" << std::endl;
 
 			
 			break;
@@ -444,13 +428,13 @@ void GpUavServer::processMessage(GpMessage & msg){
 		}
 		case GP_MSG_TYPE_LOGIN:
 		{
-			std::cout << "[GpUavServer::processMessage] Processing login message" << std::endl;
+			std::cout << "[" << __func__ << "] "  << "[GpUavServer::processMessage] Processing login message" << std::endl;
 
 			// Authenticate
 			GpMessage_Login loginMsg(msg._payload);
 			if(true == (GpDatabase::authenticateUser(loginMsg.username(), loginMsg.key())))
 			{
-				std::cout << "User: " << loginMsg.username() << " authenticated." << std::endl;
+				std::cout << "[" << __func__ << "] "  << "User: " << loginMsg.username() << " authenticated." << std::endl;
 				
 				
 				
@@ -461,7 +445,7 @@ void GpUavServer::processMessage(GpMessage & msg){
 				GpMessage msgLoginComplete(GP_MSG_TYPE_AUTHENTICATED_BY_SERVER, 0, payload);
 
 				if(false == sendMessageToController(msgLoginComplete)){
-					std::cout << "[GpUavServer::processMessage] Error sending login confirmation" << std::endl;
+					std::cout << "[" << __func__ << "] "  << "[GpUavServer::processMessage] Error sending login confirmation" << std::endl;
 				}
 				   
 				
@@ -472,21 +456,24 @@ void GpUavServer::processMessage(GpMessage & msg){
 		}
 		case GP_MSG_TYPE_LOGOUT:
 		{
-			std::cout << "[GpUavServer::processMessage] Processing logout message" << std::endl;
+			std::cout << "[" << __func__ << "] "  << "[GpUavServer::processMessage] Processing logout message" << std::endl;
 			break;
 		}
 		case GP_MSG_TYPE_GENERIC:
 		{
-			std::cout << "[GpUavServer::processMessage] Processing generic message" << std::endl;
+			std::cout << "[" << __func__ << "] "  << "[GpUavServer::processMessage] Processing generic message" << std::endl;
 			break;
 		}
 		default:
 				break;
 	}
-	
-	
-	
 }
+
+
+
+
+
+
 
 /**
  *  Send serialized message to the controller over TCP.

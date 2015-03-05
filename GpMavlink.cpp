@@ -174,7 +174,7 @@ void GpMavlink::receiveTestMessage(mavlink_message_t & mesg){
  *  [Static] Convert controller event data to mavlink message of type MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE
  *
  */
-void GpMavlink::encodeControllerEventAsMavlink(int left_x, int left_y, int right_x, int right_y, int timestamp, mavlink_message_t & mavlinkMessage) {
+void GpMavlink::encodeControllerEventAsMavlink(int left_x, int left_y, int right_x, int right_y, int timestamp, mavlink_message_t & mavlinkMessage, uint16_t & msgLen) {
 
 	mavlink_rc_channels_override_t rcChannelOverrideMessage;
 	memset(&rcChannelOverrideMessage, 0, MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN);
@@ -201,7 +201,8 @@ void GpMavlink::encodeControllerEventAsMavlink(int left_x, int left_y, int right
 	
 	
 	// mavlink_msg_rc_channels_override_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t *msg, const mavlink_rc_channels_override_t *rc_channels_override)
-	mavlink_msg_rc_channels_override_encode(systemId, compId, &mavlinkMessage, &rcChannelOverrideMessage);
+
+	msgLen = mavlink_msg_rc_channels_override_encode(systemId, compId, &mavlinkMessage, &rcChannelOverrideMessage);
 	
 	// Now mavlinkMessage has the ready-to-send mavlink message. This function returns with it filled.
 	

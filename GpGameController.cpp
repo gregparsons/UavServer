@@ -15,6 +15,7 @@
 
 #include <mavlink/c_library/common/mavlink.h>
 #include <iostream>
+#include <unistd.h>
 #include "SDL2/SDL.h"
 
 #include "GpGameController.h"
@@ -122,18 +123,40 @@ void GpGameController::runGameController(GpControllerNetwork & controlNet){
 									
 									
 									
-									/*
+									
 									
 									
 									mavlink_message_t mavlinkMsg;
 									bzero(&mavlinkMsg, sizeof(mavlink_message_t));
 						
-									GpMavlink::encodeControllerEventAsMavlink(axisValue[0], axisValue[1], axisValue[2], axisValue[3], e.caxis.timestamp, mavlinkMsg);	//fill channel message
+									uint16_t msgLen = 0;
+									GpMavlink::encodeControllerEventAsMavlink(axisValue[0], axisValue[1], axisValue[2], axisValue[3], e.caxis.timestamp, mavlinkMsg, msgLen);	//fill channel message
 
-									controlNet.sendTCP(mavlinkMsg);
+
+									if(msgLen == 0){
+										
+										std::cout << "[" << __func__ << "] "  << "mavlink encoded message was size 0" << std::endl;
+										break;
+									}
+										
+
+
+									// GpMessage(uint8_t messageType, uint16_t payloadSize, uint8_t *&payload);
+									uint8_t *ptr = reinterpret_cast<uint8_t*>(&mavlinkMsg);
+ 									GpMessage cmdMessage(GP_MSG_TYPE_COMMAND, msgLen, ptr);
+									
+									
+									
+									
+									controlNet.sendGpMessage(cmdMessage);
+									
 
 									
-									*/
+									
+									
+									//controlNet.sendTCP(mavlinkMsg);
+									
+/*
 									
 									
 									uint8_t message[] = "hello greg what's happening?";
@@ -153,7 +176,7 @@ void GpGameController::runGameController(GpControllerNetwork & controlNet){
 									
 									GpMessage gpMesg2;
 									gpMesg2.deserialize(ptr, bufferSize);
-									
+*/
 									
 									
 									

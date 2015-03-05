@@ -16,7 +16,7 @@ public:
 	bool start();
 	int controllerSend();
 	
-	void listen();
+//	void listen();
 	
 	
 private:

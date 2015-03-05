@@ -20,7 +20,7 @@ class GpMessage_Login;
  *  Class to construct a single application-layer message to/from client and server over TCP or UDP.
  *
  */
-enum { GP_MSG_TYPE_GENERIC, GP_MSG_TYPE_LOGIN, GP_MSG_TYPE_LOGOUT, GP_MSG_TYPE_COMMAND, GP_MSG_TYPE_AUTHENTICATED_BY_SERVER};
+enum { GP_MSG_TYPE_GENERIC, GP_MSG_TYPE_LOGIN, GP_MSG_TYPE_LOGOUT, GP_MSG_TYPE_COMMAND, GP_MSG_TYPE_AUTHENTICATED_BY_SERVER, GP_MSG_TYPE_HEARTBEAT, GP_MSG_TYPE_MAX_DONT_USE};
 
 class GpMessage {
 public:
@@ -40,6 +40,7 @@ public:
 	static void bitStuff16(uint8_t *&buffer, const uint16_t & value);
 	static void bitUnstuff16(uint8_t *&buffer, uint16_t & value);
 	
+	uint16_t size();
 private:
 	
 	

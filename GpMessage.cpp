@@ -28,8 +28,8 @@ GpMessage::GpMessage(GpMessage_Login & loginMessage){
 	_message_type = GP_MSG_TYPE_LOGIN;
 	_payloadSize = GP_MSG_LOGIN_LEN;
 	
-	if(_payload !=nullptr)
-		delete _payload;
+	//if(_payload !=nullptr)
+	//	delete _payload;
 	_payload = new uint8_t[_payloadSize];
 	bzero(_payload, _payloadSize);
 	
@@ -39,7 +39,7 @@ GpMessage::GpMessage(GpMessage_Login & loginMessage){
 	int numBytes = loginMessage.serialize(bufPtr);
 	if(0 == numBytes){	//ref returns ptr to serialized login message
 
-		std::cout << "[GpMessage::GpMessage]" << std::endl;
+		std::cout << "[" << __func__ << "] "  << "Serialize returned 0" << std::endl;
 
 	}
 	
@@ -50,8 +50,8 @@ GpMessage::GpMessage(uint8_t messageType, uint16_t payloadSize, uint8_t *&payloa
 
 GpMessage::~GpMessage(){
 
-	if(_payload != nullptr)
-		delete _payload;
+	//if(_payload != nullptr)
+	//	delete _payload;
 
 };
 
@@ -61,7 +61,7 @@ GpMessage::~GpMessage(){
  
  */
 void GpMessage::serialize(uint8_t *&bytes, uint16_t &buffer_size){
-	// std::cout << "Serialize: " << (int)_message_type << ", " << (int)_payloadSize << std::endl;
+	// std::cout << "[" << __func__ << "] "  << "Serialize: " << (int)_message_type << ", " << (int)_payloadSize << std::endl;
 	
 	if(buffer_size >= 3){
 		int byteCount = 0;
@@ -118,7 +118,7 @@ void GpMessage::deserialize(uint8_t *&bytes, uint16_t &buffer_size){
 		 */
 		
 	}
-	std::cout << "Deserialize: " << (int)_message_type << ", " << (int)_payloadSize << ", " << _payload <<  std::endl;
+	// std::cout << "[" << __func__ << "] "  << "Deserialize: " << (int)_message_type << ", " << (int)_payloadSize << ", " << _payload <<  std::endl;
 }
 
 
@@ -143,3 +143,9 @@ void GpMessage::bitUnstuff16(uint8_t *&buffer, uint16_t & value){
 
 	buffer+=2;
 }
+
+
+uint16_t GpMessage::size(){
+	return GP_MSG_HEADER_LEN + _payloadSize;
+}
+

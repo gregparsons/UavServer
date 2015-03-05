@@ -29,7 +29,7 @@ GpMessage_Login::GpMessage_Login(std::string user64, std::string key2048){
 
 GpMessage_Login::GpMessage_Login(uint8_t *&rawNetBytes){
 	if(true != deserialize(rawNetBytes)){
-		std::cout << "[GpMessage_Login::GpMessage_Login] Error deserialize constructor" << std::endl;
+		std::cout << "[" <<  __func__ << "] "  << "Error deserialize constructor" << std::endl;
 	}
 }
 
@@ -62,7 +62,7 @@ uint32_t GpMessage_Login::serialize(uint8_t *&buffer){
 	//write key
 	ptrU = _key2048;
 	memcpy(ptr, ptrU, sizeof(_key2048));
-	ptr += sizeof(_key2048);	//in case more items added for serialize
+	// ptr += sizeof(_key2048);	//in case more items added for serialize
 
 	return sizeof(_key2048) + sizeof(_user64);
 	

@@ -21,7 +21,7 @@ class GpControllerEvent;
 class GpMavlink{
 	
 public:
-	static void encodeControllerEventAsMavlink(int left_x, int left_y, int right_x, int right_y, int timestamp, mavlink_message_t & mavlinkMessage);
+	static void encodeControllerEventAsMavlink(int left_x, int left_y, int right_x, int right_y, int timestamp, mavlink_message_t & mavlinkMessage, uint16_t & msgLen);
 	static void decodeMavlinkBytesToControlEvent(uint8_t* & bytes, size_t byteCount);
 	static void printMavChannelsOverride(const mavlink_rc_channels_override_t & ch);
 	
