@@ -7,6 +7,7 @@
 // ********************************************************************************
 
 #include <iostream>
+#include <string.h> //bzero memset
 
 #include "GpMessage_Login.h"
 

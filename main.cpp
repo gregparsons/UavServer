@@ -8,6 +8,8 @@
 
 
 #include <iostream>
+#include <signal.h>
+
 #include "GpUavServer.h"
 #include "GpUavAsset.h"
 #include "GpGroundController.h"
@@ -23,7 +25,6 @@ int main(int argc, const char * argv[]) {
 
 	// Respond to cntl-c
 	signal(SIGINT, &exit_program);
-	
 	
 	// server, control, or fly
 	

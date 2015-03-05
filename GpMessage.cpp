@@ -9,6 +9,9 @@
 
 
 #include <iostream>
+#include <string.h> //bzero memset
+#include <netinet/in.h>
+
 
 #include "GpMessage.h"
 #include "GpMessage_Login.h"
@@ -19,6 +22,8 @@
 
 GpMessage::GpMessage(){};
 GpMessage::GpMessage(GpMessage_Login & loginMessage){
+	
+	
 	
 	_message_type = GP_MSG_TYPE_LOGIN;
 	_payloadSize = GP_MSG_LOGIN_LEN;
