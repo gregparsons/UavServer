@@ -137,7 +137,8 @@ GpUavServer::startNetwork(){
 	hintAddrInfo.ai_socktype = SOCK_STREAM;	//stream = TCP
 	hintAddrInfo.ai_flags = AI_PASSIVE;		//
 	
-	result = getaddrinfo(GP_CONTROLLER_SERVER_IP.c_str(), GP_CONTROLLER_SERVER_PORT.c_str(), &hintAddrInfo, &resSave);
+//	result = getaddrinfo(GP_CONTROLLER_SERVER_IP.c_str(), GP_CONTROLLER_SERVER_PORT.c_str(), &hintAddrInfo, &resSave);
+	result = getaddrinfo("0.0.0.0", GP_CONTROLLER_SERVER_PORT.c_str(), &hintAddrInfo, &resSave);
 	if(result < 0){ //error
 		cout << "getaddrinfo() error" << endl;
 		return 1;
