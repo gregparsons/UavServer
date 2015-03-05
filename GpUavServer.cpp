@@ -165,7 +165,7 @@ GpUavServer::startNetwork(){
 		
 		result = ::bind(_listen_fd, res->ai_addr, res->ai_addrlen);
 		if(result == -1){
-			cout << "Bind Error" << endl;
+			cout << "Bind Error: " << errno << endl;
 			exit(1);
 		}
 		break;
