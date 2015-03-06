@@ -207,7 +207,7 @@ long GpControllerNetwork::sendRawTCP(std::vector<uint8_t> & rawVect){
 		
 	}
 
-	long numBytes = sendto(_control_fd, sendBytes, sendSize, 0, _res->ai_addr, _res->ai_addrlen);
+	long numBytes = send(_control_fd, sendBytes, sendSize, 0);
 	if(numBytes == -1){
 		std::cout << "[" << __func__ << "] "  << "sendto() error: " << errno << ":" << strerror(errno) <<  std::endl;
 	}

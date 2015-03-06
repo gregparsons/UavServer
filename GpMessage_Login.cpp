@@ -49,7 +49,7 @@ std::string GpMessage_Login::username(){
 	std::string username;
 	username.assign(_userVect.begin(), _userVect.end());
 
-	std::cout << "[" << __func__ << "] "  << "username: " << username <<std::endl;
+	// std::cout << "[" << __func__ << "] "  << "username: " << username <<std::endl;
 	
 	return username;
 }
@@ -60,7 +60,7 @@ std::string GpMessage_Login::key(){
 	std::string key;
 	key.assign(_userVect.begin(), _userVect.end());
 
-	std::cout << "[" << __func__ << "] "  << "key: " << key <<std::endl;
+	// std::cout << "[" << __func__ << "] "  << "key: " << key <<std::endl;
 
 	
 	return "";
