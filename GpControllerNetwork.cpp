@@ -206,6 +206,18 @@ long GpControllerNetwork::sendRawTCP(std::vector<uint8_t> & rawVect){
 		return 0;
 		
 	}
+	
+	
+	
+	
+	// SEND
+	
+	
+	
+	
+	
+	
+	
 
 	long numBytes = send(_control_fd, sendBytes, sendSize, 0);
 	if(numBytes == -1){
