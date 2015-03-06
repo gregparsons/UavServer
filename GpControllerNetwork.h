@@ -17,6 +17,7 @@
 
 #include <mavlink/c_library/common/mavlink.h>
 #include <string>
+#include <vector>
 
 class GpMessage;
 
@@ -34,8 +35,6 @@ public:
 	
 	
 	
-	// ssize_t sendTCP(mavlink_message_t & message);
-	ssize_t sendRawTCP(uint8_t *&appPacket, uint16_t & pktSize);
 	ssize_t sendGpMessage(GpMessage &message);
 	
 	
@@ -56,6 +55,10 @@ private:
 	struct addrinfo *_res = nullptr;
 	
 	uint8_t _buffer[GP_CONTROLLER_NET_MAX_BUFFER_LEN];
+
+
+	
+	long sendRawTCP(std::vector<uint8_t> & rawVect);
 
 	
 	

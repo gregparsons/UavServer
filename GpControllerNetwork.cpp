@@ -25,8 +25,7 @@
 #include "GpMavlink.h"
 #include "GpMessage.h"
 #include "GpMessage_Login.h"
-
-#define GP_READ_VECTOR_BYTES_MAX 300
+#include "GpIpAddress.h"
 
 
 /**
@@ -128,51 +127,39 @@ bool GpControllerNetwork::sendAuthenticationRequest(std::string username, std::s
 	GpMessage_Login loginMessage(username, key2048);
 	GpMessage message(loginMessage);
 	
-	uint16_t msgSize = GP_MSG_LOGIN_LEN+GP_MSG_HEADER_LEN;
-	uint8_t msg[msgSize];
-	bzero(msg, msgSize);
-	uint8_t *msgPtr = msg;
+	// uint16_t msgSize = GP_MSG_LOGIN_LEN+GP_MSG_HEADER_LEN;
+	// uint8_t msg[msgSize];
+	// bzero(msg, msgSize);
+
+
+	// Set GpMessage payload to serialized Login Message
+	// std::vector<uint8_t> serializedLoginMsgVect;
+	// loginMessage.serialize(serializedLoginMsgVect);
+	// message.setPayload(serializedLoginMsgVect);
 	
-	message.serialize(msgPtr, msgSize);
 	
-	sendRawTCP(msgPtr, msgSize);
 	
-	return true;
+	std::vector<uint8_t> serializedResultVect;
+	serializedResultVect.reserve(GP_MSG_LOGIN_LEN + GP_MSG_HEADER_LEN);
+	message.serialize(serializedResultVect);
+	
+	if(sendRawTCP(serializedResultVect) > 0){
+		return true;
+	}
+	
+	
+
+	return false;
 }
 
 
 
 
-/**
- *  Send a mavlink-formatted message over TCP to current socket.
- *
- */
-/*
- ssize_t GpControllerNetwork::sendRawTCP(mavlink_message_t & message)
- {
-	// sendto
-	
-	ssize_t numBytes = 0;
-	numBytes = sendto(_control_fd, &message, message.len, 0, _res->ai_addr, _res->ai_addrlen);
-	if(numBytes == -1){
- std::cout << "[" << __func__ << "] "  << "Error: send()" << std::endl;
-	}
-	else
- std::cout << "[" << __func__ << "] "  << numBytes << " bytes sent" << std::endl;
-	
- 
-	return numBytes;
-	
-	
-	
- }
- */
-
 ssize_t GpControllerNetwork::sendGpMessage(GpMessage &message){
 	
 	
 	
-	
+	/*
 	uint16_t msgSize = message.size(); //  message._payloadSize + GP_MSG_HEADER_LEN;
 
 	uint8_t msg[GP_MSG_MAX_LEN];
@@ -180,8 +167,21 @@ ssize_t GpControllerNetwork::sendGpMessage(GpMessage &message){
 	uint8_t *msgPtr = msg;
 	
 	message.serialize(msgPtr, msgSize);
+	*/
+
+
 	
-	return sendRawTCP(msgPtr, msgSize);
+	
+	std::cout << "[" << __func__ << "] "  << "Sending msg type: " << message._message_type  << ", payload size: " << message._payloadSize << std::endl;
+
+	
+	std::vector<uint8_t> serializedMsgVect;
+	serializedMsgVect.reserve(message.size());
+	message.serialize(serializedMsgVect);
+
+	return sendRawTCP(serializedMsgVect);
+	
+	// return sendRawTCP(msgPtr, msgSize);
 
 	
 }
@@ -189,7 +189,23 @@ ssize_t GpControllerNetwork::sendGpMessage(GpMessage &message){
 
 
 
-ssize_t GpControllerNetwork::sendRawTCP(uint8_t *&appPacket, uint16_t &pktSize){
+long GpControllerNetwork::sendRawTCP(std::vector<uint8_t> & rawVect){
+	
+	long numBytes = sendto(_control_fd, rawVect.data(), rawVect.size(), 0, _res->ai_addr, _res->ai_addrlen);
+	if(numBytes == -1){
+		std::cout << "[" << __func__ << "] "  << "sendto() error: " << strerror(errno) <<  std::endl;
+	}
+	else
+		std::cout << "[" << __func__ << "] "  << numBytes << " bytes sent" << std::endl;
+	
+	return numBytes;
+	
+	
+	
+}
+/*
+
+ssize_t GpControllerNetwork::sendRawTCP(uint8_t *&appPacket, long pktSize){
 	
 	size_t numBytes = 0;
 	size_t size = (size_t)pktSize;
@@ -206,7 +222,7 @@ ssize_t GpControllerNetwork::sendRawTCP(uint8_t *&appPacket, uint16_t &pktSize){
 	
 	
 }
-
+*/
 
 
 
@@ -247,9 +263,9 @@ void GpControllerNetwork::receiveDataAndParseMessage()
 	
 	// RECVBUFFER
 	
-	size_t length =  GP_READ_VECTOR_BYTES_MAX;  // MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN;
-	uint8_t recvBuffer[GP_READ_VECTOR_BYTES_MAX];
-	bzero(recvBuffer, GP_READ_VECTOR_BYTES_MAX);
+	size_t length =  READ_VECTOR_BYTES_MAX;  // MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN;
+	uint8_t recvBuffer[READ_VECTOR_BYTES_MAX];
+	bzero(recvBuffer, READ_VECTOR_BYTES_MAX);
 	
 	uint8_t *recvInPtr = recvBuffer;
 	uint8_t *recvOutPtr = recvBuffer;
@@ -260,36 +276,30 @@ void GpControllerNetwork::receiveDataAndParseMessage()
 	
 	// MESSAGEBUFFER
 	
-	uint8_t messageBuffer[GP_READ_VECTOR_BYTES_MAX];
-	bzero(&messageBuffer, GP_READ_VECTOR_BYTES_MAX);
+	uint8_t messageBuffer[READ_VECTOR_BYTES_MAX];
+	bzero(&messageBuffer, READ_VECTOR_BYTES_MAX);
 	uint8_t *msgHead = messageBuffer;	//set message max depending on size of incoming message
 	long messageLenMax = 0;
 	long messageLenCurrent = 0;
 	bool messageStarted = false;
-	long msgBytesStillNeeded = GP_READ_VECTOR_BYTES_MAX;
-	
+	long msgBytesStillNeeded = READ_VECTOR_BYTES_MAX;
 	
 	
 	// RECEIVE LOOP
-	
+	long bytesToTransfer = 0;
 	for(;;){
 		
 		
 		// RECEIVE
 		
-	GP_RECEIVE:
-		
 		bytesInRecvBuffer = recv(_control_fd, recvInPtr, length, 0);		//blocks if no data, returns zero if no data and shutdown occurred
-		recvInPtr += bytesInRecvBuffer;
 		if(bytesInRecvBuffer == -1){
 			std::cout << "[" << __func__ << "] "  << "Error: recv()" << std::endl;
-			exit(1);
-			//continue;
+			return;
 		}
 		else if(bytesInRecvBuffer == 0){
 			//shutdown, if zero bytes are read recv blocks, doesn't return 0 except if connection closed.
-			exit(0);
-			//continue;
+			return;
 		}
 		
 		
@@ -297,68 +307,87 @@ void GpControllerNetwork::receiveDataAndParseMessage()
 		
 		
 		
-		GpMessage newMessage;
 		while(bytesInRecvBuffer > 0){
 			
+			GpMessage newMessage;		// dynamically allocate? or overwrite each time?
+			
 			if(messageStarted != true){
+				
+				// Start a message
+				newMessage.clear();			// re-use
+				
+				
 				if(bytesInRecvBuffer >= GP_MSG_HEADER_LEN)
 					putHeaderInMessage(recvOutPtr, bytesInRecvBuffer, newMessage);		//this is the same as deserialize
 				else{
-					goto GP_RECEIVE;	// Don't have enough bytes for a message header. Nothing to do but get more.
+					break;	// Don't have enough bytes for a message header. Nothing to do but get more.
 				}
 				
-				// Start a message
+				
+				
+				
 				messageLenMax = newMessage._payloadSize + GP_MSG_HEADER_LEN;
 				msgBytesStillNeeded = messageLenMax;
-				long bytesToTransfer = std::min(bytesInRecvBuffer, msgBytesStillNeeded);		//first time, copy as many as possible from packet buffer
+				bytesToTransfer = std::min(bytesInRecvBuffer, msgBytesStillNeeded);		//first time, copy as many as possible from packet buffer
+				
+				
+				
+				
 				memcpy(&messageBuffer, recvOutPtr, bytesToTransfer);
-				messageLenCurrent = bytesToTransfer;
-				recvOutPtr += bytesToTransfer;					//increment fill line of message buffer
-				bytesInRecvBuffer -= bytesToTransfer;		//are there bytes leftover in recvBuffer?
-				messageStarted = true;
+				
+				
+				
+				
+				
+				
 				
 			}
 			else // if(messageStarted)
 			{
 				
 				//copy the min of available and needed from PACKET to MESSAGE buffer
-				long bytesStillNeeded = messageLenMax - messageLenCurrent;
-				long bytesToTransfer = std::min(bytesInRecvBuffer, bytesStillNeeded);
-				
+				msgBytesStillNeeded = messageLenMax - messageLenCurrent;
+				bytesToTransfer = std::min(bytesInRecvBuffer, msgBytesStillNeeded);
 				memcpy(&messageBuffer, recvOutPtr, bytesToTransfer);
-				messageLenCurrent += bytesToTransfer;
-				recvOutPtr += bytesToTransfer;
-				bytesInRecvBuffer -= bytesToTransfer;
 				
 			}
+			messageLenCurrent = bytesToTransfer;
+			bytesInRecvBuffer -= bytesToTransfer;		//are there bytes leftover in recvBuffer?
 			
 			
 			// MESSAGE COMPLETE. PROCESS.
 			if(messageLenCurrent == messageLenMax)
 			{
-				newMessage._payload = msgHead+3;	//okay, but this is about to get cleared with arrival of next packet, message here is the entire message, not the payload
-				std::cout << "[" << __func__ << "] "  << "Received message with type: " << newMessage._message_type << " and payload size: " << newMessage._payloadSize << std::endl;
+				
+				//HEADER loaded above
 				
 				
-				// Parse and process the message
-				uint16_t messageSize = newMessage._payloadSize + GP_MSG_HEADER_LEN;
-				newMessage.deserialize(msgHead, messageSize);
+				// PAYLOAD
+				
+				uint8_t *tempPayloadPtr = msgHead + GP_MSG_HEADER_LEN;
+				newMessage.setPayload(tempPayloadPtr, newMessage._payloadSize);		//payload to vector
+				
+				// MESSAGE COMPLETE
+				
+				
+				std::cout << "[" << __func__ << "] "  << "Received message with type: " << int(newMessage._message_type) << " and payload size: " << newMessage._payloadSize << std::endl;
+				
 				processMessage(newMessage);
 				
-				
+				recvOutPtr+= bytesToTransfer;
 				
 				// Reset the message buffer.
 				messageStarted = false;
 				messageLenCurrent = 0;
 				messageLenMax = 0;
+				
+				newMessage.clear();
+				
 			}
 			
 		}	// while(bytesInRecvBuffer > 0)
-		if(bytesInRecvBuffer == 0){
-			recvInPtr = recvHead;
-			recvOutPtr = recvHead;
-		}
-		
+		recvInPtr = recvHead;			// reset both buffer pointers to head if it's empty
+		recvOutPtr = recvHead;
 		
 	}
 }
@@ -396,7 +425,7 @@ void GpControllerNetwork::processMessage(GpMessage & msg){
 		case GP_MSG_TYPE_AUTHENTICATED_BY_SERVER:
 		{
 			// START SENDING MESSAGES
-			std::cout << "[" << __func__ << "] Client received GP_MSG_TYPE_AUTHENTICATED_BY_SERVER: starting asset commands from game controller" << std::endl;
+			std::cout << "[" << __func__ << "] Client received GP_MSG_TYPE_AUTHENTICATED_BY_SERVER: setting _shouldSendControllerOutput = true" << std::endl;
 			
 			
 			// start sending asset commands
@@ -417,8 +446,8 @@ void GpControllerNetwork::processMessage(GpMessage & msg){
 		}
 			
 		//all the rest fall through
+		case GP_MSG_TYPE_NONE_ZERO:
 		case GP_MSG_TYPE_COMMAND:
-		case GP_MSG_TYPE_GENERIC:
 		case GP_MSG_TYPE_LOGIN:
 		case GP_MSG_TYPE_LOGOUT:
 		default:

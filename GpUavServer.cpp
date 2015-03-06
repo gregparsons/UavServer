@@ -6,8 +6,6 @@
 //
 // ********************************************************************************
 
-#define MAX_CONNECTION_BACKLOG 10
-#define READ_VECTOR_BYTES_MAX 300
 
 
 #include <mavlink/c_library/common/mavlink.h>
@@ -224,6 +222,8 @@ GpUavServer::startNetwork(){
 		std::thread serverHeartbeat(&GpUavServer::sendHeartbeat, this);
 		serverHeartbeat.detach();
 
+
+		
 		
 		
 		
@@ -266,7 +266,7 @@ void GpUavServer::threadClientRecv()
 {
 	
 
-	std::cout << "[" << __func__ << "] "  << "[GpUavServer::threadClientRecv] starting thread: " << std::this_thread::get_id() << std::endl;
+	std::cout << "[" << __func__ << "] "  << "starting thread: " << std::this_thread::get_id() << std::endl;
 	
 
 	// 2 BUFFERS: receive, message
@@ -297,16 +297,20 @@ void GpUavServer::threadClientRecv()
 	
 	
 	// RECEIVE LOOP
-	
+
+	long bytesToTransfer = 0;
 	for(;;){
+		
+		
+		
+		
+		
 		
 		
  		// RECEIVE
 		
-GP_RECEIVE:
 		
 		bytesInRecvBuffer = recv(_client_fd, recvInPtr, length, 0);		//blocks if no data, returns zero if no data and shutdown occurred
-		recvInPtr += bytesInRecvBuffer;
 		if(bytesInRecvBuffer == -1){
 			cout << "Error: recv()" << endl;
 			//exit(1);
@@ -322,67 +326,104 @@ GP_RECEIVE:
 		cout << "\nRead: " << bytesInRecvBuffer << " bytes" << endl;
 
 		
-		
-		GpMessage newMessage;
+
 		while(bytesInRecvBuffer > 0){
 			
+			GpMessage newMessage;		// dynamically allocate? or overwrite each time? 
+			
 			if(messageStarted != true){
+
+				// Start a message
+				newMessage.clear();			// re-use
+
+				
 				if(bytesInRecvBuffer >= GP_MSG_HEADER_LEN)
 					putHeaderInMessage(recvOutPtr, bytesInRecvBuffer, newMessage);		//this is the same as deserialize
 				else{
-					goto GP_RECEIVE;	// Don't have enough bytes for a message header. Nothing to do but get more.
+					break;	// Don't have enough bytes for a message header. Nothing to do but get more.
 				}
 				
-				// Start a message
+
+				
+				
 				messageLenMax = newMessage._payloadSize + GP_MSG_HEADER_LEN;
 				msgBytesStillNeeded = messageLenMax;
-				long bytesToTransfer = std::min(bytesInRecvBuffer, msgBytesStillNeeded);		//first time, copy as many as possible from packet buffer
+				bytesToTransfer = std::min(bytesInRecvBuffer, msgBytesStillNeeded);		//first time, copy as many as possible from packet buffer
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
 				memcpy(&messageBuffer, recvOutPtr, bytesToTransfer);
-				messageLenCurrent = bytesToTransfer;
-				recvOutPtr += bytesToTransfer;					//increment fill line of message buffer
-				bytesInRecvBuffer -= bytesToTransfer;		//are there bytes leftover in recvBuffer?
-				messageStarted = true;
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
 				
 			}
 			else // if(messageStarted)
 			{
 				
 				//copy the min of available and needed from PACKET to MESSAGE buffer
-				long bytesStillNeeded = messageLenMax - messageLenCurrent;
-				long bytesToTransfer = std::min(bytesInRecvBuffer, bytesStillNeeded);
-				
+				msgBytesStillNeeded = messageLenMax - messageLenCurrent;
+				bytesToTransfer = std::min(bytesInRecvBuffer, msgBytesStillNeeded);
 				memcpy(&messageBuffer, recvOutPtr, bytesToTransfer);
-				messageLenCurrent += bytesToTransfer;
-				recvOutPtr += bytesToTransfer;
-				bytesInRecvBuffer -= bytesToTransfer;
 				
 			}
+			messageLenCurrent = bytesToTransfer;
+			bytesInRecvBuffer -= bytesToTransfer;		//are there bytes leftover in recvBuffer?
 			
 			
 			// MESSAGE COMPLETE. PROCESS.
 			if(messageLenCurrent == messageLenMax)
 			{
-				newMessage._payload = msgHead+3;	//okay, but this is about to get cleared with arrival of next packet, message here is the entire message, not the payload
-				std::cout << "[" << __func__ << "] "  << "Received message with type: " << newMessage._message_type << " and payload size: " << newMessage._payloadSize << std::endl;
+				
+				//HEADER loaded above
 				
 				
-				// Parse and process the message
-				uint16_t messageSize = newMessage._payloadSize + GP_MSG_HEADER_LEN;
-				newMessage.deserialize(msgHead, messageSize);
+				// PAYLOAD
+
+				uint8_t *tempPayloadPtr = msgHead + GP_MSG_HEADER_LEN;
+				newMessage.setPayload(tempPayloadPtr, newMessage._payloadSize);		//payload to vector
+				
+				// MESSAGE COMPLETE
+				
+				
+				std::cout << "[" << __func__ << "] "  << "Received message with type: " << int(newMessage._message_type) << " and payload size: " << newMessage._payloadSize << std::endl;
+
 				processMessage(newMessage);
 				
-				
+				recvOutPtr+= bytesToTransfer;
 				
 				// Reset the message buffer.
 				messageStarted = false;
 				messageLenCurrent = 0;
 				messageLenMax = 0;
+				
+				newMessage.clear();
+				
 			}
 			
 		}	// while(bytesInRecvBuffer > 0)
-		if(bytesInRecvBuffer == 0){
-			recvInPtr = recvHead;
-		}
+		
+		recvInPtr = recvHead;			// reset both buffer pointers to head if it's empty
+		recvOutPtr = recvHead;
 		
 		
 	}
@@ -393,8 +434,6 @@ GP_RECEIVE:
 
 
 void GpUavServer::putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message){
-	
-	uint8_t *ptr = buffer;
 	
 	// Message_Type
 	message._message_type = *buffer; //GP_MSG_TYPE_LOGIN;
@@ -431,26 +470,19 @@ void GpUavServer::processMessage(GpMessage & msg){
 			std::cout << "[" << __func__ << "] "  << "[GpUavServer::processMessage] Processing login message" << std::endl;
 
 			// Authenticate
-			GpMessage_Login loginMsg(msg._payload);
+			// GpMessage_Login loginMsg(msg._payload);
+			
+			GpMessage_Login loginMsg(msg._payLd_vec);
 			if(true == (GpDatabase::authenticateUser(loginMsg.username(), loginMsg.key())))
 			{
-				std::cout << "[" << __func__ << "] "  << "User: " << loginMsg.username() << " authenticated." << std::endl;
-				
-				
-				
-				
 				
 				// Send login complete message to client
-				uint8_t *payload = nullptr;
+				uint8_t *payload = nullptr;	// No payload required, just a ref to a pointer needed for constructor.
 				GpMessage msgLoginComplete(GP_MSG_TYPE_AUTHENTICATED_BY_SERVER, 0, payload);
 
-				if(false == sendMessageToController(msgLoginComplete)){
-					std::cout << "[" << __func__ << "] "  << "[GpUavServer::processMessage] Error sending login confirmation" << std::endl;
+				if(sendMessageToController(msgLoginComplete) == false){
+					std::cout << "[" << __func__ << "] "  << "Error sending login confirmation" << std::endl;
 				}
-				   
-				
-				
-				
 			}
 			break;
 		}
@@ -459,13 +491,11 @@ void GpUavServer::processMessage(GpMessage & msg){
 			std::cout << "[" << __func__ << "] "  << "[GpUavServer::processMessage] Processing logout message" << std::endl;
 			break;
 		}
-		case GP_MSG_TYPE_GENERIC:
+		default:
 		{
-			std::cout << "[" << __func__ << "] "  << "[GpUavServer::processMessage] Processing generic message" << std::endl;
+			std::cout << "[" << __func__ << "] "  << "Message type: "<< msg._message_type << std::endl;
 			break;
 		}
-		default:
-				break;
 	}
 }
 
@@ -482,14 +512,31 @@ void GpUavServer::processMessage(GpMessage & msg){
  *  @returns Bool
  */
 bool GpUavServer::sendMessageToController(GpMessage & msg){
-	
+	/*
 	uint8_t bytes[GP_MSG_MAX_LEN];		//
 	uint8_t *bytePtr = bytes;
 	uint16_t size = sizeof(bytes);		//this will return with the actual size of the message
+	
+	
+	
+	
+	//DEPRECATE!
 	msg.serialize(bytePtr, size);
+	*/
 	
 	
-	ssize_t retVal = send(_client_fd, bytePtr, size, 0);	//this will be a new size based on the actual size of the serialized data (not the default above)
+	
+	
+	// SERIALIZE
+	
+	std::vector<uint8_t> byteVect;
+	byteVect.reserve(msg.size());
+	msg.serialize(byteVect);
+	
+	
+	// SEND TCP
+	
+	ssize_t retVal = send(_client_fd, byteVect.data(), byteVect.size(), 0);	//this will be a new size based on the actual size of the serialized data (not the default above)
 	if(retVal == -1)
 		return false;
 	return true;
