@@ -262,8 +262,10 @@ void GpControllerNetwork::listenThread(){
 	}
 */
 	
-	std::cout << "[" << __func__ << "] "  <<  "" << strerror(errno) << std::endl;
+	std::cout << "[" << __func__ << "] "  <<  "" << std::endl;
 
+	
+	usleep(10000);
 	receiveDataAndParseMessage();
 	
 }
@@ -275,7 +277,7 @@ void GpControllerNetwork::receiveDataAndParseMessage()
 {
 	
 	
-	std::cout << "[" << __func__ << "] "  <<  "" << strerror(errno) << std::endl;
+	std::cout << "[" << __func__ << "] "  <<  "" << std::endl;
 	
 	
 	// 2 BUFFERS: receive, message
