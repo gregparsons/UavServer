@@ -86,6 +86,7 @@ bool GpUavServer::start(){
  */
 bool
 GpUavServer::startNetwork(){
+	std::cout << "[" << __func__ << "] "  << "" <<std::endl;
 
 	struct addrinfo hintAddrInfo, *resSave = nullptr, *res = nullptr;
 	struct sockaddr_storage inboundAddress;
@@ -170,8 +171,8 @@ GpUavServer::startNetwork(){
 	
 	
 	// Accept Loop (accept blocks waiting for connections)
-	
-	cout << "Server: waiting for connections" << endl;
+	std::cout << "[" << __func__ << "] "  << "Server: waiting for connections" <<std::endl;
+
 	for(;;){
 		
 		// Accept
@@ -243,7 +244,7 @@ void GpUavServer::threadClientRecv()
 {
 	
 
-	std::cout << "[" << __func__ << "] "  << "starting thread: " << std::this_thread::get_id() << std::endl;
+	std::cout << "[" << __func__ << "] "  << "Entering recv() thread " << std::this_thread::get_id() << std::endl;
 	
 
 	// 2 BUFFERS: receive, message
@@ -299,11 +300,8 @@ void GpUavServer::threadClientRecv()
 			return;
 		}
 
+		std::cout << "[" << __func__ << "] "  << "recv(): " << bytesInRecvBuffer << " bytes" <<std::endl;
 		
-		cout << "\nRead: " << bytesInRecvBuffer << " bytes" << endl;
-
-		
-
 		while(bytesInRecvBuffer > 0){
 			
 			GpMessage newMessage;		// dynamically allocate? or overwrite each time? 

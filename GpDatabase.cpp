@@ -13,7 +13,7 @@
 
 bool GpDatabase::authenticateUser(std::string username, std::string key){
 	
-	std::cout << "NOT IMPLEMENTED: GpDatabase::authenticateUser(). All users return true." << std::endl;
+	std::cout << "[" << __func__ << "] "  << "Does nothing. All users return true." <<std::endl;
 
 
 	
@@ -24,7 +24,7 @@ bool GpDatabase::authenticateUser(std::string username, std::string key){
 		
 		return true;
 	}else{
-		std::cout << "[" << __func__ << "] "  << "User: " << username << "NOT authenticated." << std::endl;
+		std::cout << "[" << __func__ << "] "  << "User: " << username << " not authenticated." << std::endl;
 
 		
 		

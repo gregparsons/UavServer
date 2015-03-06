@@ -21,9 +21,6 @@
  */
 GpMessage_Login::GpMessage_Login(std::string user64, std::string loginKey){
 
-	// _userVect.resize(GP_MSG_LOGIN_USER_LEN);	//this is crucial because message formatting requires these to be fixed length
-	// _keyVect.resize(GP_MSG_LOGIN_KEY_LEN);
-	
 	setUsername(user64);
 	setKey(loginKey);
 }
@@ -51,24 +48,22 @@ std::string GpMessage_Login::username(){
 	// This might not work the way it seems. What if there are special characters? Straight up string compare later won't work out.
 	std::string username;
 	username.assign(_userVect.begin(), _userVect.end());
-	
-	
-	
-	std::cout << "USERNAME() NOT IMPLEMENTED" << std::endl;
+
+	std::cout << "[" << __func__ << "] "  << "username: " << username <<std::endl;
 	
 	return username;
 }
 
 std::string GpMessage_Login::key(){
-	std::cout << "key() NOT IMPLEMENTED" << std::endl;
 
 	// This might not work the way it seems. What if there are special characters? Straight up string compare later won't work out.
 	std::string key;
 	key.assign(_userVect.begin(), _userVect.end());
 
+	std::cout << "[" << __func__ << "] "  << "key: " << key <<std::endl;
+
 	
 	return "";
-	//return std::string(reinterpret_cast<char const*>(_loginKey), sizeof(_loginKey));
 }
 
 
@@ -84,34 +79,6 @@ long GpMessage_Login::serialize(std::vector<uint8_t> & serializedVect){
 	return serializedVect.size();
 	
 }
-
-
-
-/*
-// Serialize username and password, return in buffer.
-
-uint32_t GpMessage_Login::serialize(uint8_t *&buffer){
-
-	if(buffer == nullptr)
-		return 0;
-	
-	uint8_t *ptr = buffer;
-	
-	//write username
-	uint8_t *ptrU = _user64;
-	memcpy(ptr, ptrU, sizeof(_user64));
-	ptr += sizeof(_user64);  //increment what ptr points two by 64 bytes
-
-	//write key
-	ptrU = _loginKey;
-	memcpy(ptr, ptrU, sizeof(_loginKey));
-	// ptr += sizeof(_loginKey);	//in case more items added for serialize
-
-	return sizeof(_loginKey) + sizeof(_user64);
-	
-	
-}
-*/
 
 
 
@@ -139,21 +106,6 @@ void GpMessage_Login::deserialize(std::vector<uint8_t> & rawVect){
 	last = rawVect.end();
 	std::vector<uint8_t> tempVect2(first, last);
 	_keyVect.swap(tempVect2);
-	
-	/*
-	uint8_t *ptr = rawNetBytes;
-	GpMessage::pushBytesToVector(_userVect, ptr, GP_MSG_LOGIN_USER_LEN);
-	ptr+= GP_MSG_LOGIN_USER_LEN;
-	GpMessage::pushBytesToVector(_keyVect, ptr, GP_MSG_LOGIN_KEY_LEN);
-*/
-	/*
-	 bzero(_user64, sizeof(_user64));
-	 memcpy(_user64, ptr, sizeof(_user64));
-	ptr+= sizeof(_user64);
-	 bzero(_loginKey, sizeof(_loginKey));
-	 memcpy(_loginKey, ptr, sizeof(_loginKey));
-
-*/
 
 }
 
