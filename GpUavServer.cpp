@@ -482,6 +482,9 @@ void GpUavServer::processMessage(GpMessage & msg){
 			GpMessage_Login loginMsg(msg._payLd_vec);
 			if(true == (GpDatabase::authenticateUser(loginMsg.username(), loginMsg.key())))
 			{
+
+				std::cout << "[" << __func__ << "] "  << "Sending authentication confirmation to: " << loginMsg.username() << std::endl;
+				
 				
 				// Send login complete message to client
 				uint8_t *payload = nullptr;	// No payload required, just a ref to a pointer needed for constructor.
@@ -490,6 +493,7 @@ void GpUavServer::processMessage(GpMessage & msg){
 				if(sendMessageToController(msgLoginComplete) == false){
 					std::cout << "[" << __func__ << "] "  << "Error sending login confirmation" << std::endl;
 				}
+				std::cout << "[" << __func__ << "] "  << "Authentication confirmation sent." << std::endl;
 			}
 			break;
 		}

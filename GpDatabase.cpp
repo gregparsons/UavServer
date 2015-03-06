@@ -17,7 +17,7 @@ bool GpDatabase::authenticateUser(std::string username, std::string key){
 
 
 	
-	if(username == GP_CONTROLLER_TEST_USERNAME && key == GP_CONTROLLER_TEST_PASSWORD){
+	if(username.compare(GP_CONTROLLER_SERVER_IP) && key.compare(GP_CONTROLLER_TEST_PASSWORD)){
 		std::cout << "[" << __func__ << "] "  << "User: " << username << " authenticated." << std::endl;
 
 		
