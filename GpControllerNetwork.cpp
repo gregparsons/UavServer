@@ -194,10 +194,11 @@ ssize_t GpControllerNetwork::sendGpMessage(GpMessage &message){
 long GpControllerNetwork::sendRawTCP(std::vector<uint8_t> & rawVect){
 	std::cout << "[" << __func__ << "] "  << "" << std::endl;
 
-	
-	long numBytes = sendto(_control_fd, rawVect.data(), rawVect.size(), 0, _res->ai_addr, _res->ai_addrlen);
+	const void * sendBytes = rawVect.data();
+	size_t sendSize = rawVect.size();
+	long numBytes = sendto(_control_fd, sendBytes, sendSize, 0, _res->ai_addr, _res->ai_addrlen);
 	if(numBytes == -1){
-		std::cout << "[" << __func__ << "] "  << "sendto() error: " << strerror(errno) <<  std::endl;
+		std::cout << "[" << __func__ << "] "  << "sendto() error: " << errno << ":" << strerror(errno) <<  std::endl;
 	}
 	else
 		std::cout << "[" << __func__ << "] "  << numBytes << " bytes sent" << std::endl;
