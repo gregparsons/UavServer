@@ -316,7 +316,10 @@ void GpMessage::insertVectorToVectorAtLocation(long idx, std::vector<uint8_t> & 
 	std::vector<uint8_t>::const_iterator itr = dest.begin();
 
 	dest.reserve(dest.size()+vecToInsert.size());
-	dest.insert(itr + idx, vecToInsert.begin(), vecToInsert.end());
+	
+	itr+= idx;
+	dest.insert(itr, vecToInsert.begin(), vecToInsert.end());
+	
 	
 }
 

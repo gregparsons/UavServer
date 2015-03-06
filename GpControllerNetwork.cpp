@@ -97,18 +97,16 @@ bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & 
  *  startListenerThread
  *
  *  Listens on the client socket for messages from the server (like authentication, relay from asset, etc)
- *
- *  @param <#parameter#>
  *  @returns bool success
  */
 bool GpControllerNetwork::startListenerThread(){
 	
 	// Start Listener Thread
+	std::cout << "[" << __func__ << "] "  <<  "connect() fail: " << strerror(errno) << std::endl;
+
 	
-	std::cout << "[" << __func__ << "] "  << "Starting listen thread" << std::endl;
 	std::thread listenThread(&GpControllerNetwork::listenThread, this);
 	listenThread.detach(); //??
-	std::cout << "[" << __func__ << "] "  << "Listen thread started" << std::endl;
 	
 	return true;
 }
@@ -122,10 +120,10 @@ bool GpControllerNetwork::sendAuthenticationRequest(std::string username, std::s
 	//encrypt something with the symmetric key I share with the server
 	//server decrypts to know I'm who I am.
 	
-	std::cout << "[" << __func__ << "] "  << "NOT IMPLEMENTED YET!" << std::endl;
 	
 	GpMessage_Login loginMessage(username, key2048);
 	GpMessage message(loginMessage);
+	std::cout << "[" << __func__ << "] "  << "username/pwd: " << loginMessage.username() << "/" << loginMessage.key() << std::endl;
 	
 	// uint16_t msgSize = GP_MSG_LOGIN_LEN+GP_MSG_HEADER_LEN;
 	// uint8_t msg[msgSize];
@@ -145,6 +143,10 @@ bool GpControllerNetwork::sendAuthenticationRequest(std::string username, std::s
 	
 	if(sendRawTCP(serializedResultVect) > 0){
 		return true;
+	}
+	else{
+		std::cout << "[" << __func__ << "] "  << "sendRawTCP failed" << std::endl;
+		;
 	}
 	
 	
@@ -190,6 +192,8 @@ ssize_t GpControllerNetwork::sendGpMessage(GpMessage &message){
 
 
 long GpControllerNetwork::sendRawTCP(std::vector<uint8_t> & rawVect){
+	std::cout << "[" << __func__ << "] "  << "" << std::endl;
+
 	
 	long numBytes = sendto(_control_fd, rawVect.data(), rawVect.size(), 0, _res->ai_addr, _res->ai_addrlen);
 	if(numBytes == -1){
@@ -238,13 +242,16 @@ void GpControllerNetwork::listenThread(){
 	for(;;){
 		numBytes = recv(_control_fd, buffer, sizeof(_buffer), 0);
 		if(numBytes >0)
-			std::cout << "[" << __func__ << "] "  <<  "Received " << numBytes << " bytes" << std::endl;
-		
+			std::cout << "[" << __func__ << "] "  <<  "		" << numBytes << " bytes" << std::endl;
+ 
 		parseReceivedBytes();
 		
 		
 	}
 */
+	
+	std::cout << "[" << __func__ << "] "  <<  "" << strerror(errno) << std::endl;
+
 	receiveDataAndParseMessage();
 	
 }
@@ -256,7 +263,7 @@ void GpControllerNetwork::receiveDataAndParseMessage()
 {
 	
 	
-	std::cout << "[" << __func__ << "] "  << "starting thread: " << std::this_thread::get_id() << std::endl;
+	std::cout << "[" << __func__ << "] "  <<  "" << strerror(errno) << std::endl;
 	
 	
 	// 2 BUFFERS: receive, message
@@ -294,7 +301,7 @@ void GpControllerNetwork::receiveDataAndParseMessage()
 		
 		bytesInRecvBuffer = recv(_control_fd, recvInPtr, length, 0);		//blocks if no data, returns zero if no data and shutdown occurred
 		if(bytesInRecvBuffer == -1){
-			std::cout << "[" << __func__ << "] "  << "Error: recv()" << std::endl;
+			std::cout << "[" << __func__ << "] "  << "recv() error" << std::endl;
 			return;
 		}
 		else if(bytesInRecvBuffer == 0){
@@ -303,7 +310,7 @@ void GpControllerNetwork::receiveDataAndParseMessage()
 		}
 		
 		
-		std::cout << "[" << __func__ << "] "  << "Read: " << bytesInRecvBuffer << " bytes" << std::endl;
+		std::cout << "[" << __func__ << "] "  << "recv() read: " << bytesInRecvBuffer << " bytes" << std::endl;
 		
 		
 		

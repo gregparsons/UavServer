@@ -35,32 +35,22 @@
 using namespace std;
 
 
+const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = false;
 
 
 
-void GpUavServer::sendHeartbeat(){
-	
-	for(;;){
-	
-		// FAKE MESSAGE
-		std::cout << "[" << __func__ << "] "  << "Sending fake message as heartbeat" << std::endl;
-		
-		
-		
-		
-		// Send login complete message to client
-		uint8_t *payload = nullptr;
-		GpMessage msgLoginComplete(GP_MSG_TYPE_HEARTBEAT, 0, payload);
-		
-		if(false == sendMessageToController(msgLoginComplete)){
-			std::cout << "[" << __func__ << "] "  << "Error sending login confirmation" << std::endl;
-		}
-		
-		usleep(3000000);
-	}
-	
+/**
+ *  signalHandler(): Clean up zombie processes.
+ *
+ */
+/*
+ void
+signalHandler(int signal)
+{
+	while(waitpid(-1, NULL, WNOHANG) > 0);
+	cout << "signalHandler()" << endl;
 }
-
+*/
 
 
 
@@ -75,10 +65,6 @@ bool GpUavServer::start(){
 	
 	std::cout << "[" << __func__ << "] "  << "Server starting..." <<std::endl;
 	
-	
-	
-	
-	
 	return startNetwork();
 	
 }
@@ -87,16 +73,7 @@ bool GpUavServer::start(){
 
 
 
-/**
- *  signalHandler(): Clean up zombie processes.
- *
- */
-void
-signalHandler(int signal)
-{
-	while(waitpid(-1, NULL, WNOHANG) > 0);
-	cout << "signalHandler()" << endl;
-}
+
 
 
 
@@ -113,12 +90,12 @@ GpUavServer::startNetwork(){
 	struct addrinfo hintAddrInfo, *resSave = nullptr, *res = nullptr;
 	struct sockaddr_storage inboundAddress;
 	socklen_t addrLen = 0;
-	struct sigaction signalAction;
+	//struct sigaction signalAction;
 	int result = 0;
 	int yes = 1;
 	
 	// Handle zombie processes
-	
+	/*
 	signalAction.sa_handler = signalHandler;
 	sigemptyset(&signalAction.sa_mask);
 	signalAction.sa_flags = SA_RESTART;
@@ -127,7 +104,7 @@ GpUavServer::startNetwork(){
 		cout << "Error: sigaction" << endl;
 		exit(1);
 	}
-	
+	*/
 	
 	// Network Begin
 	
@@ -217,12 +194,12 @@ GpUavServer::startNetwork(){
 		
 		
 		// TEST SERVER HEARTBEAT
+		if(GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER){
 		
-		
-		std::thread serverHeartbeat(&GpUavServer::sendHeartbeat, this);
-		serverHeartbeat.detach();
+			std::thread serverHeartbeat(&GpUavServer::sendHeartbeat, this);
+			serverHeartbeat.detach();
 
-
+		}
 		
 		
 		
@@ -428,6 +405,38 @@ void GpUavServer::threadClientRecv()
 		
 	}
 }
+
+
+
+
+
+
+void GpUavServer::sendHeartbeat(){
+	
+	for(;;){
+		
+		// FAKE MESSAGE
+		std::cout << "[" << __func__ << "] "  << "Sending fake message as heartbeat" << std::endl;
+		
+		
+		
+		
+		// Send login complete message to client
+		uint8_t *payload = nullptr;
+		GpMessage msgLoginComplete(GP_MSG_TYPE_HEARTBEAT, 0, payload);
+		
+		if(false == sendMessageToController(msgLoginComplete)){
+			std::cout << "[" << __func__ << "] "  << "Error sending login confirmation" << std::endl;
+		}
+		
+		usleep(3000000);
+	}
+	
+}
+
+
+
+
 
 
 

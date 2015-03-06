@@ -32,7 +32,7 @@
 
 bool GpGroundController::start(){
 	
-	std::cout << "GpGroundController::start()" << std::endl;
+	std::cout << "[" << __func__ << "] "  <<  "" << std::endl;
 	/*
 	// Handle zombie processes
 	
@@ -53,7 +53,7 @@ bool GpGroundController::start(){
 	GpControllerNetwork network;
 	bool connectResult = network.gpConnect(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT);
 	if(connectResult == false){
-		std::cout<< "[GpGroundController::start] Controller connect fail: " << strerror(errno)<<  std::endl;
+		std::cout << "[" << __func__ << "] "  <<  "connect() fail: " << strerror(errno) << std::endl;
 		return false;
 	}
 	

@@ -10873,8 +10873,6 @@
 			children = (
 				001526D51A9E96E60059BC0F /* GpGroundController.h */,
 				001526D41A9E96E60059BC0F /* GpGroundController.cpp */,
-				009C06121AA1A46400AC1CD1 /* GpGameController.h */,
-				009C06131AA1A46400AC1CD1 /* GpGameController.cpp */,
 				009C0EC71AA1A9E500AC1CD1 /* GpControllerNetwork.h */,
 				009C0EC61AA1A9E500AC1CD1 /* GpControllerNetwork.cpp */,
 				006A71F11AA1B957009A8C93 /* Game Controller */,
@@ -28933,6 +28931,8 @@
 		006A71F11AA1B957009A8C93 /* Game Controller */ = {
 			isa = PBXGroup;
 			children = (
+				009C06121AA1A46400AC1CD1 /* GpGameController.h */,
+				009C06131AA1A46400AC1CD1 /* GpGameController.cpp */,
 				009C0EC11AA1A55C00AC1CD1 /* SDL2.framework */,
 				009C0EC31AA1A78200AC1CD1 /* GpControllerEvent.h */,
 				009C0EC41AA1A78200AC1CD1 /* GpControllerEvent.cpp */,
