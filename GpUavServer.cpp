@@ -223,7 +223,7 @@ GpUavServer::startNetwork(){
 		
 		std::thread clientThread (&GpUavServer::threadClientRecv, this);
 		clientThread.detach();
-		
+		usleep(10000);
 		std::cout << "[" << __func__ << "] "  << "[GpUavServer::startNetwork] after starting thread" << endl;
 		
 		//clientThread.join();
