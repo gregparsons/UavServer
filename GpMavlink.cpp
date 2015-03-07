@@ -42,14 +42,13 @@ void GpMavlink::printMavFromGpMessage(GpMessage & msg){
 
 
 void GpMavlink::deserializeGpMessagePayloadToMavlink(GpMessage & message, mavlink_message_t & mavlink){
-	
 	memcpy(&mavlink, message._payLd_vec.data(), message._payLd_vec.size());
 
 }
 
 
-void GpMavlink::deserializePayloadToChannelOverride(mavlink_message_t & sourceMavlink, mavlink_rc_channels_override_t & chOverride){
-	
+void GpMavlink::deserializePayloadToChannelOverride(mavlink_message_t & mavlink, mavlink_rc_channels_override_t & channels){
+	mavlink_msg_rc_channels_override_decode(&mavlink, &channels);
 	
 }
 
@@ -65,30 +64,10 @@ void GpMavlink::printMavlinkMessage(mavlink_message_t & mav)
 		{
 			std::cout << "[" << __func__ << "] "  << "MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE" << std::endl;
 			
-			mavlink_rc_channels_override_t channels;
-			mavlink_msg_rc_channels_override_decode(&mav, &channels);
-			
-			
-			
-			/*****
-			 
-			 
-			 
-			 Here RC channels override are extracted. Action to be taken by the asset's onboard 
-			 system will happen here. Probably then forward to Pixhawk.
-			 
-			 This will execute on the Asset. Running on the server right now to test correctness of 
-			 transmission. Ultimately server will not have visibility here.
-			 
-			 
-			 
-			 
-			 
-			 *****/
-
-			
 			// Print
 			
+			mavlink_rc_channels_override_t channels;
+			deserializePayloadToChannelOverride(mav, channels);
 			printMavChannelsOverride(channels);
 			
 			break;
