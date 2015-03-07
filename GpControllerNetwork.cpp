@@ -477,10 +477,14 @@ void GpControllerNetwork::processMessage(GpMessage & msg){
 			
 			break;
 		}
+		case GP_MSG_TYPE_COMMAND:
+		{
+			std::cout << "[" << __func__ << "] Client received GP_MSG_TYPE_COMMAND" << std::endl;
 			
+			break;
+		}
 		//all the rest fall through
 		case GP_MSG_TYPE_NONE_ZERO:
-		case GP_MSG_TYPE_COMMAND:
 		case GP_MSG_TYPE_LOGIN:
 		case GP_MSG_TYPE_LOGOUT:
 		default:

@@ -466,11 +466,51 @@ void GpUavServer::processMessage(GpMessage & msg){
 	switch (msg._message_type) {
 		case GP_MSG_TYPE_COMMAND:
 		{
-			std::cout << "[" << __func__ << "] "  << "[GpUavServer::processMessage] Processing COMMAND message" << std::endl;
+			std::cout << "[" << __func__ << "] "  << "GP_MSG_TYPE_COMMAND" << std::endl;
 
 			
-			break;
 
+			
+			GpMavlink::printMavFromGpMessage(msg);
+			
+			
+			
+			
+			/*
+			 
+			 
+			 
+			 Here, re-send message to asset
+			 
+			 
+			 
+			 */
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			break;
+			
 		}
 		case GP_MSG_TYPE_LOGIN:
 		{

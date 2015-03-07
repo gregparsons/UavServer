@@ -84,7 +84,7 @@ bool GpGroundController::start(){
 	
 	// TO DO: remove network from Game Controller
 
-	// controller.runGameController(network);
+	controller.runGameController(network);
 		
 		
 	
