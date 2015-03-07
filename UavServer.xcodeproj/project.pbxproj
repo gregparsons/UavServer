@@ -10,10 +10,11 @@
 		0012438B1A9EC90700580506 /* GpUavServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001243871A9EC90700580506 /* GpUavServer.cpp */; };
 		0012438C1A9EC90700580506 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001243891A9EC90700580506 /* main.cpp */; };
 		001526D61A9E96E60059BC0F /* GpGroundController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001526D41A9E96E60059BC0F /* GpGroundController.cpp */; };
-		001526D91A9E97020059BC0F /* GpUavAsset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001526D71A9E97020059BC0F /* GpUavAsset.cpp */; };
 		00410B031AA5261400295B54 /* GpMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00410B011AA5261400295B54 /* GpMessage.cpp */; };
 		00667E3D1A9ECB4C009E8692 /* GpMavlink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00667E3B1A9ECB4C009E8692 /* GpMavlink.cpp */; };
 		006AF70B1AA58DAC00F58EA6 /* GpMessage_Login.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006AF7091AA58DAC00F58EA6 /* GpMessage_Login.cpp */; };
+		006E49F31AAB8E2300891FDB /* GpClientNet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006E49F11AAB8E2300891FDB /* GpClientNet.cpp */; };
+		006E49F61AABA1E900891FDB /* GpAsset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006E49F41AABA1E800891FDB /* GpAsset.cpp */; };
 		009C06141AA1A46400AC1CD1 /* GpGameController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009C06131AA1A46400AC1CD1 /* GpGameController.cpp */; };
 		009C0EC21AA1A55C00AC1CD1 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009C0EC11AA1A55C00AC1CD1 /* SDL2.framework */; };
 		009C0EC51AA1A78200AC1CD1 /* GpControllerEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009C0EC41AA1A78200AC1CD1 /* GpControllerEvent.cpp */; };
@@ -41,8 +42,6 @@
 		001526C01A9E90BE0059BC0F /* UavServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = UavServer; sourceTree = BUILT_PRODUCTS_DIR; };
 		001526D41A9E96E60059BC0F /* GpGroundController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpGroundController.cpp; sourceTree = "<group>"; };
 		001526D51A9E96E60059BC0F /* GpGroundController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpGroundController.h; sourceTree = "<group>"; };
-		001526D71A9E97020059BC0F /* GpUavAsset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpUavAsset.cpp; sourceTree = "<group>"; };
-		001526D81A9E97020059BC0F /* GpUavAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpUavAsset.h; sourceTree = "<group>"; };
 		004100001AA50EAB00295B54 /* export.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = export.hpp; sourceTree = "<group>"; };
 		004100011AA50EAB00295B54 /* extended_type_info.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = extended_type_info.hpp; sourceTree = "<group>"; };
 		004100021AA50EAB00295B54 /* extended_type_info_no_rtti.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = extended_type_info_no_rtti.hpp; sourceTree = "<group>"; };
@@ -10802,6 +10801,10 @@
 		00667F5A1A9ED3CE009E8692 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
 		006AF7091AA58DAC00F58EA6 /* GpMessage_Login.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpMessage_Login.cpp; sourceTree = "<group>"; };
 		006AF70A1AA58DAC00F58EA6 /* GpMessage_Login.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpMessage_Login.h; sourceTree = "<group>"; };
+		006E49F11AAB8E2300891FDB /* GpClientNet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpClientNet.cpp; sourceTree = "<group>"; };
+		006E49F21AAB8E2300891FDB /* GpClientNet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpClientNet.h; sourceTree = "<group>"; };
+		006E49F41AABA1E800891FDB /* GpAsset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpAsset.cpp; sourceTree = "<group>"; };
+		006E49F51AABA1E900891FDB /* GpAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpAsset.h; sourceTree = "<group>"; };
 		009C06121AA1A46400AC1CD1 /* GpGameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpGameController.h; sourceTree = "<group>"; };
 		009C06131AA1A46400AC1CD1 /* GpGameController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpGameController.cpp; sourceTree = "<group>"; };
 		009C0EC11AA1A55C00AC1CD1 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../_frameworks/SDL2.framework; sourceTree = "<group>"; };
@@ -10832,7 +10835,7 @@
 				00667E3A1A9ECB2F009E8692 /* Network */,
 				001526C21A9E90BE0059BC0F /* Server */,
 				001526D21A9E96930059BC0F /* Controller */,
-				001526D11A9E96840059BC0F /* Fly */,
+				006E49F71AABA1ED00891FDB /* Asset */,
 				00667E421A9ED3CD009E8692 /* mavlink */,
 				001526D31A9E96AF0059BC0F /* Support */,
 				001526C11A9E90BE0059BC0F /* Products */,
@@ -10857,15 +10860,6 @@
 			);
 			name = Server;
 			path = UavServer;
-			sourceTree = "<group>";
-		};
-		001526D11A9E96840059BC0F /* Fly */ = {
-			isa = PBXGroup;
-			children = (
-				001526D81A9E97020059BC0F /* GpUavAsset.h */,
-				001526D71A9E97020059BC0F /* GpUavAsset.cpp */,
-			);
-			name = Fly;
 			sourceTree = "<group>";
 		};
 		001526D21A9E96930059BC0F /* Controller */ = {
@@ -28940,6 +28934,17 @@
 			name = "Game Controller";
 			sourceTree = "<group>";
 		};
+		006E49F71AABA1ED00891FDB /* Asset */ = {
+			isa = PBXGroup;
+			children = (
+				006E49F21AAB8E2300891FDB /* GpClientNet.h */,
+				006E49F11AAB8E2300891FDB /* GpClientNet.cpp */,
+				006E49F51AABA1E900891FDB /* GpAsset.h */,
+				006E49F41AABA1E800891FDB /* GpAsset.cpp */,
+			);
+			name = Asset;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -28997,14 +29002,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				00410B031AA5261400295B54 /* GpMessage.cpp in Sources */,
-				001526D91A9E97020059BC0F /* GpUavAsset.cpp in Sources */,
 				0012438B1A9EC90700580506 /* GpUavServer.cpp in Sources */,
+				006E49F61AABA1E900891FDB /* GpAsset.cpp in Sources */,
 				009C06141AA1A46400AC1CD1 /* GpGameController.cpp in Sources */,
 				009C0EC51AA1A78200AC1CD1 /* GpControllerEvent.cpp in Sources */,
 				006AF70B1AA58DAC00F58EA6 /* GpMessage_Login.cpp in Sources */,
 				0012438C1A9EC90700580506 /* main.cpp in Sources */,
 				00667E3D1A9ECB4C009E8692 /* GpMavlink.cpp in Sources */,
 				001526D61A9E96E60059BC0F /* GpGroundController.cpp in Sources */,
+				006E49F31AAB8E2300891FDB /* GpClientNet.cpp in Sources */,
 				009C0EC81AA1A9E500AC1CD1 /* GpControllerNetwork.cpp in Sources */,
 				00A7B4D41AA3BE1D00068F5B /* GpDatabase.cpp in Sources */,
 			);

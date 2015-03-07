@@ -15,6 +15,8 @@
 #include <vector>
 
 
+typedef std::vector<uint8_t> byte_vector;
+
 class GpMessage_Login;
 
 /**

@@ -70,13 +70,19 @@ GpMessage::~GpMessage(){
 
 
 
+
+
+
+
+
 /**
  *  Serialize this message.
  *
  *  Provide an empty vector and it will return filled with this object's binary data, ready for transmission.
  *
  */
-void GpMessage::serialize(std::vector<uint8_t> & byteVect){
+void
+GpMessage::serialize(std::vector<uint8_t> & byteVect){
 	byteVect.push_back(_message_type);
 	uint16_t netSize = htons(_payloadSize);
 

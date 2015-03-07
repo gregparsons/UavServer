@@ -11,8 +11,8 @@
 #include <signal.h>
 
 #include "GpUavServer.h"
-#include "GpUavAsset.h"
 #include "GpGroundController.h"
+#include "GpAsset.h"
 
 void printUsage();
 void exit_program(int signal);
@@ -43,14 +43,15 @@ int main(int argc, const char * argv[]) {
 		}
 		else if(arg1 == "fly")
 		{
-			std::cout << "Starting flight controller receiver." << std::endl;
-			GpUavAsset asset;
-			asset.start();
+			std::cout << "[" << __func__ << "] Starting flight controller receiver." << std::endl;
+			GpAsset asset;
+			if(asset.connectServer() == false)
+				return -1;
+		
 		}
 		else if(arg1 == "server"){
 			GpUavServer server;
 			server.start();
-			
 		}
 	}
 	return 0;

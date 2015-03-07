@@ -35,7 +35,7 @@
 using namespace std;
 
 
-const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = false;
+const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = true;
 
 
 

@@ -8,9 +8,11 @@
 
 // const std::string GP_CONTROLLER_SERVER_IP = "127.0.0.1";
 
-const std::string GP_CONTROLLER_SERVER_IP = "192.168.113.240";
+const std::string GP_CONTROLLER_SERVER_IP = "192.168.113.90";
 // const std::string GP_CONTROLLER_SERVER_IP = "172.26.48.1";
 const std::string GP_CONTROLLER_SERVER_PORT = "11222";
+const std::string GP_ASSET_SERVER_PORT = "11223";
+
 
 const std::string GP_CONTROLLER_TEST_USERNAME = "MyLongUserName";
 const std::string GP_CONTROLLER_TEST_PASSWORD = "My really long password sentence could be an HMAC.";
