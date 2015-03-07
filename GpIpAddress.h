@@ -8,7 +8,7 @@
 
 // const std::string GP_CONTROLLER_SERVER_IP = "127.0.0.1";
 
-const std::string GP_CONTROLLER_SERVER_IP = "192.168.113.90";
+const std::string GP_CONTROLLER_SERVER_IP = "192.168.113.240";
 // const std::string GP_CONTROLLER_SERVER_IP = "172.26.48.1";
 const std::string GP_CONTROLLER_SERVER_PORT = "11222";
 
