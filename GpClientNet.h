@@ -48,6 +48,9 @@ public:
 	 *  Starts _listen_for_TCP_messages() as a dispatched thread. Sets the _message_handler function pointer
 	 *	to handle GpMessages generated. Hopefully that's thread safe....
 	 *
+	 *
+	 *  @param GpClientNet::gp_message_handler
+	 *  @returns void
 	 */
 	void startListenerAsThread(GpClientNet::gp_message_handler);
 	

@@ -35,8 +35,11 @@ bool GpAsset::connectServer(){
 	}
 	
 	net.startListenerAsThread(GpAsset::handle_messages);
+
 	
-	
+	bool i= true;
+	while(i)
+		;
 	return true;
 	
 }

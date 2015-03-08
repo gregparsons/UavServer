@@ -28,6 +28,7 @@
 #include "GpControllerNetwork.h"
 #include "GpMessage_Login.h"
 #include "GpMessage.h"
+#include "GpClientNet.h"
 
 
 bool GpGroundController::start(){
@@ -61,7 +62,7 @@ bool GpGroundController::start(){
 	
 	// START LISTENER THREAD (for messages from server)
 	// Do we need to be listening on a separate thread? How about just listen after sending credentials? Do one thing at a time?
-	network.startListenerThread();
+	// network.startListenerThread();
 	
 	
 	
@@ -74,9 +75,9 @@ bool GpGroundController::start(){
 	// network.listenThread();		//will this start fast enough to catch authentication reply?
 	
 	
-	while(! network._shouldSendControllerOutput){
-		usleep(10000);
-	}
+	//while(! GpControllerNetwork::_shouldSendControllerOutput){
+	//	usleep(10000);
+	//}
 	
 	GpGameController controller;
 

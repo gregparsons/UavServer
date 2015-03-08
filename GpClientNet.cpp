@@ -154,16 +154,20 @@ GpClientNet::_sendMessage(GpMessage &message){
 
 void GpClientNet::startListenerAsThread(GpClientNet::gp_message_handler message_handler){
 
-	_message_handler = message_handler;
+	if(message_handler != nullptr){
+	
+		_message_handler = message_handler;
 
-	
-	//new detached thread
-	_listen_for_TCP_messages();
-	// std::thread listenThread(&GpClientNet::_listen_for_TCP_messages, this);
-	// listenThread.detach();
-	
-	
-	
+		
+		//new detached thread
+		//_listen_for_TCP_messages();
+
+		
+		
+		std::thread listenThread(&GpClientNet::_listen_for_TCP_messages, this);
+		// listenThread.join();
+		listenThread.detach();
+	}
 }
 
 

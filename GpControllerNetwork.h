@@ -19,6 +19,8 @@
 #include <string>
 #include <vector>
 
+#include "GpClientNet.h"
+
 class GpMessage;
 
 class GpControllerNetwork{
@@ -42,7 +44,7 @@ public:
 	
 	
 	
-	bool _shouldSendControllerOutput = false;
+	// static bool _shouldSendControllerOutput;
 	
 	
 	
@@ -58,6 +60,12 @@ private:
 
 
 	
+	GpClientNet _net;
+
+	
+	
+	
+	
 	long sendRawTCP(std::vector<uint8_t> & rawVect);
 
 	
@@ -66,7 +74,12 @@ private:
 	// Just a simple recv and parse. Problem action to take for each kind of message is different for controller/server/asset.
 	void receiveDataAndParseMessage();
 	void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message);
-	void processMessage(GpMessage & msg);
+	static bool _handle_messages(GpMessage & msg);
+//	void _handle_messages(GpMessage & msg);
+	
+	
+	
+	
 };
 
 

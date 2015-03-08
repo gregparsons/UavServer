@@ -26,7 +26,7 @@
 #include "GpMessage.h"
 #include "GpMessage_Login.h"
 #include "GpIpAddress.h"
-
+#include "GpClientNet.h"
 
 /**
  *  Start TCP connection from client ground controller to server.
@@ -36,8 +36,32 @@
  */
 bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & port){
 	
+	
+	//GpClientNet net;
+	//if(_net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_ASSET_SERVER_PORT) == false){
+	
+	
+	
+	// CHANGE TO ASSET PORT!
+	
+	if(_net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT) == false){
+		
+		std::cout << "[" << __func__ << "] "  << "No server at ip/port?" << std::endl;
+		
+		
+		
+		return false;
+	}
+	
+	_net.startListenerAsThread(GpControllerNetwork::_handle_messages);
+	
+	
+	
+	/*
+	
+	
 	//int control_fd = 0;
-	struct addrinfo hints,  *resSave = nullptr; /* *res = nullptr */
+	struct addrinfo hints,  *resSave = nullptr;
 	int result = 0;
 
 	
@@ -83,7 +107,7 @@ bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & 
 	// Still going? Got a good connection.
 	
 	
-	
+	*/
 	
 	
 	
@@ -102,13 +126,17 @@ bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & 
 bool GpControllerNetwork::startListenerThread(){
 	
 	// Start Listener Thread
-	std::cout << "[" << __func__ << "] "  <<  "connect() fail: " << strerror(errno) << std::endl;
+	std::cout << "[" << __func__ << "] "  <<  "DOES NOTHING DEPRECATED" << strerror(errno) << std::endl;
 
-	
+	/*
 	std::thread listenThread(&GpControllerNetwork::listenThread, this);
 	listenThread.detach(); //??
+	*/
 	
-	return true;
+
+	// _net.startListenerAsThread(GpControllerNetwork::_handle_messages);
+	
+	return false;
 }
 
 
@@ -174,17 +202,18 @@ ssize_t GpControllerNetwork::sendGpMessage(GpMessage &message){
 
 	
 	
-	std::cout << "[" << __func__ << "] "  << "Sending msg type: " << message._message_type  << ", payload size: " << message._payloadSize << std::endl;
+	std::cout << "[" << __func__ << "] "  << "DEPRECATE (wrapper for GpClientNet::sendMessage()" << int(message._message_type)  << ", payload size: " << message._payloadSize << std::endl;
 
-	
+/*
 	std::vector<uint8_t> serializedMsgVect;
 	serializedMsgVect.reserve(message.size());
 	message.serialize(serializedMsgVect);
 
 	return sendRawTCP(serializedMsgVect);
-	
-	// return sendRawTCP(msgPtr, msgSize);
-
+*/
+	if(_net.sendMessage(message) == true)
+		return 1;
+	return 0;
 	
 }
 
@@ -192,7 +221,7 @@ ssize_t GpControllerNetwork::sendGpMessage(GpMessage &message){
 
 
 long GpControllerNetwork::sendRawTCP(std::vector<uint8_t> & rawVect){
-	std::cout << "[" << __func__ << "] "  << "" << std::endl;
+	std::cout << "[" << __func__ << "] "  << "DEPRECATED SHOULDNT BE CALLED AT ALL" << std::endl;
 
 //	const void * sendBytes = rawVect.data();
 
@@ -212,12 +241,6 @@ long GpControllerNetwork::sendRawTCP(std::vector<uint8_t> & rawVect){
 	
 	// SEND
 	
-	
-	
-	
-	
-	
-	
 
 	long numBytes = send(_control_fd, sendBytes, sendSize, 0);
 	if(numBytes == -1){
@@ -231,50 +254,14 @@ long GpControllerNetwork::sendRawTCP(std::vector<uint8_t> & rawVect){
 	
 	
 }
-/*
-
-ssize_t GpControllerNetwork::sendRawTCP(uint8_t *&appPacket, long pktSize){
-	
-	size_t numBytes = 0;
-	size_t size = (size_t)pktSize;
-	
-	numBytes = sendto(_control_fd, appPacket, size, 0, _res->ai_addr, _res->ai_addrlen);
-	if(numBytes == -1){
-		std::cout << "[" << __func__ << "] "  << "sendto() error: " << strerror(errno) <<  std::endl;
-	}
-	else
-		std::cout << "[" << __func__ << "] "  << numBytes << " bytes sent" << std::endl;
-	
-	return numBytes;
-	
-	
-	
-}
-*/
-
-
-
 
 
 
 
 
 void GpControllerNetwork::listenThread(){
-/*
-	uint8_t *buffer = _buffer;
-	size_t numBytes = 0;
-	for(;;){
-		numBytes = recv(_control_fd, buffer, sizeof(_buffer), 0);
-		if(numBytes >0)
-			std::cout << "[" << __func__ << "] "  <<  "		" << numBytes << " bytes" << std::endl;
- 
-		parseReceivedBytes();
-		
-		
-	}
-*/
-	
-	std::cout << "[" << __func__ << "] "  <<  "" << std::endl;
+
+	std::cout << "[" << __func__ << "] "  <<  "DEPRECATE YOU SHOULDN'T SEE THIS AT ALL" << std::endl;
 
 	
 	usleep(10000);
@@ -289,7 +276,7 @@ void GpControllerNetwork::receiveDataAndParseMessage()
 {
 	
 	
-	std::cout << "[" << __func__ << "] "  <<  "" << std::endl;
+	std::cout << "[" << __func__ << "] "  <<  "DEPRECATE YOU SHOULDN'T SEE THIS AT ALL" << std::endl;
 	
 	
 	// 2 BUFFERS: receive, message
@@ -405,7 +392,16 @@ void GpControllerNetwork::receiveDataAndParseMessage()
 				
 				std::cout << "[" << __func__ << "] "  << "Received message with type: " << int(newMessage._message_type) << " and payload size: " << newMessage._payloadSize << std::endl;
 				
-				processMessage(newMessage);
+				
+				
+				
+				
+				_handle_messages(newMessage);
+
+				
+				
+				
+				
 				
 				recvOutPtr+= bytesToTransfer;
 				
@@ -428,7 +424,7 @@ void GpControllerNetwork::receiveDataAndParseMessage()
 
 
 
-
+//DEPRECATED
 void GpControllerNetwork::putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message){
 	
 	//uint8_t *ptr = buffer;
@@ -451,8 +447,9 @@ void GpControllerNetwork::putHeaderInMessage(uint8_t *&buffer, long size, GpMess
 
 
 
-void GpControllerNetwork::processMessage(GpMessage & msg){
-	
+bool GpControllerNetwork::_handle_messages(GpMessage & msg){
+	std::cout << "[" << __func__ << "] "  <<  "GpControllerNetwork called me." << std::endl;
+
 	
 	switch (msg._message_type) {
 		case GP_MSG_TYPE_AUTHENTICATED_BY_SERVER:
@@ -464,7 +461,7 @@ void GpControllerNetwork::processMessage(GpMessage & msg){
 			// start sending asset commands
 			
 			
-			_shouldSendControllerOutput = true;
+			//_shouldSendControllerOutput = true;
 			
 			
 			
@@ -490,6 +487,8 @@ void GpControllerNetwork::processMessage(GpMessage & msg){
 		default:
 			break;
 	}
+	
+	return true;
 }
 
 
