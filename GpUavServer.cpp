@@ -162,8 +162,7 @@ GpUavServer::startNetwork(){
 	
 	// Listen
 	
-	result = listen
-	(_listen_fd, MAX_CONNECTION_BACKLOG);
+	result = listen(_listen_fd, MAX_CONNECTION_BACKLOG);
 	if(result == -1){
 		cout << "Listen error" << endl;
 		exit(1);

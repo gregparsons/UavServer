@@ -11,6 +11,9 @@
 #include <boost/format.hpp>
 #include <thread>
 #include <arpa/inet.h> //only for inet_ntop()
+#include <strings.h>	//bzero
+#include <string.h>		//memcpy, memset
+
 
 #include "GpClientNet.h"
 #include "GpMessage.h"
