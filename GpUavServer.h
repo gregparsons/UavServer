@@ -15,6 +15,36 @@
 class GpMessage;
 
 
+/**
+ *  GpUser Class
+ *
+ *  I envision this being more full-featured and including the authentication stuff in the future.
+ *
+ */
+class GpUser{
+public:
+	int _user_id = -1;
+	std::string _username = "";
+	int _fd = 0;					// socket file descriptor
+	bool _isAuthenticated = false;
+	
+	bool authenticate(std::string username, std::string key);
+};
+
+class GpAssetUser:public GpUser{
+public:
+	bool _connected = false;
+	
+};
+
+class GpControllerUser:public GpUser{
+public:
+	
+	GpAssetUser *_connectedAsset;
+};
+
+
+
 class GpUavServer
 {
 	
@@ -22,25 +52,32 @@ public:
 	
 	bool start();
 	
-	void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message);
-	
-	void processMessage(GpMessage & msg);
-
-	bool sendMessageToController(GpMessage & msg);
-
-	void sendHeartbeat();
 	
 private:
+	void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message);
+	
+	void processMessage(GpMessage & msg, GpUser & user);
+	
+	bool sendMessageToController(GpMessage & msg, GpUser & user);
+	
+	void sendHeartbeat(GpUser & user);
 
 	bool startNetwork();
-//	void forkClientRecv(int & client_fd);
-	void threadClientRecv();
+
+	void threadClientRecv(int fd);
 	
 	
 	
 	
-	int _client_fd = 0;		// socket for this client (when using fork())
+//	int _client_fd = 0;		// socket for this client (when using fork())
 	int _listen_fd = 0;		// socket used to listen for new clients
+	
+	
+//	std::vector<GpAssetConnect> _assets;
+//	std::vector<GpControllerConnect> _controllers;
+	
+	
+	
 	
 };
 

@@ -143,7 +143,7 @@ bool GpControllerNetwork::startListenerThread(){
 
 
 
-bool GpControllerNetwork::sendAuthenticationRequest(std::string username, std::string key2048){
+void GpControllerNetwork::sendAuthenticationRequest(std::string username, std::string key2048){
 	
 	//encrypt something with the symmetric key I share with the server
 	//server decrypts to know I'm who I am.
@@ -153,21 +153,16 @@ bool GpControllerNetwork::sendAuthenticationRequest(std::string username, std::s
 	GpMessage message(loginMessage);
 	std::cout << "[" << __func__ << "] "  << "username/pwd: " << loginMessage.username() << "/" << loginMessage.key() << std::endl;
 	
-	// uint16_t msgSize = GP_MSG_LOGIN_LEN+GP_MSG_HEADER_LEN;
-	// uint8_t msg[msgSize];
-	// bzero(msg, msgSize);
-
-
-	// Set GpMessage payload to serialized Login Message
-	// std::vector<uint8_t> serializedLoginMsgVect;
-	// loginMessage.serialize(serializedLoginMsgVect);
-	// message.setPayload(serializedLoginMsgVect);
+	sendGpMessage(message);
 	
-	
+	/*
 	
 	std::vector<uint8_t> serializedResultVect;
 	serializedResultVect.reserve(GP_MSG_LOGIN_LEN + GP_MSG_HEADER_LEN);
 	message.serialize(serializedResultVect);
+	
+	
+	
 	
 	if(sendRawTCP(serializedResultVect) > 0){
 		return true;
@@ -177,9 +172,8 @@ bool GpControllerNetwork::sendAuthenticationRequest(std::string username, std::s
 		;
 	}
 	
-	
+	*/
 
-	return false;
 }
 
 
@@ -218,7 +212,7 @@ ssize_t GpControllerNetwork::sendGpMessage(GpMessage &message){
 }
 
 
-
+/*
 
 long GpControllerNetwork::sendRawTCP(std::vector<uint8_t> & rawVect){
 	std::cout << "[" << __func__ << "] "  << "DEPRECATED SHOULDNT BE CALLED AT ALL" << std::endl;
@@ -255,7 +249,7 @@ long GpControllerNetwork::sendRawTCP(std::vector<uint8_t> & rawVect){
 	
 }
 
-
+*/
 
 
 

@@ -32,10 +32,60 @@
 #include "GpDatabase.h"
 
 
-using namespace std;
+bool GpUser::authenticate(std::string username, std::string key){
+	_username = username;
+	
+	if(GpDatabase::authenticateUser(username, key) == true){
+		_isAuthenticated = true;
+
+		
+		
+		_user_id = rand();		//this would be the unique key returned from the database
+		
+		
+		
+		
+		
+	}
+	else{
+		_isAuthenticated=false;
+	}
+	
+	
+	return _isAuthenticated;
+	
+}
+
+
+
+
+
 
 
 const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = true;
+
+void GpUavServer::sendHeartbeat(GpUser & user){
+	
+	for(;;){
+		
+		// FAKE MESSAGE
+		std::cout << "[" << __func__ << "] "  << "Sending fake message as heartbeat" << std::endl;
+		
+		
+		// Send login complete message to client
+		uint8_t *payload = nullptr;
+		GpMessage msgLoginComplete(GP_MSG_TYPE_HEARTBEAT, 0, payload);
+		
+		if(false == sendMessageToController(msgLoginComplete, user)){
+			std::cout << "[" << __func__ << "] "  << "Error sending heartbeat" << std::endl;
+			
+			return;
+		}
+		
+		usleep(3000000);
+	}
+	
+}
 
 
 
@@ -48,7 +98,7 @@ const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = true;
 signalHandler(int signal)
 {
 	while(waitpid(-1, NULL, WNOHANG) > 0);
-	cout << "signalHandler()" << endl;
+	cout << "signalHandler()" << std::endl;
 }
 */
 
@@ -95,6 +145,8 @@ GpUavServer::startNetwork(){
 	int result = 0;
 	int yes = 1;
 	
+	int client_fd = 0;
+	
 	// Handle zombie processes
 	/*
 	signalAction.sa_handler = signalHandler;
@@ -102,7 +154,7 @@ GpUavServer::startNetwork(){
 	signalAction.sa_flags = SA_RESTART;
 	result = sigaction(SIGCHLD, &signalAction, nullptr);
 	if(result == -1){
-		cout << "Error: sigaction" << endl;
+		cout << "Error: sigaction" << std::endl;
 		exit(1);
 	}
 	*/
@@ -114,10 +166,11 @@ GpUavServer::startNetwork(){
 	hintAddrInfo.ai_socktype = SOCK_STREAM;	//stream = TCP
 	hintAddrInfo.ai_flags = AI_PASSIVE;		//
 	
-//	result = getaddrinfo(GP_CONTROLLER_SERVER_IP.c_str(), GP_CONTROLLER_SERVER_PORT.c_str(), &hintAddrInfo, &resSave);
+
+	// 0.0.0.0
 	result = getaddrinfo("0.0.0.0", GP_CONTROLLER_SERVER_PORT.c_str(), &hintAddrInfo, &resSave);
 	if(result < 0){ //error
-		cout << "getaddrinfo() error" << endl;
+		std::cout << "getaddrinfo() error" << std::endl;
 		return 1;
 	}
 	
@@ -129,42 +182,33 @@ GpUavServer::startNetwork(){
 		
 		_listen_fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 		if(_listen_fd == -1){ //error, else file descriptor
-			cout << "Socket error" << endl;
+			std::cout << "Socket error" << std::endl;
 			continue;
 		}
 		result = setsockopt(_listen_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 		if(result == -1){
-			cout << "socket options error" << endl;
+			std::cout << "socket options error" << std::endl;
 			exit(1);
 		}
-		
-		
+
 		// Bind
-		
-		result = ::bind(_listen_fd, res->ai_addr, res->ai_addrlen);
-		if(result == -1){
-			
-//			char err[20];
-//			perror(err);
-			cout << "Bind Error: " << strerror(errno) << endl;
+		if(::bind(_listen_fd, res->ai_addr, res->ai_addrlen) == -1){
+			std::cout << "Bind Error: " << strerror(errno) << std::endl;
 			exit(1);
 		}
 		break;
 		
 	}
 	if(res == nullptr){
-		cout << "Failed to bind" << endl;
+		std::cout << "Failed to bind" << std::endl;
 		return 2;
 	}
 	freeaddrinfo(resSave);	//done with this
 	
 	
-	
 	// Listen
-	
-	result = listen(_listen_fd, MAX_CONNECTION_BACKLOG);
-	if(result == -1){
-		cout << "Listen error" << endl;
+	if(listen(_listen_fd, MAX_CONNECTION_BACKLOG) == -1){
+		std::cout << "Listen error" << std::endl;
 		exit(1);
 	}
 	
@@ -177,10 +221,10 @@ GpUavServer::startNetwork(){
 		// Accept
 		
 		addrLen = sizeof(inboundAddress);		//address len for accept should be size of address struct, but on return it gets set to bytes of the actual string (or struct?) address
-		_client_fd = accept(_listen_fd, (struct sockaddr *)&inboundAddress, &addrLen);
+		client_fd = accept(_listen_fd, (struct sockaddr *)&inboundAddress, &addrLen);
 		
-		if(_client_fd == -1){
-			cout << "Error: accept(): " << strerror(errno) << endl;
+		if(client_fd == -1){
+			std::cout << "Error: accept(): " << strerror(errno) << std::endl;
 			switch (errno) {
 				case EBADF:		//errno.h
 					break;
@@ -190,16 +234,16 @@ GpUavServer::startNetwork(){
 			continue;
 		}
 		
-		
-		
-		
-		// TEST SERVER HEARTBEAT
-		if(GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER){
-		
-			std::thread serverHeartbeat(&GpUavServer::sendHeartbeat, this);
-			serverHeartbeat.detach();
 
-		}
+		// Save controller in active connections vector. Needs to be thread safe? Why do I need a list of controllers? So the controller doesn't go out of scope?
+		// Then should save a pointer to the memory in the vector, not in this local function? Or join the thread below so it doesn't get deallocated? Or just copy to
+		// the thread and don't use a pointer.
+		
+		// Do push_back and resize invalidate references?
+		
+		//GpControllerConnect controller;
+		//controller.fd = client_fd;
+		//_controllers.push_back(controller);		//pointers to vector contents are invalid after the vector changes...so can't pass a pointer to the vector[i] object...
 		
 		
 		
@@ -207,25 +251,35 @@ GpUavServer::startNetwork(){
 		
 		
 		
+		// CLIENT THREAD -- START
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		// RECEIVE THREAD -- START
-		
-		std::thread clientThread (&GpUavServer::threadClientRecv, this);
+		std::thread clientThread (&GpUavServer::threadClientRecv, *this, client_fd);
 		clientThread.detach();
 		usleep(10000);
-		std::cout << "[" << __func__ << "] "  << "[GpUavServer::startNetwork] after starting thread" << endl;
+		// std::cout << "[" << __func__ << "] "  << "[GpUavServer::startNetwork] after starting thread" << std::endl;
+
 		
-		//clientThread.join();
+		
+		
+
+/*
+		
+		// **** HEARTBEAT *****
+		
+		if(GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER){
+			std::cout << "[" << __func__ << "] "  << "TEST: Starting heartbeat" << std::endl;
+			
+			std::thread serverHeartbeat(&GpUavServer::sendHeartbeat, *this, user);
+			serverHeartbeat.detach();
+			
+		}
+		
+*/
+		
+		
+		
+		
+		// clientThread.join();
 
 	}
 }
@@ -239,11 +293,16 @@ GpUavServer::startNetwork(){
 
 
 
-void GpUavServer::threadClientRecv()
+void GpUavServer::threadClientRecv(int fd)
 {
 	
 
 	std::cout << "[" << __func__ << "] "  << "Entering recv() thread " << std::this_thread::get_id() << std::endl;
+	
+	GpControllerUser user;
+	user._fd = fd;
+	
+	
 	
 
 	// 2 BUFFERS: receive, message
@@ -287,9 +346,9 @@ void GpUavServer::threadClientRecv()
  		// RECEIVE
 		
 		
-		bytesInRecvBuffer = recv(_client_fd, recvInPtr, length, 0);		//blocks if no data, returns zero if no data and shutdown occurred
+		bytesInRecvBuffer = recv(fd, recvInPtr, length, 0);		//blocks if no data, returns zero if no data and shutdown occurred
 		if(bytesInRecvBuffer == -1){
-			cout << "Error: recv()" << endl;
+			std::cout << "Error: recv()" << std::endl;
 			//exit(1);
 			return;
 		}
@@ -324,32 +383,9 @@ void GpUavServer::threadClientRecv()
 				msgBytesStillNeeded = messageLenMax;
 				bytesToTransfer = std::min(bytesInRecvBuffer, msgBytesStillNeeded);		//first time, copy as many as possible from packet buffer
 				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
 				memcpy(&messageBuffer, recvOutPtr, bytesToTransfer);
 				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
+
 			}
 			else // if(messageStarted)
 			{
@@ -376,12 +412,9 @@ void GpUavServer::threadClientRecv()
 				uint8_t *tempPayloadPtr = msgHead + GP_MSG_HEADER_LEN;
 				newMessage.setPayload(tempPayloadPtr, newMessage._payloadSize);		//payload to vector
 				
-				// MESSAGE COMPLETE
+				// PROCESS MESSAGE
 				
-				
-				std::cout << "[" << __func__ << "] "  << "Received message with type: " << int(newMessage._message_type) << " and payload size: " << newMessage._payloadSize << std::endl;
-
-				processMessage(newMessage);
+				processMessage(newMessage, user);
 				
 				recvOutPtr+= bytesToTransfer;
 				
@@ -408,28 +441,7 @@ void GpUavServer::threadClientRecv()
 
 
 
-void GpUavServer::sendHeartbeat(){
-	
-	for(;;){
-		
-		// FAKE MESSAGE
-		std::cout << "[" << __func__ << "] "  << "Sending fake message as heartbeat" << std::endl;
-		
-		
-		
-		
-		// Send login complete message to client
-		uint8_t *payload = nullptr;
-		GpMessage msgLoginComplete(GP_MSG_TYPE_HEARTBEAT, 0, payload);
-		
-		if(false == sendMessageToController(msgLoginComplete)){
-			std::cout << "[" << __func__ << "] "  << "Error sending login confirmation" << std::endl;
-		}
-		
-		usleep(3000000);
-	}
-	
-}
+
 
 
 
@@ -459,94 +471,110 @@ void GpUavServer::putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & me
 
 
 
-void GpUavServer::processMessage(GpMessage & msg){
+void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
+
+	std::cout << "[" << __func__ << "] "  << "Received message with type: " << int(msg._message_type) << " and payload size: " << msg._payloadSize << std::endl;
 
 	
-	switch (msg._message_type) {
-		case GP_MSG_TYPE_COMMAND:
-		{
-			std::cout << "[" << __func__ << "] "  << "GP_MSG_TYPE_COMMAND" << std::endl;
-
+	if(user._isAuthenticated){
+		switch (msg._message_type) {
 			
-
-			
-			GpMavlink::printMavFromGpMessage(msg);
-			
-			
-			
-			
-			/*
-			 
-			 
-			 
-			 Here, re-send message to asset
-			 
-			 
-			 
-			 */
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			break;
-			
-		}
-		case GP_MSG_TYPE_LOGIN:
-		{
-			std::cout << "[" << __func__ << "] "  << "[GpUavServer::processMessage] Processing login message" << std::endl;
-
-			// Authenticate
-			// GpMessage_Login loginMsg(msg._payload);
-			
-			GpMessage_Login loginMsg(msg._payLd_vec);
-			if(true == (GpDatabase::authenticateUser(loginMsg.username(), loginMsg.key())))
+			case GP_MSG_TYPE_COMMAND:
 			{
-
-				std::cout << "[" << __func__ << "] "  << "Sending authentication confirmation to: " << loginMsg.username() << std::endl;
+				std::cout << "[" << __func__ << "] "  << "GP_MSG_TYPE_COMMAND" << std::endl;
 				
 				
-				// Send login complete message to client
-				uint8_t *payload = nullptr;	// No payload required, just a ref to a pointer needed for constructor.
-				GpMessage msgLoginComplete(GP_MSG_TYPE_AUTHENTICATED_BY_SERVER, 0, payload);
-
-				if(sendMessageToController(msgLoginComplete) == false){
-					std::cout << "[" << __func__ << "] "  << "Error sending login confirmation" << std::endl;
-				}
-				std::cout << "[" << __func__ << "] "  << "Authentication confirmation sent." << std::endl;
+				
+				
+				GpMavlink::printMavFromGpMessage(msg);
+				
+				
+				
+				
+				/*
+				 
+				 
+				 
+				 Here, re-send message to asset
+				 
+				 
+				 
+				 */
+				
+				
+				
+				
+				
+				
+				break;
+				
 			}
-			break;
-		}
-		case GP_MSG_TYPE_LOGOUT:
-		{
-			std::cout << "[" << __func__ << "] "  << "[GpUavServer::processMessage] Processing logout message" << std::endl;
-			break;
-		}
-		default:
-		{
-			std::cout << "[" << __func__ << "] "  << "Message type: "<< msg._message_type << std::endl;
-			break;
+				
+			case GP_MSG_TYPE_LOGOUT:
+			{
+				
+				//GpDatabase::logout();
+				//user.isAuthenticated set to false in db logout
+				
+				std::cout << "[" << __func__ << "] "  << "Processing logout message" << std::endl;
+				break;
+			}
+				
+			default:
+			{
+				std::cout << "[" << __func__ << "] "  << "Message type: "<< msg._message_type << std::endl;
+				break;
+			}
 		}
 	}
+	else{
+
+		// If you're not authenticated, the only message you can even send is an authentication request.
+		
+		
+		switch (msg._message_type) {
+			case GP_MSG_TYPE_LOGIN:
+			{
+				std::cout << "[" << __func__ << "] "  << "Processing login message" << std::endl;
+				GpMessage_Login loginMsg(msg._payLd_vec);
+				
+				// AUTHENTICATE
+				
+				if(true == (user.authenticate(loginMsg.username(), loginMsg.key())   ))
+				{
+					
+					std::cout << "[" << __func__ << "] "  << "Sending authentication confirmation to: " << user._username << "on socket " << user._fd << std::endl;
+					
+					
+					// Send login complete message to client
+					uint8_t *payload = nullptr;	// No payload required, just a ref to a pointer needed for constructor.
+					GpMessage msgLoginComplete(GP_MSG_TYPE_AUTHENTICATED_BY_SERVER, 0, payload);
+					
+					if(sendMessageToController(msgLoginComplete, user) == false){
+						std::cout << "[" << __func__ << "] "  << "Error sending login confirmation" << std::endl;
+					}
+					std::cout << "[" << __func__ << "] "  << "Authentication confirmation sent." << std::endl;
+
+				
+				
+				
+				
+				
+				
+				
+				}
+				break;
+			}
+			default:
+				break;
+		}
+	}
+	
+	
+	
+	
+	
+
 }
 
 
@@ -561,20 +589,7 @@ void GpUavServer::processMessage(GpMessage & msg){
  *  @param GpMessage & msg
  *  @returns Bool
  */
-bool GpUavServer::sendMessageToController(GpMessage & msg){
-	/*
-	uint8_t bytes[GP_MSG_MAX_LEN];		//
-	uint8_t *bytePtr = bytes;
-	uint16_t size = sizeof(bytes);		//this will return with the actual size of the message
-	
-	
-	
-	
-	//DEPRECATE!
-	msg.serialize(bytePtr, size);
-	*/
-	
-	
+bool GpUavServer::sendMessageToController(GpMessage & msg, GpUser & user){
 	
 	
 	// SERIALIZE
@@ -586,7 +601,7 @@ bool GpUavServer::sendMessageToController(GpMessage & msg){
 	
 	// SEND TCP
 	
-	ssize_t retVal = send(_client_fd, byteVect.data(), byteVect.size(), 0);	//this will be a new size based on the actual size of the serialized data (not the default above)
+	ssize_t retVal = send(user._fd, byteVect.data(), byteVect.size(), 0);	//this will be a new size based on the actual size of the serialized data (not the default above)
 	if(retVal == -1)
 		return false;
 	return true;

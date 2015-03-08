@@ -30,7 +30,7 @@ public:
 	bool startListenerThread();
 	void listenThread();	//private if thread
 	
-	bool sendAuthenticationRequest(std::string username, std::string key2048);
+	void sendAuthenticationRequest(std::string username, std::string key2048);
 	
 
 	
@@ -66,7 +66,7 @@ private:
 	
 	
 	
-	long sendRawTCP(std::vector<uint8_t> & rawVect);
+//	long sendRawTCP(std::vector<uint8_t> & rawVect);
 
 	
 	
