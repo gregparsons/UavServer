@@ -40,6 +40,7 @@
  *  @param ip address, port number
  *	@returns true if successful
  */
+/*
 bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & port){
 	
 	
@@ -63,57 +64,7 @@ bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & 
 	
 	
 	
-	/*
 	
-	
-	//int control_fd = 0;
-	struct addrinfo hints,  *resSave = nullptr;
-	int result = 0;
-
-	
-	// memset(&hints, 0, sizeof(hints));
-	bzero(&hints, sizeof(hints));
-	hints.ai_family = AF_UNSPEC;		//AF_INET = tcp, udp
-	hints.ai_socktype = SOCK_STREAM;
-	
-	result = getaddrinfo(ip.c_str(), port.c_str(), &hints, &_res);
-	if(result == -1){
-		std::cout << "[" << __func__ << "] " << "Error: getaddrinfo" << std::endl;
-	}
-	
-	//ref: Stevens/Fenner/Rudoff
-	resSave = _res;
-	do {
-		
-		// Socket
-		
-		_control_fd = socket(_res->ai_family, _res->ai_socktype, _res->ai_protocol);
-		if(_control_fd < 0){
-			continue;
-		}
-		
-		
-		// Connect
-		
-		result = connect(_control_fd, _res->ai_addr, _res->ai_addrlen);
-		if(result == 0){
-			break;			// break if good connect
-		}
-		close(_control_fd);
-		_res = _res->ai_next;
-	} while (_res != nullptr);
-	
-	if(_res == nullptr){
-		std::cout << "[" << __func__ << "] "  << "Error: connect 2" << strerror(errno) << std::endl;
-		return false;
-	}
-	freeaddrinfo(resSave);
-	
-
-	// Still going? Got a good connection.
-	
-	
-	*/
 	
 	
 	
@@ -121,7 +72,7 @@ bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & 
 	
 	return true;
 }
-
+*/
 
 /**
  *  startListenerThread
@@ -129,26 +80,19 @@ bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & 
  *  Listens on the client socket for messages from the server (like authentication, relay from asset, etc)
  *  @returns bool success
  */
+/*
 bool GpControllerNetwork::startListenerThread(){
 	
 	// Start Listener Thread
 	std::cout << "[" << __func__ << "] "  <<  "DOES NOTHING DEPRECATED" << strerror(errno) << std::endl;
 
-	/*
-	std::thread listenThread(&GpControllerNetwork::listenThread, this);
-	listenThread.detach(); //??
-	*/
-	
-
-	// _net.startListenerAsThread(GpControllerNetwork::_handle_messages);
-	
 	return false;
 }
 
 
+*/
 
-
-
+/*
 void GpControllerNetwork::sendAuthenticationRequest(std::string username, std::string key2048){
 	
 	//encrypt something with the symmetric key I share with the server
@@ -163,7 +107,7 @@ void GpControllerNetwork::sendAuthenticationRequest(std::string username, std::s
 
 	_net.sendMessage(message);
 }
-
+*/
 
 /*
 
@@ -220,7 +164,7 @@ long GpControllerNetwork::sendRawTCP(std::vector<uint8_t> & rawVect){
 */
 
 
-
+/*
 void GpControllerNetwork::listenThread(){
 
 	std::cout << "[" << __func__ << "] "  <<  "DEPRECATE YOU SHOULDN'T SEE THIS AT ALL" << std::endl;
@@ -230,6 +174,8 @@ void GpControllerNetwork::listenThread(){
 	receiveDataAndParseMessage();
 	
 }
+
+*/
 
 
 

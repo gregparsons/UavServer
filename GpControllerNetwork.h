@@ -25,12 +25,12 @@ class GpMessage;
 
 class GpControllerNetwork{
 public:
-	bool gpConnect(const std::string & ip, const std::string & port);
+	//bool gpConnect(const std::string & ip, const std::string & port);
 
-	bool startListenerThread();
-	void listenThread();	//private if thread
+	//bool startListenerThread();
+	//void listenThread();	//private if thread
 	
-	void sendAuthenticationRequest(std::string username, std::string key2048);
+	//void sendAuthenticationRequest(std::string username, std::string key2048);
 	
 
 	
@@ -44,7 +44,7 @@ public:
 	
 	
 	
-	static bool _shouldSendControllerOutput;
+	//static bool _shouldSendControllerOutput;
 	
 	
 	
