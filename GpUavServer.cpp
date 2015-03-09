@@ -7,7 +7,6 @@
 // ********************************************************************************
 
 
-// #define GP_SHOULD_INSERT_FAKE_ASSET
 
 
 #include <mavlink/c_library/common/mavlink.h>
@@ -38,7 +37,10 @@
 
 
 
-const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = true;
+
+
+
+
 
 void GpUavServer::sendHeartbeat(GpUser user){
 	
@@ -215,20 +217,6 @@ GpUavServer::startNetwork(){
 		}
 		
 
-		// Save controller in active connections vector. Needs to be thread safe? Why do I need a list of controllers? So the controller doesn't go out of scope?
-		// Then should save a pointer to the memory in the vector, not in this local function? Or join the thread below so it doesn't get deallocated? Or just copy to
-		// the thread and don't use a pointer.
-		
-		// Do push_back and resize invalidate references?
-		
-		//GpControllerConnect controller;
-		//controller.fd = client_fd;
-		//_controllers.push_back(controller);		//pointers to vector contents are invalid after the vector changes...so can't pass a pointer to the vector[i] object...
-		
-		
-		
-		
-		
 		
 		
 		// CLIENT THREAD -- START
@@ -236,18 +224,7 @@ GpUavServer::startNetwork(){
 		std::thread clientThread (&GpUavServer::threadClientRecv, *this, client_fd);
 		clientThread.detach();
 		usleep(10000);
-		// std::cout << "[" << __func__ << "] "  << "[GpUavServer::startNetwork] after starting thread" << std::endl;
 
-		
-		
-		
-
-
-		
-		
-		
-		
-		// clientThread.join();
 
 	}
 }
@@ -287,12 +264,6 @@ void GpUavServer::threadClientRecv(int fd)
 			 serverHeartbeat.detach();
 	 
 		}
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -428,17 +399,6 @@ void GpUavServer::threadClientRecv(int fd)
 		
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

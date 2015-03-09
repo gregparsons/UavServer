@@ -34,6 +34,12 @@ bool GpAsset::connectServer(){
 		return false;
 	}
 	
+	
+	
+	
+	
+	
+	
 	net.startListenerAsThread(GpAsset::handle_messages);
 
 	
@@ -53,7 +59,7 @@ bool GpAsset::connectServer(){
  *  @param GpMessage & message
  *  @returns bool success
  */
-bool GpAsset::handle_messages(GpMessage & message){
+bool GpAsset::handle_messages(GpMessage & message, GpClientNet & net){
 	
 	std::cout << "[" << __func__ << "] "  << "Message Type: " << int(message._message_type) << std::endl;
 

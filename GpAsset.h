@@ -14,6 +14,7 @@
 #define __UavServer__GpAsset__
 
 class GpMessage;
+class GpClientNet;
 
 class GpAsset{
 public:
@@ -22,7 +23,7 @@ public:
 	
 	bool connectServer();
 	
-	static bool handle_messages(GpMessage & message);
+	static bool handle_messages(GpMessage & message, GpClientNet & Net);
 	
 private:
 };

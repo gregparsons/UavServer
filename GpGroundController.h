@@ -10,6 +10,10 @@
 #ifndef __UavServer__GpGroundController__
 #define __UavServer__GpGroundController__
 
+#include "GpClientNet.h"
+
+class GpMessage;
+
 class GpGroundController
 {
 public:
@@ -23,12 +27,16 @@ private:
 	
 	bool _isLoggedIn = false;
 	
-	
 	/**
 	 *  signalHandler(): Clean up zombie processes.
 	 *
 	 */
 	static void signalHandler(int signal);
+
+	// Type GpClientNet::gp_message_hander
+	static bool handle_messages(GpMessage & msg, GpClientNet & net);
+
+	GpClientNet _net;
 	
 };
 

@@ -16,8 +16,6 @@ const std::string GP_CONTROLLER_SERVER_PORT = "11222";
 const std::string GP_ASSET_SERVER_PORT = "11223";
 
 
-const std::string GP_CONTROLLER_TEST_USERNAME = "MyLongUserName";
-const std::string GP_CONTROLLER_TEST_PASSWORD = "My really long password sentence could be an HMAC.";
 
 
 #define MAX_CONNECTION_BACKLOG 10
@@ -25,8 +23,18 @@ const std::string GP_CONTROLLER_TEST_PASSWORD = "My really long password sentenc
 
 
 
-#define GP_ASSET_ID_REMOVE__ 12345
+// Debug stuff:
 
+#define GP_ASSET_ID_REMOVE__ 12345
+const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = true;
+
+const std::string GP_CONTROLLER_TEST_USERNAME = "MyLongUserName";
+const std::string GP_CONTROLLER_TEST_PASSWORD = "My really long password sentence could be an HMAC.";
+
+const std::string GP_ASSET_TEST_USERNAME = "Asset123456";
+const std::string GP_ASSET_TEST_PASSWORD = "My really long password sentence could be an HMAC.";
+
+// #define GP_SHOULD_INSERT_FAKE_ASSET
 
 
 

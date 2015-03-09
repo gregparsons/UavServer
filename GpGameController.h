@@ -11,15 +11,17 @@
 
 #include "SDL2/SDL.h"
 
-// class SDL_GameController;
-
 #include "GpControllerNetwork.h"
 
 class GpGameController{
 public:
-	static void runGameController(GpControllerNetwork & controlNet);
+	
+	void runGameController(GpClientNet & controlNet);
+	
+	
 private:
-	static bool initSDL(SDL_GameController **gameController);
+	
+	bool initSDL(SDL_GameController **gameController);
 	
 	
 	//GameController Unique ID?

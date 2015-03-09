@@ -28553,6 +28553,8 @@
 			isa = PBXGroup;
 			children = (
 				00667E3E1A9ED1AA009E8692 /* GpIpAddress.h */,
+				006E49F21AAB8E2300891FDB /* GpClientNet.h */,
+				006E49F11AAB8E2300891FDB /* GpClientNet.cpp */,
 				00667E3C1A9ECB4C009E8692 /* GpMavlink.h */,
 				00667E3B1A9ECB4C009E8692 /* GpMavlink.cpp */,
 				00410B021AA5261400295B54 /* GpMessage.h */,
@@ -28942,8 +28944,6 @@
 		006E49F71AABA1ED00891FDB /* Asset */ = {
 			isa = PBXGroup;
 			children = (
-				006E49F21AAB8E2300891FDB /* GpClientNet.h */,
-				006E49F11AAB8E2300891FDB /* GpClientNet.cpp */,
 				006E49F51AABA1E900891FDB /* GpAsset.h */,
 				006E49F41AABA1E800891FDB /* GpAsset.cpp */,
 			);

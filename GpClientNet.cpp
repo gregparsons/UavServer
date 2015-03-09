@@ -17,6 +17,7 @@
 
 #include "GpClientNet.h"
 #include "GpMessage.h"
+#include "GpMessage_Login.h"
 #include "GpIpAddress.h"
 
 
@@ -30,6 +31,10 @@ GpClientNet::GpClientNet(){
 
 }
 
+GpClientNet::GpClientNet(gp_message_handler message_handler){
+	
+	_message_handler = message_handler;
+}
 
 
 bool
@@ -382,7 +387,7 @@ void GpClientNet::_receiveDataAndParseMessage()
 				
 				// Get a lock in case message_handler isn't thread safe.
 				std::lock_guard<std::mutex> sendGuard(_message_handler_mutex);		// when guard class is destroyed at end of scope the lock is released
-				_message_handler(newMessage);		// Do the code given by the calling entity.
+				_message_handler(newMessage, *this);		// Do the code given by the calling entity.
 
 				
 				
@@ -399,5 +404,19 @@ void GpClientNet::_receiveDataAndParseMessage()
 
 
 
-
+void GpClientNet::sendAuthenticationRequest(std::string username, std::string key){
+	
+	//encrypt something with the symmetric key I share with the server
+	//server decrypts to know I'm who I am.
+	
+	
+	GpMessage_Login loginMessage(username, key);
+	GpMessage message(loginMessage);
+	std::cout << "[" << __func__ << "] "  << "username/pwd: " << loginMessage.username() << "/" << loginMessage.key() << std::endl;
+	
+	
+	sendMessage(message);
+	
+	
+}
 

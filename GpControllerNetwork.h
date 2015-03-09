@@ -37,7 +37,7 @@ public:
 	
 	
 	
-	ssize_t sendGpMessage(GpMessage &message);
+	//ssize_t sendGpMessage(GpMessage &message);
 	
 	
 	
@@ -74,7 +74,7 @@ private:
 	// Just a simple recv and parse. Problem action to take for each kind of message is different for controller/server/asset.
 	void receiveDataAndParseMessage();
 	void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message);
-	static bool _handle_messages(GpMessage & msg);
+	// static bool _handle_messages(GpMessage & msg);
 //	void _handle_messages(GpMessage & msg);
 	
 	

@@ -30,7 +30,7 @@
 
 
 // Static
-bool GpControllerNetwork::_shouldSendControllerOutput = false;
+// bool GpControllerNetwork::_shouldSendControllerOutput = false;
 
 
 
@@ -59,7 +59,7 @@ bool GpControllerNetwork::gpConnect(const std::string & ip, const std::string & 
 		return false;
 	}
 	
-	_net.startListenerAsThread(GpControllerNetwork::_handle_messages);
+	// _net.startListenerAsThread(GpControllerNetwork::_handle_messages);
 	
 	
 	
@@ -159,65 +159,27 @@ void GpControllerNetwork::sendAuthenticationRequest(std::string username, std::s
 	GpMessage message(loginMessage);
 	std::cout << "[" << __func__ << "] "  << "username/pwd: " << loginMessage.username() << "/" << loginMessage.key() << std::endl;
 	
-	sendGpMessage(message);
-	
-	/*
-	
-	std::vector<uint8_t> serializedResultVect;
-	serializedResultVect.reserve(GP_MSG_LOGIN_LEN + GP_MSG_HEADER_LEN);
-	message.serialize(serializedResultVect);
-	
-	
-	
-	
-	if(sendRawTCP(serializedResultVect) > 0){
-		return true;
-	}
-	else{
-		std::cout << "[" << __func__ << "] "  << "sendRawTCP failed" << std::endl;
-		;
-	}
-	
-	*/
+	// sendGpMessage(message);
 
+	_net.sendMessage(message);
 }
 
 
-
+/*
 
 ssize_t GpControllerNetwork::sendGpMessage(GpMessage &message){
 	
-	
-	
-	/*
-	uint16_t msgSize = message.size(); //  message._payloadSize + GP_MSG_HEADER_LEN;
 
-	uint8_t msg[GP_MSG_MAX_LEN];
-	bzero(msg, GP_MSG_MAX_LEN);
-	uint8_t *msgPtr = msg;
-	
-	message.serialize(msgPtr, msgSize);
-	*/
-
-
-	
 	
 	std::cout << "[" << __func__ << "] "  << "DEPRECATE (wrapper for GpClientNet::sendMessage()" << int(message._message_type)  << ", payload size: " << message._payloadSize << std::endl;
 
-/*
-	std::vector<uint8_t> serializedMsgVect;
-	serializedMsgVect.reserve(message.size());
-	message.serialize(serializedMsgVect);
-
-	return sendRawTCP(serializedMsgVect);
-*/
 	if(_net.sendMessage(message) == true)
 		return 1;
 	return 0;
 	
 }
 
-
+*/
 /*
 
 long GpControllerNetwork::sendRawTCP(std::vector<uint8_t> & rawVect){
@@ -396,7 +358,7 @@ void GpControllerNetwork::receiveDataAndParseMessage()
 				
 				
 				
-				_handle_messages(newMessage);
+				//_handle_messages(newMessage);
 
 				
 				
@@ -445,7 +407,7 @@ void GpControllerNetwork::putHeaderInMessage(uint8_t *&buffer, long size, GpMess
 }
 
 
-
+/*
 
 bool GpControllerNetwork::_handle_messages(GpMessage & msg){
 	std::cout << "[" << __func__ << "] "  <<  "GpControllerNetwork called me." << std::endl;
@@ -497,3 +459,4 @@ bool GpControllerNetwork::_handle_messages(GpMessage & msg){
 
 
 
+*/

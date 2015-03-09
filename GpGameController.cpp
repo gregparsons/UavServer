@@ -1,7 +1,7 @@
 
 /**
  
- Listens for input events from a common USB video game controller. Requires the SDL2
+ Listens for input events from a common USB video game. Requires the SDL2
  framework: /Library/Frameworks/SDL2.framework (build phases / link binary with libraries).
  
  
@@ -67,7 +67,7 @@ bool GpGameController::initSDL(SDL_GameController **gameController){
  
  */
  
-void GpGameController::runGameController(GpControllerNetwork & controlNet){
+void GpGameController::runGameController(GpClientNet & net){
 	
 	SDL_GameController *gameController = nullptr;
 
@@ -118,14 +118,6 @@ void GpGameController::runGameController(GpControllerNetwork & controlNet){
 								if(axisValue[e.caxis.axis] != newVal){
 									axisValue[e.caxis.axis] = newVal;
 									
-									
-									
-									
-									
-									
-									
-									
-									
 									mavlink_message_t mavlinkMsg;
 									bzero(&mavlinkMsg, sizeof(mavlink_message_t));
 						
@@ -147,56 +139,10 @@ void GpGameController::runGameController(GpControllerNetwork & controlNet){
 									
 									
 									
-									
-									controlNet.sendGpMessage(cmdMessage);
-									
+									net.sendMessage(cmdMessage);
 
-									
-									
-									
-									//controlNet.sendTCP(mavlinkMsg);
-									
-/*
-									
-									
-									uint8_t message[] = "hello greg what's happening?";
-
-									// Variable size buffer to hold message and message header
-									uint16_t bufferSize = sizeof(message) + GP_MSG_HEADER_LEN;
-									uint8_t buffer[bufferSize];
-									bzero(buffer, sizeof(buffer));
-									
-									uint8_t *ptr = buffer;
-									uint8_t *messageRef = message;
-									
-									uint16_t messageSize = sizeof(message);
-									GpMessage gpMesg {2, messageSize, messageRef};	//create message based on the actual payload and payload size
-
-									gpMesg.serialize(ptr, bufferSize);		//serialize to buffer
-									
-									GpMessage gpMesg2;
-									gpMesg2.deserialize(ptr, bufferSize);
-*/
-									
-									
-									
-									
-									/*
-									//Fill in the GpControllerEvent class for packaging in prep for network serialization
-									gpEvent.setLX(axisValue[0]);
-									gpEvent.setLY(axisValue[1]);
-									gpEvent.setRX(axisValue[2]);
-									gpEvent.setRY(axisValue[3]);
-									gpEvent.setTimestamp(e.caxis.timestamp);
-									 */
+								
 								}
-
-								
-								// std::cout << "Sending: [" << gpEvent.timestamp() << "] LX " << gpEvent.leftX() << ", LY " << gpEvent.leftY() << ", RX " << gpEvent.rightX() << ", RY " << gpEvent.rightY() << std::endl;
-
-								
-								
-
 							}
 							break;
 						}

@@ -27,9 +27,10 @@ class GpClientNet{
 public:
 
 	
-	typedef bool (*gp_message_handler)(GpMessage & message);
+	typedef bool (*gp_message_handler)(GpMessage & message, GpClientNet & net);
 	
 	GpClientNet();
+	GpClientNet(gp_message_handler);
 	bool connectToServer(std::string ip, std::string port); // to server
 	
 	/**
@@ -57,8 +58,16 @@ public:
 	
 	
 	
-	
-	
+	/**
+	 *  sendAuthenticationRequest
+	 *
+	 *  Sends a GP_MSG_...LOGIN_MESSAGE
+	 *
+	 *  @param std::string username, std::string key
+	 *  @returns void
+	 */
+	void sendAuthenticationRequest(std::string username, std::string key);
+
 	
 	
 
