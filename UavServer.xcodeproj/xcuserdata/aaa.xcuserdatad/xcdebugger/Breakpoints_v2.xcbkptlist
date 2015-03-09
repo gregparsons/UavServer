@@ -418,11 +418,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpGroundController.cpp"
-            timestampString = "447587859.425502"
+            timestampString = "447620114.958941"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
             landmarkName = "GpGroundController::handle_messages(GpMessage &amp; msg, GpClientNet &amp; net)"
             landmarkType = "5">
          </BreakpointContent>
@@ -456,6 +456,38 @@
             startingLineNumber = "59"
             endingLineNumber = "59"
             landmarkName = "GpUavServer::sendHeartbeat(GpUser user)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GpGameController.cpp"
+            timestampString = "447619962.523703"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
+            landmarkName = "GpGameController::startGameControllerThread(GpClientNet &amp; net)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GpGameController.cpp"
+            timestampString = "447620124.768345"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
+            landmarkName = "GpGameController::_controller_thread()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

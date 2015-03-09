@@ -123,6 +123,9 @@ GpClientNet::sendMessage(GpMessage &message){
 bool
 GpClientNet::_sendMessage(GpMessage &message){
 	
+	std::cout << "[" << __func__ << "] "  << "Sending message type: " << message._message_type << "on socket: " << _fd << std::endl;
+
+	
 	if(_fd == 0){
 		std::cout << "[" << __func__ << "] "  << "Can't send. _fd closed." << std::endl;
 		return false;
@@ -163,14 +166,7 @@ void GpClientNet::startListenerAsThread(GpClientNet::gp_message_handler message_
 	
 		_message_handler = message_handler;
 
-		
-		//new detached thread
-		//_listen_for_TCP_messages();
-
-		
-		
 		std::thread listenThread(&GpClientNet::_listen_for_TCP_messages, this);
-		// listenThread.join();
 		listenThread.detach();
 	}
 }

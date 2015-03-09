@@ -10,6 +10,7 @@
 #ifndef __UavServer__GpGroundController__
 #define __UavServer__GpGroundController__
 
+#include "GpGameController.h"
 #include "GpClientNet.h"
 
 class GpMessage;
@@ -37,6 +38,9 @@ private:
 	static bool handle_messages(GpMessage & msg, GpClientNet & net);
 
 	GpClientNet _net;
+	
+	
+	static GpGameController _game_controller;
 	
 };
 

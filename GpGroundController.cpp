@@ -31,6 +31,14 @@
 #include "GpClientNet.h"
 
 
+
+// Statics
+GpGameController GpGroundController::_game_controller;
+
+
+
+
+
 bool GpGroundController::start(){
 	
 	std::cout << "[" << __func__ << "] "  <<  "" << std::endl;
@@ -59,15 +67,20 @@ bool GpGroundController::start(){
 	}
 	
 	
-	// START LISTENER THREAD (for messages from server)
+	
+	
+	
+	// LISTENER THREAD (for messages from server)
 
-	// typedef bool (*gp_message_handler)(GpMessage & message);
 	_net.startListenerAsThread(GpGroundController::handle_messages);
 	
+
 	
 	// LOGIN
 	
 	_net.sendAuthenticationRequest(GP_CONTROLLER_TEST_USERNAME, GP_CONTROLLER_TEST_PASSWORD, GP_MSG_TYPE_CONTROLLER_LOGIN);
+
+	
 	
 	while(1);
 
@@ -102,18 +115,29 @@ bool GpGroundController::handle_messages(GpMessage & msg, GpClientNet & net){
 			std::cout << "[" << __func__ << "] Client received GP_MSG_TYPE_AUTHENTICATED_BY_SERVER: setting _shouldSendControllerOutput = true" << std::endl;
 			
 			
+
+			
+			
 			// start sending asset commands
 			
+			// GpGameController controller;
+
 			
-			GpGameController controller;
+			_game_controller.startGameControllerThread(net);
+
 			
+			// _game_controller.runGameController(net);
 			
+			/*******
 			
+			 
+			 
+			 This needs to start as a thread. Otherwise message processing stops.
 			
-			
-			// TO DO: remove network from Game Controller
-			controller.runGameController(net);
-			
+			 
+			 
+			 
+			 *******/
 			
 			
 			
