@@ -1,4 +1,4 @@
- // ********************************************************************************
+// ********************************************************************************
 //
 //  GpUavAsset.h
 //  UavServer
@@ -496,6 +496,17 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 				 
 				 */
 				
+				
+				if(typeid(user).name() == typeid(GpControllerUser).name()){
+					GpControllerUser &controller = (dynamic_cast<GpControllerUser&>(user));
+					
+					if(controller._asset._connected){
+						
+
+						sendMessageToController(msg, controller._asset);
+						
+					}
+				}
 				break;
 				
 			}

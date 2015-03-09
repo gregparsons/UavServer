@@ -56,14 +56,14 @@ bool GpDatabase::authenticateUserForAsset(GpControllerUser & user, int asset_id)
 	
 	
 	//if asset_id exists and user._user_id is allowed to use asset_id then...
-	GpAssetUser asset;
 
-	if(	(getAsset(asset_id, asset) == true) /* && user owns asset */){
+	if(	(getAsset(asset_id, user._asset) == true) /* && user owns asset */){
 
 		std::cout << "[" << __func__ << "] "  << "[checking asset exists only] User " << user._username << " authorized to use asset id: " << asset_id << std::endl;
 	
-	
-		user._connectedAsset = &asset;
+
+		user._asset._connected = true;
+		
 		
 		return true;
 	}

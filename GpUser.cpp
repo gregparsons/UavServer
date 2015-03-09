@@ -34,7 +34,9 @@ bool GpUser::authenticate(std::string username, std::string key){
 		
 		
 		
-		// If ASSET: insert into database (list of active assets)
+		// If ASSET:
+		
+		// insert into database (list of active assets)
 		
 		if(typeid(*this).name() == typeid(GpAssetUser).name()){
 
@@ -47,21 +49,49 @@ bool GpUser::authenticate(std::string username, std::string key){
 				 (dynamic_cast<GpAssetUser &>(*this))._connected = true;
 		
 		}
-		else if(typeid(*this).name() == typeid(GpAssetUser).name()){
+		else if(typeid(*this).name() == typeid(GpControllerUser).name()){
 		
-			// If CONTROLLER: check if the asset is active:
-			std::cout << "[" << __func__ << "] This is a controller, requesting asset: " << GP_ASSET_ID_TEST_ONLY << std::endl;
+			// If CONTROLLER:
+			
+			// check if asset is active:
+			
+			
+			std::cout << "[" << __func__ << "] A controller is requesting asset: " << GP_ASSET_ID_TEST_ONLY << std::endl;
+			
+			
 			
 			
 			// ALERT HARD CODED TEST!!
+			int ASSET_ID = GP_ASSET_ID_TEST_ONLY;
 			
+			
+			
+			
+			GpControllerUser & controller = (dynamic_cast<GpControllerUser &>(*this));
 			
 			// Request a connection with an asset
-			bool assetReqResult = (dynamic_cast<GpControllerUser &>(*this)).requestConnectionToAsset(GP_ASSET_ID_TEST_ONLY);
-			// GpDatabase::authenticateUserForAsset((dynamic_cast<GpControllerUser &>(*this)), GP_ASSET_ID_TEST_ONLY);
+			// This would better go in a separate message handler after controller specifically requested a connection.
+			// Here I'm lumping this in with the login request to save dev time.
+			bool assetReqResult = controller.requestConnectionToAsset(ASSET_ID);
 		
 			if(assetReqResult){
+				// authorized to use this asset_id
+
+				
+				
+				
+				// I didn't intend for this call to GPDatabase::getAsset to come out of private GpDatabase.
+				// I'd prefer, as originally intended, that the asset is set in requestConnectionToAsset.
+				// This is basically circumventing the security I was going for to prevent any old code from
+				// getting ANY asset.  DB was going to handle that logic.
+				//GpDatabase::getAsset(ASSET_ID, controller._asset);
+				
+
+				
+				
 				std::cout << "[" << __func__ << "] Asset request approved." << std::endl;
+				
+				
 			}
 			else{
 				std::cout << "[" << __func__ << "] Asset request failed. Need code here to poll until it's available...or what if it will never be available?" << std::endl;

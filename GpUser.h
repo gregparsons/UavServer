@@ -49,6 +49,11 @@ public:
 	GpControllerUser();
 	GpAssetUser *_connectedAsset;
 	
+	GpAssetUser _asset;
+	
+	
+	int _asset_fd;
+	
 	
 	bool requestConnectionToAsset(int assetId);
 };

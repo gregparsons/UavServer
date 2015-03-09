@@ -12,6 +12,10 @@
 #include "GpClientNet.h"
 #include "GpIpAddress.h"
 #include "GpMessage.h"
+#include "GpMavlink.h"
+
+
+
 
 GpAsset::GpAsset(){}
 
@@ -84,8 +88,24 @@ bool GpAsset::handle_messages(GpMessage & message, GpClientNet & net){
 		{
 			std::cout << "[" << __func__ << "] Asset received GP_MSG_TYPE_COMMAND" << std::endl;
 			
+			
+			GpMavlink::printMavFromGpMessage(message);
+			
+			/*
+			 
+			 
+			 
+			 Here, send message to ASSET hardware
+			 
+			 
+			 
+			 */
+			
 			break;
+			
 		}
+			
+			
 			//all the rest fall through
 		default:
 			break;
