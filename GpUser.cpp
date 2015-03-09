@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include <typeinfo>	//required by Raspbian for typeid
 
 #include "GpUser.h"
 #include "GpDatabase.h"

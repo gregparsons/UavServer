@@ -23,6 +23,7 @@
 #include <sys/wait.h>
 #include <boost/format.hpp>
 
+#include <typeinfo>	//required by Raspbian for typeid
 
 
 #include <thread>
