@@ -19,7 +19,6 @@
 		009C06141AA1A46400AC1CD1 /* GpGameController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009C06131AA1A46400AC1CD1 /* GpGameController.cpp */; };
 		009C0EC21AA1A55C00AC1CD1 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009C0EC11AA1A55C00AC1CD1 /* SDL2.framework */; };
 		009C0EC51AA1A78200AC1CD1 /* GpControllerEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009C0EC41AA1A78200AC1CD1 /* GpControllerEvent.cpp */; };
-		009C0EC81AA1A9E500AC1CD1 /* GpControllerNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009C0EC61AA1A9E500AC1CD1 /* GpControllerNetwork.cpp */; };
 		00A7B4D41AA3BE1D00068F5B /* GpDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00A7B4D21AA3BE1D00068F5B /* GpDatabase.cpp */; };
 /* End PBXBuildFile section */
 
@@ -10813,8 +10812,6 @@
 		009C0EC11AA1A55C00AC1CD1 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../_frameworks/SDL2.framework; sourceTree = "<group>"; };
 		009C0EC31AA1A78200AC1CD1 /* GpControllerEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpControllerEvent.h; sourceTree = "<group>"; };
 		009C0EC41AA1A78200AC1CD1 /* GpControllerEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpControllerEvent.cpp; sourceTree = "<group>"; };
-		009C0EC61AA1A9E500AC1CD1 /* GpControllerNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpControllerNetwork.cpp; sourceTree = "<group>"; };
-		009C0EC71AA1A9E500AC1CD1 /* GpControllerNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpControllerNetwork.h; sourceTree = "<group>"; };
 		00A7B4D21AA3BE1D00068F5B /* GpDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpDatabase.cpp; sourceTree = SOURCE_ROOT; };
 		00A7B4D31AA3BE1D00068F5B /* GpDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpDatabase.h; sourceTree = SOURCE_ROOT; };
 		00BB97B01AA4E96D002481A5 /* libmysqlcppconn.7.1.1.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlcppconn.7.1.1.5.dylib; path = "/290i/frameworks/mysql-connector-c++-1.1.5-osx10.8-x86-64bit/lib/libmysqlcppconn.7.1.1.5.dylib"; sourceTree = "<absolute>"; };
@@ -10872,8 +10869,6 @@
 			children = (
 				001526D51A9E96E60059BC0F /* GpGroundController.h */,
 				001526D41A9E96E60059BC0F /* GpGroundController.cpp */,
-				009C0EC71AA1A9E500AC1CD1 /* GpControllerNetwork.h */,
-				009C0EC61AA1A9E500AC1CD1 /* GpControllerNetwork.cpp */,
 				006A71F11AA1B957009A8C93 /* Game Controller */,
 			);
 			name = Controller;
@@ -29016,7 +29011,6 @@
 				00667E3D1A9ECB4C009E8692 /* GpMavlink.cpp in Sources */,
 				001526D61A9E96E60059BC0F /* GpGroundController.cpp in Sources */,
 				006E49F31AAB8E2300891FDB /* GpClientNet.cpp in Sources */,
-				009C0EC81AA1A9E500AC1CD1 /* GpControllerNetwork.cpp in Sources */,
 				002EC5A81AAD1ACE009E8BF0 /* GpUser.cpp in Sources */,
 				00A7B4D41AA3BE1D00068F5B /* GpDatabase.cpp in Sources */,
 			);

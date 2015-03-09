@@ -23,29 +23,20 @@ bool GpAsset::connectServer(){
 	
 	
 	
-	// CHANGE TO ASSET PORT!
+	// CHANGE TO ASSET PORT?
 	
 	if(net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT) == false){
-	
 		std::cout << "[" << __func__ << "] "  << "No server at ip/port?" << std::endl;
-	
-		
-	
 		return false;
 	}
-	
-	
-	
-	
-	
-	
 	
 	net.startListenerAsThread(GpAsset::handle_messages);
 
 	
-	bool i= true;
-	while(i)
-		;
+	
+	
+	
+	
 	return true;
 	
 }
@@ -54,7 +45,8 @@ bool GpAsset::connectServer(){
 /**
  *  Handle Messages
  *
- *  Passed as a function pointer to GpClientNet::startListenerAsThread to handle GpMessages when they arrive over TCP.
+ *  Passed as a function pointer to GpClientNet::startListenerAsThread to handle GpMessages when they arrive over TCP. Have
+ to pass pointer to net because this function is static and can't use instance member variables. Net just passes *this.
  *
  *  @param GpMessage & message
  *  @returns bool success

@@ -25,7 +25,7 @@
 #include "GpGroundController.h"
 #include "GpGameController.h"
 #include "GpIpAddress.h"
-#include "GpControllerNetwork.h"
+// #include "GpControllerNetwork.h"
 #include "GpMessage_Login.h"
 #include "GpMessage.h"
 #include "GpClientNet.h"
@@ -112,7 +112,7 @@ GpGroundController::signalHandler(int signal)
 
 
 bool GpGroundController::handle_messages(GpMessage & msg, GpClientNet & net){
-	std::cout << "[" << __func__ << "] "  <<  "GpControllerNetwork called me." << std::endl;
+	std::cout << "[" << __func__ << "] "  <<  "GpGroundController funct* called in GpClientNet.cpp" << std::endl;
 	
 	
 	switch (msg._message_type) {
