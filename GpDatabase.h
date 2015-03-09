@@ -26,6 +26,8 @@
 #import <cppconn/statement.h>
 */
 
+#include <thread>
+#include <mutex>
 #include <unordered_map>
 #include "GpUser.h"
 
@@ -39,14 +41,17 @@ public:
 	static bool authenticateUserForAsset(GpControllerUser & user, int asset_id);
 	
 
-	static bool insertAsset(GpAssetUser & asset);
 
 	
 	static bool getAsset(int assetId, GpAssetUser & user);
-	
+	static bool insertAsset(GpAssetUser & asset);
+	static bool updateAsset(GpAssetUser &asset);
+
 private:
+	
 	static std::unordered_map<int, GpAssetUser> assets;
 	
+	static std::mutex assets_mutex;
 	
 	
 };

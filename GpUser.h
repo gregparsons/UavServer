@@ -18,6 +18,8 @@
  *
  */
 
+class GpControllerUser;
+
 class GpUser{
 public:
 	
@@ -40,6 +42,7 @@ class GpAssetUser:public GpUser{
 public:
 	GpAssetUser();
 	bool _connected = false;
+	GpControllerUser* _connected_owner = nullptr;
 	
 };
 
@@ -47,12 +50,8 @@ public:
 class GpControllerUser:public GpUser{
 public:
 	GpControllerUser();
-	GpAssetUser *_connectedAsset;
-	
 	GpAssetUser _asset;
 	
-	
-	int _asset_fd;
 	
 	
 	bool requestConnectionToAsset(int assetId);

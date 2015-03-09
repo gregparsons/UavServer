@@ -218,37 +218,7 @@ void GpMessage::bitUnstuff16(uint8_t *&buffer, uint16_t & value){
 
 uint16_t GpMessage::size(){
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	if(_payloadSize > 5000)
-		std::cout << "STOP HERE" << std::endl;
-
-	
-	
-	
-	
-	
-	
-	
 	return GP_MSG_HEADER_LEN + _payLd_vec.size();
-	
-//	return GP_MSG_HEADER_LEN + _payloadSize;
-	
-
-	
-	
 	
 }
 

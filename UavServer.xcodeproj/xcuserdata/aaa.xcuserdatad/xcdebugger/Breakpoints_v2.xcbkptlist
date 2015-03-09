@@ -178,11 +178,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpUavServer.cpp"
-            timestampString = "447582530.597767"
+            timestampString = "447585944.908413"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "663"
-            endingLineNumber = "663"
+            startingLineNumber = "698"
+            endingLineNumber = "698"
             landmarkName = "GpUavServer::sendMessageToController(GpMessage &amp; msg, GpUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
@@ -194,11 +194,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpUavServer.cpp"
-            timestampString = "447582530.597767"
+            timestampString = "447585944.908413"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "674"
-            endingLineNumber = "674"
+            startingLineNumber = "709"
+            endingLineNumber = "709"
             landmarkName = "GpUavServer::sendMessageToController(GpMessage &amp; msg, GpUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
@@ -210,11 +210,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpDatabase.cpp"
-            timestampString = "447560622.666307"
+            timestampString = "447587533.605322"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
             landmarkName = "GpDatabase::getAsset(int assetId, GpAssetUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
@@ -274,11 +274,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpUavServer.cpp"
-            timestampString = "447579821.023662"
+            timestampString = "447583897.850937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "501"
-            endingLineNumber = "501"
+            startingLineNumber = "502"
+            endingLineNumber = "502"
             landmarkName = "GpUavServer::processMessage(GpMessage &amp; msg, GpUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
@@ -290,11 +290,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpDatabase.cpp"
-            timestampString = "447583243.002617"
+            timestampString = "447587533.605322"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
             landmarkName = "GpDatabase::insertAsset(GpAssetUser &amp;asset)"
             landmarkType = "5">
          </BreakpointContent>
@@ -306,11 +306,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpUser.cpp"
-            timestampString = "447583243.002617"
+            timestampString = "447583897.850937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
             landmarkName = "GpUser::authenticate(std::string username, std::string key)"
             landmarkType = "5">
          </BreakpointContent>
@@ -322,11 +322,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpUser.cpp"
-            timestampString = "447583243.002617"
+            timestampString = "447583897.850937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
             landmarkName = "GpUser::authenticate(std::string username, std::string key)"
             landmarkType = "5">
          </BreakpointContent>
@@ -338,11 +338,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpUavServer.cpp"
-            timestampString = "447582427.151058"
+            timestampString = "447583897.850937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "506"
-            endingLineNumber = "506"
+            startingLineNumber = "507"
+            endingLineNumber = "507"
             landmarkName = "GpUavServer::processMessage(GpMessage &amp; msg, GpUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
@@ -354,11 +354,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpUavServer.cpp"
-            timestampString = "447582428.577156"
+            timestampString = "447583897.850937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "503"
-            endingLineNumber = "503"
+            startingLineNumber = "504"
+            endingLineNumber = "504"
             landmarkName = "GpUavServer::processMessage(GpMessage &amp; msg, GpUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
@@ -370,12 +370,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpUser.cpp"
-            timestampString = "447582520.619893"
+            timestampString = "447583897.850937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
             landmarkName = "GpUser::authenticate(std::string username, std::string key)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GpUser.cpp"
+            timestampString = "447583897.850937"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "76"
+            endingLineNumber = "76"
+            landmarkName = "GpUser::authenticate(std::string username, std::string key)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GpUavServer.cpp"
+            timestampString = "447585944.908413"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "616"
+            endingLineNumber = "616"
+            landmarkName = "GpUavServer::processMessage(GpMessage &amp; msg, GpUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -386,11 +418,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GpDatabase.cpp"
-            timestampString = "447583166.47641"
+            timestampString = "447587529.935577"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
             landmarkName = "GpDatabase::authenticateUserForAsset(GpControllerUser &amp; user, int asset_id)"
             landmarkType = "5">
          </BreakpointContent>
@@ -401,13 +433,61 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GpUser.cpp"
-            timestampString = "447583233.193623"
+            filePath = "GpUavServer.cpp"
+            timestampString = "447587625.357627"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
-            landmarkName = "GpUser::authenticate(std::string username, std::string key)"
+            startingLineNumber = "524"
+            endingLineNumber = "524"
+            landmarkName = "GpUavServer::processMessage(GpMessage &amp; msg, GpUser &amp; user)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GpGroundController.cpp"
+            timestampString = "447587859.425502"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
+            landmarkName = "GpGroundController::handle_messages(GpMessage &amp; msg, GpClientNet &amp; net)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GpUavServer.cpp"
+            timestampString = "447588335.613304"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "396"
+            endingLineNumber = "396"
+            landmarkName = "GpUavServer::threadClientRecv(int fd)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GpUavServer.cpp"
+            timestampString = "447588766.392789"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
+            landmarkName = "GpUavServer::sendHeartbeat(GpUser user)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

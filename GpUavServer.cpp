@@ -48,7 +48,7 @@ void GpUavServer::sendHeartbeat(GpUser user){
 	for(;;){
 		
 		// FAKE MESSAGE
-		//std::cout << "[" << __func__ << "] "  << "Sending fake heartbeat to user: " << user._username << " on socket: " << user._fd << std::endl;
+		std::cout << "[" << __func__ << "] "  << "Sending fake heartbeat to user: " << user._username << " on socket: " << user._fd << std::endl;
 		
 		
 		// Send login complete message to client
@@ -504,7 +504,8 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 					if(controller._asset._connected){
 						
 
-						sendMessageToController(msg, controller._asset);
+						sendMessageToController(msg, controller._asset);	// _asset gets filled by reference
+						//controller._asset._connected_owner = &controller;	// Nice little circular reference. Good thing we're not ref counting.
 						
 					}
 				}
@@ -527,9 +528,42 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 				//user.isAuthenticated set to false in db logout
 				std::cout << "[" << __func__ << "] "  << "GP_MSG_TYPE_HEARTBEAT from " << user._username << " on socket " << user._fd << std::endl;
 				
+				if(typeid(user).name() == typeid(GpAssetUser).name()){
 				
-				
-				
+					GpAssetUser & asset =  dynamic_cast<GpAssetUser &>(user);
+					
+					
+					
+					
+					
+
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					if(asset._connected_owner ==nullptr){
+						
+						//check if a controller connected since the last time around
+						
+						GpAssetUser asset2;
+						GpDatabase::getAsset(asset._user_id, asset2);
+						
+						asset._connected_owner = asset2._connected_owner;
+						asset._connected = asset2._connected;
+						
+						
+					}
+
+					if(asset._connected_owner !=nullptr)
+						sendMessageToController(msg, *(asset._connected_owner));
+
+					
+				}
 				// Who is asset's owner? Need to send heartbeat to them.
 				
 				

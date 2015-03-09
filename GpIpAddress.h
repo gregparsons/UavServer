@@ -8,10 +8,10 @@
 
 // const std::string GP_CONTROLLER_SERVER_IP = "127.0.0.1";
 
-const std::string GP_CONTROLLER_SERVER_IP = "192.168.113.240";
+//const std::string GP_CONTROLLER_SERVER_IP = "192.168.113.240";
 // const std::string GP_CONTROLLER_SERVER_IP = "172.26.48.1";
 
-//const std::string GP_CONTROLLER_SERVER_IP = "127.0.0.1";
+const std::string GP_CONTROLLER_SERVER_IP = "127.0.0.1";
 const std::string GP_CONTROLLER_SERVER_PORT = "11222";
 const std::string GP_ASSET_SERVER_PORT = "11223";
 
@@ -26,7 +26,7 @@ const std::string GP_ASSET_SERVER_PORT = "11223";
 // Debug stuff:
 
 #define GP_ASSET_ID_TEST_ONLY 12345
-const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = false;
+const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = true;
 const bool GP_SHOULD_SEND_HEARTBEAT_TO_SERVER_FROM_ASSET= true;
 
 const std::string GP_CONTROLLER_TEST_USERNAME = "MyLongUserName";
