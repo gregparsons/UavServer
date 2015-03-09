@@ -13,6 +13,8 @@
 
 // #include "GpControllerNetwork.h"
 
+class GpClientNet;
+
 class GpGameController{
 public:
 	

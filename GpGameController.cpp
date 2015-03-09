@@ -21,6 +21,7 @@
 #include "GpGameController.h"
 #include "GpMavlink.h"
 #include "GpMessage.h"
+#include "GpClientNet.h"
 
 using namespace std;
 
