@@ -28,6 +28,12 @@
 #include "GpIpAddress.h"
 #include "GpClientNet.h"
 
+
+// Static
+bool GpControllerNetwork::_shouldSendControllerOutput = false;
+
+
+
 /**
  *  Start TCP connection from client ground controller to server.
  *
@@ -455,7 +461,7 @@ bool GpControllerNetwork::_handle_messages(GpMessage & msg){
 			// start sending asset commands
 			
 			
-			//_shouldSendControllerOutput = true;
+			_shouldSendControllerOutput = true;
 			
 			
 			

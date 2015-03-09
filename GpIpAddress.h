@@ -24,4 +24,10 @@ const std::string GP_CONTROLLER_TEST_PASSWORD = "My really long password sentenc
 #define READ_VECTOR_BYTES_MAX 300
 
 
+
+#define GP_ASSET_ID_REMOVE__ 12345
+
+
+
+
 #endif

@@ -13,35 +13,9 @@
 
 
 class GpMessage;
+class GpUser;
 
 
-/**
- *  GpUser Class
- *
- *  I envision this being more full-featured and including the authentication stuff in the future.
- *
- */
-class GpUser{
-public:
-	int _user_id = -1;
-	std::string _username = "";
-	int _fd = 0;					// socket file descriptor
-	bool _isAuthenticated = false;
-	
-	bool authenticate(std::string username, std::string key);
-};
-
-class GpAssetUser:public GpUser{
-public:
-	bool _connected = false;
-	
-};
-
-class GpControllerUser:public GpUser{
-public:
-	
-	GpAssetUser *_connectedAsset;
-};
 
 
 
@@ -60,13 +34,14 @@ private:
 	
 	bool sendMessageToController(GpMessage & msg, GpUser & user);
 	
-	void sendHeartbeat(GpUser & user);
+	void sendHeartbeat(GpUser user);
 
 	bool startNetwork();
 
 	void threadClientRecv(int fd);
 	
-	
+	void sendLoginConfirmationMessageTo(GpUser & user);
+
 	
 	
 //	int _client_fd = 0;		// socket for this client (when using fork())

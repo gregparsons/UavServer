@@ -29,6 +29,7 @@ private:
 	 *
 	 */
 	static void signalHandler(int signal);
+	
 };
 
 #endif /* defined(__UavServer__GpUavControl__) */

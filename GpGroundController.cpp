@@ -75,9 +75,9 @@ bool GpGroundController::start(){
 	// network.listenThread();		//will this start fast enough to catch authentication reply?
 	
 	
-	//while(! GpControllerNetwork::_shouldSendControllerOutput){
-	//	usleep(10000);
-	//}
+	while(! GpControllerNetwork::_shouldSendControllerOutput){
+		usleep(10000);
+	}
 	
 	GpGameController controller;
 

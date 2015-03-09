@@ -10,6 +10,7 @@
 		0012438B1A9EC90700580506 /* GpUavServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001243871A9EC90700580506 /* GpUavServer.cpp */; };
 		0012438C1A9EC90700580506 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001243891A9EC90700580506 /* main.cpp */; };
 		001526D61A9E96E60059BC0F /* GpGroundController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001526D41A9E96E60059BC0F /* GpGroundController.cpp */; };
+		002EC5A81AAD1ACE009E8BF0 /* GpUser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 002EC5A61AAD1ACE009E8BF0 /* GpUser.cpp */; };
 		00410B031AA5261400295B54 /* GpMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00410B011AA5261400295B54 /* GpMessage.cpp */; };
 		00667E3D1A9ECB4C009E8692 /* GpMavlink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00667E3B1A9ECB4C009E8692 /* GpMavlink.cpp */; };
 		006AF70B1AA58DAC00F58EA6 /* GpMessage_Login.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006AF7091AA58DAC00F58EA6 /* GpMessage_Login.cpp */; };
@@ -42,6 +43,8 @@
 		001526C01A9E90BE0059BC0F /* UavServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = UavServer; sourceTree = BUILT_PRODUCTS_DIR; };
 		001526D41A9E96E60059BC0F /* GpGroundController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpGroundController.cpp; sourceTree = "<group>"; };
 		001526D51A9E96E60059BC0F /* GpGroundController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpGroundController.h; sourceTree = "<group>"; };
+		002EC5A61AAD1ACE009E8BF0 /* GpUser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GpUser.cpp; sourceTree = SOURCE_ROOT; };
+		002EC5A71AAD1ACE009E8BF0 /* GpUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GpUser.h; sourceTree = SOURCE_ROOT; };
 		004100001AA50EAB00295B54 /* export.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = export.hpp; sourceTree = "<group>"; };
 		004100011AA50EAB00295B54 /* extended_type_info.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = extended_type_info.hpp; sourceTree = "<group>"; };
 		004100021AA50EAB00295B54 /* extended_type_info_no_rtti.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = extended_type_info_no_rtti.hpp; sourceTree = "<group>"; };
@@ -10857,6 +10860,8 @@
 				001243871A9EC90700580506 /* GpUavServer.cpp */,
 				00A7B4D31AA3BE1D00068F5B /* GpDatabase.h */,
 				00A7B4D21AA3BE1D00068F5B /* GpDatabase.cpp */,
+				002EC5A71AAD1ACE009E8BF0 /* GpUser.h */,
+				002EC5A61AAD1ACE009E8BF0 /* GpUser.cpp */,
 			);
 			name = Server;
 			path = UavServer;
@@ -29012,6 +29017,7 @@
 				001526D61A9E96E60059BC0F /* GpGroundController.cpp in Sources */,
 				006E49F31AAB8E2300891FDB /* GpClientNet.cpp in Sources */,
 				009C0EC81AA1A9E500AC1CD1 /* GpControllerNetwork.cpp in Sources */,
+				002EC5A81AAD1ACE009E8BF0 /* GpUser.cpp in Sources */,
 				00A7B4D41AA3BE1D00068F5B /* GpDatabase.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

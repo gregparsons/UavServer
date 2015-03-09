@@ -44,7 +44,7 @@ public:
 	
 	
 	
-	// static bool _shouldSendControllerOutput;
+	static bool _shouldSendControllerOutput;
 	
 	
 	
