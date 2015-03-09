@@ -26,7 +26,7 @@ const std::string GP_ASSET_SERVER_PORT = "11223";
 // Debug stuff:
 
 #define GP_ASSET_ID_TEST_ONLY 12345
-const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = true;
+const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = false;
 const bool GP_SHOULD_SEND_HEARTBEAT_TO_SERVER_FROM_ASSET= true;
 
 const std::string GP_CONTROLLER_TEST_USERNAME = "MyLongUserName";

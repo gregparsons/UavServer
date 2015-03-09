@@ -10,6 +10,8 @@
 #ifndef __UavServer__GpUavServer__
 #define __UavServer__GpUavServer__
 
+#include <thread>
+#include <mutex>
 
 
 class GpMessage;
@@ -30,11 +32,13 @@ public:
 	
 	
 private:
-	void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message);
+
+	bool _send_message(GpMessage & msg, GpUser & user);
 	
+	
+	void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message);
 	void processMessage(GpMessage & msg, GpUser & user);
 	
-	bool sendMessageToController(GpMessage & msg, GpUser & user);
 	
 	void sendHeartbeat(GpUser user);
 
@@ -52,6 +56,15 @@ private:
 	
 //	std::vector<GpAssetConnect> _assets;
 //	std::vector<GpControllerConnect> _controllers;
+	
+	
+	
+	
+	
+	// outbound message send() mutex
+	std::mutex _send_mutex;
+
+	
 	
 	
 	

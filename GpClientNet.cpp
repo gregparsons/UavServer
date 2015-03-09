@@ -54,8 +54,6 @@ GpClientNet::connectToServer(std::string ip, std::string port){
 	}
 	
 	
-
-	
 	//ref: Stevens/Fenner/Rudoff
 	server_info_backup = server_info;
 	do {
@@ -66,9 +64,6 @@ GpClientNet::connectToServer(std::string ip, std::string port){
 		if(_fd < 0){
 			continue;
 		}
-		
-
-		
 		
 		// Connect
 		
@@ -83,15 +78,8 @@ GpClientNet::connectToServer(std::string ip, std::string port){
 			
 				std::cout << "[" << __func__ << "] " << "Connected to " << str << std::endl;
 			}
-			
-
-
-			
 			break;			// break if good connect
 		}
-
-		
-		
 		
 		close(_fd);			// otherwise close, keep trying
 		server_info = server_info->ai_next;
@@ -105,6 +93,10 @@ GpClientNet::connectToServer(std::string ip, std::string port){
 	
 	return true;
 }
+
+
+
+
 
 
 /**
@@ -123,6 +115,11 @@ GpClientNet::sendMessage(GpMessage &message){
 	
 }
 
+
+
+
+
+
 bool
 GpClientNet::_sendMessage(GpMessage &message){
 	
@@ -130,8 +127,6 @@ GpClientNet::_sendMessage(GpMessage &message){
 		std::cout << "[" << __func__ << "] "  << "Can't send. _fd closed." << std::endl;
 		return false;
 	}
-	
-	
 	
 	byte_vector bytes;
 	bytes.reserve(message.size());

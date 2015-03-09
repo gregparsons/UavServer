@@ -27,6 +27,7 @@
 
 
 #include <thread>
+#include <mutex>
 
 #include "GpUavServer.h"
 #include "GpIpAddress.h"
@@ -55,7 +56,7 @@ void GpUavServer::sendHeartbeat(GpUser user){
 		uint8_t *payload = nullptr;
 		GpMessage msgLoginComplete(GP_MSG_TYPE_HEARTBEAT, 0, payload);
 		
-		if(false == sendMessageToController(msgLoginComplete, user)){
+		if(false == _send_message(msgLoginComplete, user)){
 			std::cout << "[" << __func__ << "] "  << "Error sending heartbeat" << std::endl;
 			
 			return;
@@ -223,10 +224,26 @@ GpUavServer::startNetwork(){
 		
 		// CLIENT THREAD -- START
 		
-		std::thread clientThread (&GpUavServer::threadClientRecv, *this, client_fd);
+		
+		
+		
+		
+		
+		
+		
+		
+		std::thread clientThread (&GpUavServer::threadClientRecv, this, client_fd);
 		clientThread.detach();
 		usleep(10000);
 
+		
+		
+		
+		
+		
+		
+		
+		
 
 	}
 }
@@ -396,8 +413,18 @@ void GpUavServer::threadClientRecv(int fd)
 					if(GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER){
 						std::cout << "[" << __func__ << "] "  << "TEST: Starting heartbeat" << std::endl;
 						
-						std::thread serverHeartbeat(&GpUavServer::sendHeartbeat, *this, *user);
+						
+						
+						
+						
+						
+						
+						std::thread serverHeartbeat(&GpUavServer::sendHeartbeat, this, *user);
 						serverHeartbeat.detach();
+						
+						
+						
+						
 						
 					}
 
@@ -497,6 +524,7 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 				 
 				 */
 				
+				//If command is inbound from a controller, find the asset it is connected to and forward.
 				
 				if(typeid(user).name() == typeid(GpControllerUser).name()){
 					GpControllerUser &controller = (dynamic_cast<GpControllerUser&>(user));
@@ -504,8 +532,7 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 					if(controller._asset._connected){
 						
 
-						sendMessageToController(msg, controller._asset);	// _asset gets filled by reference
-						//controller._asset._connected_owner = &controller;	// Nice little circular reference. Good thing we're not ref counting.
+						_send_message(msg, controller._asset);
 						
 					}
 				}
@@ -528,23 +555,25 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 				//user.isAuthenticated set to false in db logout
 				std::cout << "[" << __func__ << "] "  << "GP_MSG_TYPE_HEARTBEAT from " << user._username << " on socket " << user._fd << std::endl;
 				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				// If message is inbound from an asset, forward to its connected controller.
+				
 				if(typeid(user).name() == typeid(GpAssetUser).name()){
 				
 					GpAssetUser & asset =  dynamic_cast<GpAssetUser &>(user);
 					
-					
-					
-					
-					
 
-					
-					
-					
-					
-					
-					
-					
-					
+					// If asset isn't connected t a controller, keep polling for a connect. Update version of asset in
+					// the database if connected, stop polling for connection and start forwarding heartbeats to controller.
 					
 					if(asset._connected_owner ==nullptr){
 						
@@ -558,10 +587,27 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 						
 						
 					}
+					
+					
+					//Why doesn't this work? Message appears to go out but never does.
 
-					if(asset._connected_owner !=nullptr)
-						sendMessageToController(msg, *(asset._connected_owner));
+					if(asset._connected_owner !=nullptr){
+						_send_message(msg, *(asset._connected_owner));
+					}
 
+					
+					
+					
+				
+					
+					
+					
+					
+					
+					
+					
+					
+					
 					
 				}
 				// Who is asset's owner? Need to send heartbeat to them.
@@ -577,13 +623,13 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 			}
 		}
 	}
-	else{
+	else
+	{
 
 		// If you're not authenticated, the only message you can even send is an authentication request.
 		
 		
 		switch (msg._message_type) {
-				
 				
 			case GP_MSG_TYPE_CONTROLLER_LOGIN:
 			{
@@ -605,7 +651,7 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 					// moved temporarily lower as response to asset connect request (signals controller to start sending game controller outputs)
 					//sendLoginConfirmationMessageTo(user);
 
-				
+/*
 					
 					// ********* TEST: insert a fake asset **********
 #ifdef GP_SHOULD_INSERT_FAKE_ASSET
@@ -615,7 +661,7 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 					asset._connected = true;
 					GpDatabase::insertAsset(asset);
 #endif
-					
+*/
 					// If this is a Controller, try to connect to the Asset.
 					
 					std::cout << "[" << __func__ << "] User type: "  << typeid(user).name() << std::endl;
@@ -634,22 +680,13 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 				
 			case GP_MSG_TYPE_ASSET_LOGIN:
 			{
-				
 				std::cout << "[" << __func__ << "] "  << "ASSET login message" << std::endl;
 				GpMessage_Login loginMsg(msg._payLd_vec);
-				
-				
 				
 				// AUTHENTICATE
 				
 				if(true == (user.authenticate(loginMsg.username(), loginMsg.key())   ))
 				{
-					
-					
-					
-					
-					
-					
 					std::cout << "[" << __func__ << "] "  << "Sending authentication confirmation to: " << user._username << "on socket " << user._fd << std::endl;
 					sendLoginConfirmationMessageTo(user);
 					
@@ -660,12 +697,6 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 				break;
 		}
 	}
-	
-	
-	
-	
-	
-
 }
 
 
@@ -680,7 +711,18 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
  *  @param GpMessage & msg
  *  @returns Bool
  */
-bool GpUavServer::sendMessageToController(GpMessage & msg, GpUser & user){
+bool GpUavServer::_send_message(GpMessage & msg, GpUser & user){
+	
+	
+	
+	
+	//
+	std::lock_guard<std::mutex> sendGuard(_send_mutex);		// when guard class is destroyed at end of function the lock is released
+
+	
+	
+	
+	
 	
 	
 	// SERIALIZE
@@ -707,9 +749,6 @@ bool GpUavServer::sendMessageToController(GpMessage & msg, GpUser & user){
 		*/
 		
 		return false;
-		
-		
-		
 	}
 	return true;
 }
@@ -725,7 +764,7 @@ void GpUavServer::sendLoginConfirmationMessageTo(GpUser & user){
 	uint8_t *payload = nullptr;	// No payload required, just a ref to a pointer needed for constructor.
 	GpMessage msgLoginComplete(GP_MSG_TYPE_AUTHENTICATED_BY_SERVER, 0, payload);
 	
-	if(sendMessageToController(msgLoginComplete, user) == false){
+	if(_send_message(msgLoginComplete, user) == false){
 		std::cout << "[" << __func__ << "] "  << "Error sending login confirmation" << std::endl;
 	}else{
 		std::cout << "[" << __func__ << "] "  << "Authentication confirmation sent." << std::endl;
