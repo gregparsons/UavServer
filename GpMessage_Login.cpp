@@ -25,6 +25,9 @@ GpMessage_Login::GpMessage_Login(std::string user64, std::string loginKey){
 	setKey(loginKey);
 }
 
+
+
+
 /**
  *  Login Request from raw net bytes constructor from raw network bytes (use at server to receive).
  *

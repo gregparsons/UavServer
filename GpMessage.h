@@ -27,19 +27,20 @@ class GpMessage_Login;
  */
 enum {
 	GP_MSG_TYPE_NONE_ZERO,
-	GP_MSG_TYPE_LOGIN,
+	GP_MSG_TYPE_CONTROLLER_LOGIN,
 	GP_MSG_TYPE_LOGOUT,
 	GP_MSG_TYPE_COMMAND,
 	GP_MSG_TYPE_AUTHENTICATED_BY_SERVER,
 	GP_MSG_TYPE_HEARTBEAT,
-	GP_MSG_ASSET_LOGIN,
+	GP_MSG_TYPE_ASSET_LOGIN,
 	GP_MSG_ASSET_HEARTBEAT,
 	GP_MSG_TYPE_MAX_DONT_USE};
 
 class GpMessage {
 public:
 	GpMessage();
-	GpMessage(GpMessage_Login & loginMessage);
+	GpMessage(GpMessage_Login & loginMessage, int login_source_type);	//source controller or asset
+
 	GpMessage(uint8_t messageType, uint16_t payloadSize, uint8_t *&payload);
 	~GpMessage();
 

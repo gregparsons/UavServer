@@ -23,17 +23,9 @@ class GpMessage_Login{
 
 public:
 	GpMessage_Login(std::string user64, std::string loginKey);
-//	GpMessage_Login(uint8_t *& rawNetBytes);
 	GpMessage_Login(std::vector<uint8_t> & rawVect);
 	
-	
-	
-	// NEED VECTOR SERIALIZE
-	
-	
-	// uint32_t serialize(uint8_t *&buffer);
 	long serialize(std::vector<uint8_t> & serializedVect);
-
 	void deserialize(std::vector<uint8_t> & rawVect);
 
 	std::string username();

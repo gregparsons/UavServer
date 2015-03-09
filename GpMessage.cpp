@@ -25,11 +25,11 @@ GpMessage::GpMessage(){
 
 // Construct with a LOGIN message
 
-GpMessage::GpMessage(GpMessage_Login & loginMessage){
+GpMessage::GpMessage(GpMessage_Login & loginMessage, int login_source_type){
 
 	// TYPE / SIZE
 	
-	_message_type = GP_MSG_TYPE_LOGIN;
+	_message_type = login_source_type; // GP_MSG_TYPE_CONTROLLER_LOGIN or GP_MSG_TYPE_ASSET_LOGIN	
 	_payloadSize = GP_MSG_LOGIN_LEN;
 
 	// PAYLOAD

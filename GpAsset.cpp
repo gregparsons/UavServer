@@ -30,12 +30,18 @@ bool GpAsset::connectServer(){
 		return false;
 	}
 	
-	net.startListenerAsThread(GpAsset::handle_messages);
+	net.startListenerAsThread(GpAsset::handle_messages); 
 
 	
+	net.sendAuthenticationRequest(GP_ASSET_TEST_USERNAME, GP_ASSET_TEST_PASSWORD, GP_MSG_TYPE_ASSET_LOGIN);
 	
 	
 	
+	
+	
+	
+	while(1);
+
 	
 	return true;
 	
@@ -52,8 +58,53 @@ bool GpAsset::connectServer(){
  *  @returns bool success
  */
 bool GpAsset::handle_messages(GpMessage & message, GpClientNet & net){
+
+	switch (message._message_type) {
+		case GP_MSG_TYPE_AUTHENTICATED_BY_SERVER:
+		{
+
+			std::cout << "[" << __func__ << "] Asset received GP_MSG_TYPE_AUTHENTICATED_BY_SERVER" << std::endl;
+			
+			// START SENDING HEARTBEAT TO SERVER FROM ASSET HERE
+			
+			
+			net.startBackgroundHeartbeat();
+			
+			
+			
+			break;
+		}
+		case GP_MSG_TYPE_HEARTBEAT:
+		{
+			std::cout << "[" << __func__ << "] Asset received GP_MSG_TYPE_HEARTBEAT" << std::endl;
+			
+			break;
+		}
+		case GP_MSG_TYPE_COMMAND:
+		{
+			std::cout << "[" << __func__ << "] Asset received GP_MSG_TYPE_COMMAND" << std::endl;
+			
+			break;
+		}
+			//all the rest fall through
+		default:
+			break;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	std::cout << "[" << __func__ << "] "  << "Message Type: " << int(message._message_type) << std::endl;
 
 	return true;
 }
+
+
+
+
+

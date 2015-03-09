@@ -26,6 +26,8 @@ public:
 	
 	bool start();
 	
+	~GpUavServer();
+	
 	
 private:
 	void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message);

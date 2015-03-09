@@ -45,14 +45,14 @@ bool GpDatabase::getAsset(int assetId, GpAssetUser & user){
 		user = assets.at(assetId);
 		return true;
 	} catch (const std::out_of_range & oor) {
-		std::cout << "[" << __func__ << "] "  << "Asset Id not found" << std::endl;
+		std::cout << "[" << __func__ << "] "  << "Asset Id "<< assetId <<" not found" << std::endl;
 		return false;
 	}
 	
 }
 
 
-bool GpDatabase::authenticateUserForAsset(GpControllerUser *user, int asset_id){
+bool GpDatabase::authenticateUserForAsset(GpControllerUser & user, int asset_id){
 	
 	
 	//if asset_id exists and user._user_id is allowed to use asset_id then...
@@ -60,10 +60,10 @@ bool GpDatabase::authenticateUserForAsset(GpControllerUser *user, int asset_id){
 
 	if(	(getAsset(asset_id, asset) == true) /* && user owns asset */){
 
-		std::cout << "[" << __func__ << "] "  << "[checking asset exists only] User " << user->_username << " authorized to use asset id: " << asset_id << std::endl;
+		std::cout << "[" << __func__ << "] "  << "[checking asset exists only] User " << user._username << " authorized to use asset id: " << asset_id << std::endl;
 	
 	
-		user->_connectedAsset = &asset;
+		user._connectedAsset = &asset;
 		
 		return true;
 	}

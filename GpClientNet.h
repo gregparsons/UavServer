@@ -31,6 +31,10 @@ public:
 	
 	GpClientNet();
 	GpClientNet(gp_message_handler);
+	~GpClientNet();
+	
+	
+	
 	bool connectToServer(std::string ip, std::string port); // to server
 	
 	/**
@@ -66,14 +70,16 @@ public:
 	 *  @param std::string username, std::string key
 	 *  @returns void
 	 */
-	void sendAuthenticationRequest(std::string username, std::string key);
+	void sendAuthenticationRequest(std::string username, std::string key, int gp_msg_source_type);
 
 	
 	
 
 	
-	
-	
+	void startBackgroundHeartbeat();
+	void sendHeartbeat(int fd);
+//	void sendHeartbeat(int fd);
+
 	
 private:
 	int _fd = 0;
@@ -85,6 +91,12 @@ private:
 	std::mutex _message_handler_mutex;
 	
 
+	
+	
+	
+	
+	
+	
 	// Pointer to the function the calling entity wants to have happen when a new message is received.
 
 	gp_message_handler _message_handler = nullptr;

@@ -33,6 +33,46 @@ bool GpUser::authenticate(std::string username, std::string key){
 		
 		
 		
+		
+		// If ASSET: insert into database (list of active assets)
+		
+		if(typeid(*this).name() == typeid(GpAssetUser).name()){
+
+			
+			_user_id = GP_ASSET_ID_TEST_ONLY ; 
+			
+			
+			
+			if(GpDatabase::insertAsset(dynamic_cast<GpAssetUser &>(*this)) == true)
+				 (dynamic_cast<GpAssetUser &>(*this))._connected = true;
+		
+		}
+		else if(typeid(*this).name() == typeid(GpAssetUser).name()){
+		
+			// If CONTROLLER: check if the asset is active:
+			std::cout << "[" << __func__ << "] This is a controller, requesting asset: " << GP_ASSET_ID_TEST_ONLY << std::endl;
+			
+			
+			// ALERT HARD CODED TEST!!
+			
+			
+			// Request a connection with an asset
+			bool assetReqResult = (dynamic_cast<GpControllerUser &>(*this)).requestConnectionToAsset(GP_ASSET_ID_TEST_ONLY);
+			// GpDatabase::authenticateUserForAsset((dynamic_cast<GpControllerUser &>(*this)), GP_ASSET_ID_TEST_ONLY);
+		
+			if(assetReqResult){
+				std::cout << "[" << __func__ << "] Asset request approved." << std::endl;
+			}
+			else{
+				std::cout << "[" << __func__ << "] Asset request failed. Need code here to poll until it's available...or what if it will never be available?" << std::endl;
+			}
+		}
+		
+		
+		
+		
+		
+		
 	}
 	else{
 		_isAuthenticated=false;
@@ -68,7 +108,7 @@ GpControllerUser::requestConnectionToAsset(int assetId){
 	std::cout << "[" << __func__ << "]" << std::endl;
 	
 	
-	return GpDatabase::authenticateUserForAsset(this, assetId);
+	return GpDatabase::authenticateUserForAsset(*this, assetId);
 	
 	
 }

@@ -47,7 +47,7 @@ void GpUavServer::sendHeartbeat(GpUser user){
 	for(;;){
 		
 		// FAKE MESSAGE
-		std::cout << "[" << __func__ << "] "  << "Sending fake heartbeat to user: " << user._username << " on socket: " << user._fd << std::endl;
+		//std::cout << "[" << __func__ << "] "  << "Sending fake heartbeat to user: " << user._username << " on socket: " << user._fd << std::endl;
 		
 		
 		// Send login complete message to client
@@ -101,8 +101,9 @@ bool GpUavServer::start(){
 
 
 
-
-
+GpUavServer::~GpUavServer(){
+	
+}
 
 
 /**
@@ -244,8 +245,7 @@ void GpUavServer::threadClientRecv(int fd)
 
 	std::cout << "[" << __func__ << "] "  << "Entering recv() thread " << std::this_thread::get_id() << std::endl;
 	
-	GpControllerUser user;
-	user._fd = fd;
+	GpUser *user = nullptr;
 	
 	
 	
@@ -255,15 +255,6 @@ void GpUavServer::threadClientRecv(int fd)
 	
 	
 	
-		// **** HEARTBEAT *****
-		
-		if(GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER){
-			 std::cout << "[" << __func__ << "] "  << "TEST: Starting heartbeat" << std::endl;
-			 
-			 std::thread serverHeartbeat(&GpUavServer::sendHeartbeat, *this, user);
-			 serverHeartbeat.detach();
-	 
-		}
 	
 	
 	
@@ -376,9 +367,52 @@ void GpUavServer::threadClientRecv(int fd)
 				uint8_t *tempPayloadPtr = msgHead + GP_MSG_HEADER_LEN;
 				newMessage.setPayload(tempPayloadPtr, newMessage._payloadSize);		//payload to vector
 				
-				// PROCESS MESSAGE
 				
-				processMessage(newMessage, user);
+				
+				// Create User Object; Parse Message
+
+				// Dynamic allocate new user depending on type of login message received...
+				// ...if thread sigpipes in this infinite loop, will this memory get released?
+				if(user == nullptr){
+					if(newMessage._message_type == GP_MSG_TYPE_ASSET_LOGIN){
+						user = new GpAssetUser();
+						
+					}
+					else if(newMessage._message_type == GP_MSG_TYPE_CONTROLLER_LOGIN){
+						user = new GpControllerUser();
+						
+					}
+					else{
+						goto SKIP_THIS_MESSAGE_UNTIL_LOGGED_IN;
+					}
+
+					
+					user->_fd = fd;	//assign socket file descriptor received in function parameter
+
+					
+					// **** HEARTBEAT move this to handler; run once logged in this is dumb that this is even here. *****
+					
+					if(GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER){
+						std::cout << "[" << __func__ << "] "  << "TEST: Starting heartbeat" << std::endl;
+						
+						std::thread serverHeartbeat(&GpUavServer::sendHeartbeat, *this, *user);
+						serverHeartbeat.detach();
+						
+					}
+
+					
+					
+					
+					
+				}
+
+				
+			SKIP_THIS_MESSAGE_UNTIL_LOGGED_IN:
+				if(user!= nullptr)
+					processMessage(newMessage, *user);
+				
+				
+				
 				
 				recvOutPtr+= bytesToTransfer;
 				
@@ -398,6 +432,13 @@ void GpUavServer::threadClientRecv(int fd)
 		
 		
 	}
+	
+	
+	//Never reached:
+	if(user!=nullptr)
+		delete user;
+	
+	
 }
 
 
@@ -407,7 +448,7 @@ void GpUavServer::threadClientRecv(int fd)
 void GpUavServer::putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message){
 	
 	// Message_Type
-	message._message_type = *buffer; //GP_MSG_TYPE_LOGIN;
+	message._message_type = *buffer; //GP_MSG_TYPE_CONTROLLER_LOGIN;
 	
 	
 	
@@ -426,6 +467,13 @@ void GpUavServer::putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & me
 
 void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 
+	// REMOVE user parameter. Not needed.
+	
+	
+	
+	
+	
+	
 	std::cout << "[" << __func__ << "] "  << "Received message with type: " << int(msg._message_type) << " and payload size: " << msg._payloadSize << std::endl;
 
 	
@@ -460,6 +508,21 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 				std::cout << "[" << __func__ << "] "  << "Processing logout message" << std::endl;
 				break;
 			}
+			case GP_MSG_TYPE_HEARTBEAT:
+			{
+				
+				//GpDatabase::logout();
+				//user.isAuthenticated set to false in db logout
+				std::cout << "[" << __func__ << "] "  << "GP_MSG_TYPE_HEARTBEAT from " << user._username << " on socket " << user._fd << std::endl;
+				
+				
+				
+				
+				// Who is asset's owner? Need to send heartbeat to them.
+				
+				
+				break;
+			}
 				
 			default:
 			{
@@ -476,10 +539,10 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 		switch (msg._message_type) {
 				
 				
-			case GP_MSG_TYPE_LOGIN:
+			case GP_MSG_TYPE_CONTROLLER_LOGIN:
 			{
 				
-				std::cout << "[" << __func__ << "] "  << "Processing login message" << std::endl;
+				std::cout << "[" << __func__ << "] "  << "CONTROLLER login message" << std::endl;
 				GpMessage_Login loginMsg(msg._payLd_vec);
 				
 				
@@ -501,7 +564,7 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 					// ********* TEST: insert a fake asset **********
 #ifdef GP_SHOULD_INSERT_FAKE_ASSET
 					GpAssetUser asset;
-					asset._user_id = GP_ASSET_ID_REMOVE__;
+					asset._user_id = GP_ASSET_ID_TEST_ONLY;
 					asset._username = "testing";
 					asset._connected = true;
 					GpDatabase::insertAsset(asset);
@@ -511,7 +574,7 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 					
 					std::cout << "[" << __func__ << "] User type: "  << typeid(user).name() << std::endl;
 					if(typeid(user).name() == typeid(GpControllerUser).name()){
-						bool connectedToAsset = (dynamic_cast<GpControllerUser &>(user)).requestConnectionToAsset(GP_ASSET_ID_REMOVE__);
+						bool connectedToAsset = (dynamic_cast<GpControllerUser &>(user)).requestConnectionToAsset(GP_ASSET_ID_TEST_ONLY);
 					
 						if(connectedToAsset){
 							
@@ -519,6 +582,31 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 							sendLoginConfirmationMessageTo(user);
 						}
 					}
+				}
+				break;
+			}
+				
+			case GP_MSG_TYPE_ASSET_LOGIN:
+			{
+				
+				std::cout << "[" << __func__ << "] "  << "ASSET login message" << std::endl;
+				GpMessage_Login loginMsg(msg._payLd_vec);
+				
+				
+				
+				// AUTHENTICATE
+				
+				if(true == (user.authenticate(loginMsg.username(), loginMsg.key())   ))
+				{
+					
+					
+					
+					
+					
+					
+					std::cout << "[" << __func__ << "] "  << "Sending authentication confirmation to: " << user._username << "on socket " << user._fd << std::endl;
+					sendLoginConfirmationMessageTo(user);
+					
 				}
 				break;
 			}

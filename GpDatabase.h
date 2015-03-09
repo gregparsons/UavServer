@@ -36,7 +36,7 @@ public:
 	static bool authenticateUser(std::string username, std::string key);
 	static bool authenticateAsset(int id);
 	
-	static bool authenticateUserForAsset(GpControllerUser *user, int asset_id);
+	static bool authenticateUserForAsset(GpControllerUser & user, int asset_id);
 	
 
 	static bool insertAsset(GpAssetUser & asset);

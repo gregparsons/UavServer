@@ -10832,6 +10832,7 @@
 		001526B71A9E90BE0059BC0F = {
 			isa = PBXGroup;
 			children = (
+				00AE9E7A1AAD748700A175C3 /* Model */,
 				00667E3A1A9ECB2F009E8692 /* Network */,
 				001526C21A9E90BE0059BC0F /* Server */,
 				001526D21A9E96930059BC0F /* Controller */,
@@ -10855,10 +10856,6 @@
 			children = (
 				001243881A9EC90700580506 /* GpUavServer.h */,
 				001243871A9EC90700580506 /* GpUavServer.cpp */,
-				00A7B4D31AA3BE1D00068F5B /* GpDatabase.h */,
-				00A7B4D21AA3BE1D00068F5B /* GpDatabase.cpp */,
-				002EC5A71AAD1ACE009E8BF0 /* GpUser.h */,
-				002EC5A61AAD1ACE009E8BF0 /* GpUser.cpp */,
 			);
 			name = Server;
 			path = UavServer;
@@ -28943,6 +28940,18 @@
 				006E49F41AABA1E800891FDB /* GpAsset.cpp */,
 			);
 			name = Asset;
+			sourceTree = "<group>";
+		};
+		00AE9E7A1AAD748700A175C3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				00A7B4D31AA3BE1D00068F5B /* GpDatabase.h */,
+				00A7B4D21AA3BE1D00068F5B /* GpDatabase.cpp */,
+				002EC5A71AAD1ACE009E8BF0 /* GpUser.h */,
+				002EC5A61AAD1ACE009E8BF0 /* GpUser.cpp */,
+			);
+			name = Model;
+			path = UavServer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

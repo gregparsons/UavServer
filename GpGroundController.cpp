@@ -58,36 +58,16 @@ bool GpGroundController::start(){
 		return false;
 	}
 	
-
 	
 	// START LISTENER THREAD (for messages from server)
-	// Do we need to be listening on a separate thread? How about just listen after sending credentials? Do one thing at a time?
-	// network.startListenerThread();
-	
-	
+
 	// typedef bool (*gp_message_handler)(GpMessage & message);
-	// _net.startListenerAsThread(GpClientNet::gp_message_handler);
-	
-	
 	_net.startListenerAsThread(GpGroundController::handle_messages);
 	
 	
-	
-	
 	// LOGIN
-	// Listener thread gets replies, parses authentication confirmation message, then initiates sending
-	// controller commands.
-	_net.sendAuthenticationRequest(GP_CONTROLLER_TEST_USERNAME, GP_CONTROLLER_TEST_PASSWORD);
-	// network.sendAuthenticationRequest(GP_CONTROLLER_TEST_USERNAME, GP_CONTROLLER_TEST_PASSWORD);
 	
-	// Now Listen and block on listen (instead of running this as its own thread).
-	// network.listenThread();		//will this start fast enough to catch authentication reply?
-	
-	
-
-	
-	
-	
+	_net.sendAuthenticationRequest(GP_CONTROLLER_TEST_USERNAME, GP_CONTROLLER_TEST_PASSWORD, GP_MSG_TYPE_CONTROLLER_LOGIN);
 	
 	while(1);
 
@@ -153,7 +133,7 @@ bool GpGroundController::handle_messages(GpMessage & msg, GpClientNet & net){
 		}
 			//all the rest fall through
 		case GP_MSG_TYPE_NONE_ZERO:
-		case GP_MSG_TYPE_LOGIN:
+		case GP_MSG_TYPE_CONTROLLER_LOGIN:
 		case GP_MSG_TYPE_LOGOUT:
 		default:
 			break;

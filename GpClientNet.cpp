@@ -36,6 +36,8 @@ GpClientNet::GpClientNet(gp_message_handler message_handler){
 	_message_handler = message_handler;
 }
 
+GpClientNet::~GpClientNet(){ }
+
 
 bool
 GpClientNet::connectToServer(std::string ip, std::string port){
@@ -244,7 +246,7 @@ void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message){
 	//uint8_t *ptr = buffer;
 	
 	// Message_Type
-	message._message_type = *buffer; //GP_MSG_TYPE_LOGIN;
+	message._message_type = *buffer; //GP_MSG_TYPE_CONTROLLER_LOGIN;
 	
 	
 	
@@ -404,14 +406,14 @@ void GpClientNet::_receiveDataAndParseMessage()
 
 
 
-void GpClientNet::sendAuthenticationRequest(std::string username, std::string key){
+void GpClientNet::sendAuthenticationRequest(std::string username, std::string key, int gp_msg_source_type){
 	
 	//encrypt something with the symmetric key I share with the server
 	//server decrypts to know I'm who I am.
 	
 	
 	GpMessage_Login loginMessage(username, key);
-	GpMessage message(loginMessage);
+	GpMessage message(loginMessage, gp_msg_source_type); // GP_MSG_TYPE_ASSET_LOGIN or GP_MSG_TYPE_CONTROLLER_LOGIN
 	std::cout << "[" << __func__ << "] "  << "username/pwd: " << loginMessage.username() << "/" << loginMessage.key() << std::endl;
 	
 	
@@ -419,4 +421,44 @@ void GpClientNet::sendAuthenticationRequest(std::string username, std::string ke
 	
 	
 }
+
+
+
+
+
+
+//void GpClientNet::sendHeartbeat(){
+void GpClientNet::sendHeartbeat(int fd){
+	
+	for(;;){
+		
+		 // FAKE MESSAGE
+		 std::cout << "[" << __func__ << "] "  << "Sending fake heartbeat to server on socket: " << _fd << std::endl;
+		
+		 uint8_t *payload = nullptr;
+		 GpMessage msgLoginComplete(GP_MSG_TYPE_HEARTBEAT, 0, payload);
+		
+		 sendMessage(msgLoginComplete);
+		 
+		
+		
+		usleep(3000000);
+	}
+	
+}
+
+void GpClientNet::startBackgroundHeartbeat(){
+	
+	if(GP_SHOULD_SEND_HEARTBEAT_TO_SERVER_FROM_ASSET){
+		std::cout << "[" << __func__ << "] "  << "TEST: Starting heartbeat" << std::endl;
+		
+		std::thread serverHeartbeat(&GpClientNet::sendHeartbeat,this, _fd);
+		serverHeartbeat.detach();
+		
+	}
+	
+	
+}
+
+
 
