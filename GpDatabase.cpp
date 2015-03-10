@@ -61,20 +61,23 @@ bool GpDatabase::getAsset(int assetId, GpAssetUser & user){
 }
 
 
-bool GpDatabase::authenticateUserForAsset(GpControllerUser & user, int asset_id){
+bool GpDatabase::authenticateUserForAsset(GpControllerUser & controller, int asset_id){
 	
 	
 	//if asset_id exists and user._user_id is allowed to use asset_id then...
 
-	if(	(getAsset(asset_id, user._asset) == true) /* && user owns asset */){
+	if(	(getAsset(asset_id, controller._asset) == true) /* && user owns asset */){
 
-		std::cout << "[" << __func__ << "] "  << "[checking asset exists only] User " << user._username << " authorized to use asset id: " << asset_id << std::endl;
+		
+		// TEST
+		std::cout << "[" << __func__ << "] "  << "[checking asset exists only] User " << controller._username << " authorized to use asset id: " << asset_id << std::endl;
 	
 
-		user._asset._connected = true;
-		user._asset._connected_owner = &user;
+		controller._asset._connected_owner = &controller;
+		controller._asset._isConnectedToPartner = true;
+		controller._isConnectedToPartner = true;
 		
-		updateAsset(user._asset);
+		updateAsset(controller._asset);
 		
 		return true;
 	}
@@ -92,9 +95,11 @@ bool GpDatabase::insertAsset(GpAssetUser &asset){
 	result = assets.insert(std::pair<int, GpAssetUser>(asset._user_id, asset));
 	if(result.second == false){
 		//insert failed
-		std::cout << "[" << __func__ << "] "  << "Asset insert failed. Duplicate." << std::endl;
 		
-		return false;
+		std::cout << "[" << __func__ << "] "  << "Asset insert failed. Duplicate. Updating instead." << std::endl;
+		
+		
+		return updateAsset(asset);
 		
 	}
 	else{
@@ -112,14 +117,58 @@ bool GpDatabase::updateAsset(GpAssetUser &asset){
 		std::lock_guard<std::mutex> lock(assets_mutex);
 		
 		assets.at(asset._user_id);
-		assets[asset._user_id]._connected = asset._connected;
-		assets[asset._user_id]._connected_owner = asset._connected_owner;
 		assets[asset._user_id]._isAuthenticated = asset._isAuthenticated;
+		assets[asset._user_id]._isOnline = asset._isOnline;
+		assets[asset._user_id]._isConnectedToPartner = asset._isConnectedToPartner;
+		assets[asset._user_id]._connected_owner = asset._connected_owner;
 		return true;
 	
 	} catch (const std::out_of_range & oor) {
 	
 		std::cout << "[" << __func__ << "] "  << "Asset Id "<< asset._user_id <<" not found" << std::endl;
 		return false;
+	}
+}
+
+
+void GpDatabase::logoutUser(GpUser & user){
+
+	
+	if(user._user_type == GpUser::GP_USER_TYPE_CONTROLLER){
+		GpControllerUser & controller = (GpControllerUser &)user;
+		
+		//If controller is logging out, remove reference to it in a still logged-in asset.
+		
+		if(controller._isConnectedToPartner == true) //then the user.asset is valid
+		{
+			controller._asset._isConnectedToPartner = false;
+			controller._asset._connected_owner = nullptr;
+			
+			updateAsset(controller._asset);
+		}
+		controller._isConnectedToPartner = false;
+		controller._isAuthenticated = false;
+		controller._isOnline = false;
+		
+	}
+	else if(user._user_type == GpUser::GP_USER_TYPE_ASSET){
+
+		// If an asset is logging out, update its connection status and owner_pointer
+		
+		GpAssetUser & asset = (GpAssetUser &)user;
+		
+		if(asset._isConnectedToPartner == true){
+
+			// Remove 1:1 relationship with controller
+			
+			asset._connected_owner->_isConnectedToPartner = false;
+			asset._connected_owner = nullptr;
+			
+		}
+		asset._isConnectedToPartner = false;
+		asset._isAuthenticated = false;
+		asset._isOnline = false;
+		
+		
 	}
 }

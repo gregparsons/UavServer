@@ -73,14 +73,19 @@ void GpUavServer::sendHeartbeat(GpUser user){
  *  signalHandler(): Clean up zombie processes.
  *
  */
-/*
- void
+
+void
 signalHandler(int signal)
 {
-	while(waitpid(-1, NULL, WNOHANG) > 0);
-	cout << "signalHandler()" << std::endl;
+	if(signal == SIGPIPE)
+		std::cout << "SIGPIPE, keep going" << std::endl;
+	else{
+	
+		while(waitpid(-1, NULL, WNOHANG) > 0);
+		std::cout << "signalHandler()" << std::endl;
+			
+	}
 }
-*/
 
 
 
@@ -122,27 +127,26 @@ GpUavServer::startNetwork(){
 	struct addrinfo hintAddrInfo, *resSave = nullptr, *res = nullptr;
 	struct sockaddr_storage inboundAddress;
 	socklen_t addrLen = 0;
-	//struct sigaction signalAction;
 	int result = 0;
 	int yes = 1;
-	
 	int client_fd = 0;
 	
 	// Handle SIGPIPE, etc processes
 	
-	signal(SIGPIPE, SIG_IGN);
+	//signal(SIGPIPE, SIG_IGN);
+
 	
-	/*
-	
+	struct sigaction signalAction;
 	signalAction.sa_handler = signalHandler;
 	sigemptyset(&signalAction.sa_mask);
 	signalAction.sa_flags = SA_RESTART;
 	result = sigaction(SIGCHLD, &signalAction, nullptr);
 	if(result == -1){
-		cout << "Error: sigaction" << std::endl;
+		std::cout << "Error: sigaction" << std::endl;
 		exit(1);
 	}
-	*/
+	signal(SIGPIPE, signalHandler);
+	
 	
 	// Network Begin
 	
@@ -260,6 +264,8 @@ GpUavServer::startNetwork(){
 void GpUavServer::threadClientRecv(int fd)
 {
 	
+//	signal(SIGPIPE, signalHandler);
+
 
 	std::cout << "[" << __func__ << "] "  << "Entering recv() thread " << std::this_thread::get_id() << std::endl;
 	
@@ -529,13 +535,24 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 				if(typeid(user).name() == typeid(GpControllerUser).name()){
 					GpControllerUser &controller = (dynamic_cast<GpControllerUser&>(user));
 					
-					if(controller._asset._connected){
+					if(controller._isConnectedToPartner){
 						
-
 						_send_message(msg, controller._asset);
 						
 					}
 				}
+				
+				/*
+				if(user._isConnectedToPartner){
+					
+					//send to partner
+				
+					//allow asset to send messages to controller also
+					_send_message(msg, user._partner);
+					
+				}
+				*/
+				
 				break;
 				
 			}
@@ -546,6 +563,9 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 				//GpDatabase::logout();
 				//user.isAuthenticated set to false in db logout
 				std::cout << "[" << __func__ << "] "  << "Processing logout message" << std::endl;
+				
+				user.logout();
+				
 				break;
 			}
 			case GP_MSG_TYPE_HEARTBEAT:
@@ -557,7 +577,15 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 				
 				
 				
-				
+				/*
+				 if(user._isConnectedToPartner){
+					
+					//send to partner
+				 
+					//allow asset to send messages to controller also
+					_send_message(msg, user._partner);
+				 }
+				 */
 				
 				
 				
@@ -575,39 +603,34 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 					// If asset isn't connected t a controller, keep polling for a connect. Update version of asset in
 					// the database if connected, stop polling for connection and start forwarding heartbeats to controller.
 					
-					if(asset._connected_owner ==nullptr){
+					if((asset._isConnectedToPartner == false) || (asset._connected_owner ==nullptr)){
 						
-						//check if a controller connected since the last time around
+
 						
+						
+						// POLL: when a controller requests an asset
+						
+						asset.refresh();
+						
+/*
 						GpAssetUser asset2;
 						GpDatabase::getAsset(asset._user_id, asset2);
-						
 						asset._connected_owner = asset2._connected_owner;
 						asset._connected = asset2._connected;
-						
-						
+*/
 					}
 					
-					
-					//Why doesn't this work? Message appears to go out but never does.
 
-					if(asset._connected_owner !=nullptr){
-						_send_message(msg, *(asset._connected_owner));
+					if(asset._isConnectedToPartner){
+						if(_send_message(msg, *(asset._connected_owner)) == false){
+							// Controller might be offline. That status would have been updated by user logout() and database would now reflect
+							// asset change in status (_isConnectedToPartner) but this asset user wouldn't know cause they're not shared memory.
+							// So update yourself, asset.
+							asset.refresh();
+							
+							
+						};
 					}
-
-					
-					
-					
-				
-					
-					
-					
-					
-					
-					
-					
-					
-					
 					
 				}
 				// Who is asset's owner? Need to send heartbeat to them.
@@ -651,17 +674,7 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 					// moved temporarily lower as response to asset connect request (signals controller to start sending game controller outputs)
 					//sendLoginConfirmationMessageTo(user);
 
-/*
-					
-					// ********* TEST: insert a fake asset **********
-#ifdef GP_SHOULD_INSERT_FAKE_ASSET
-					GpAssetUser asset;
-					asset._user_id = GP_ASSET_ID_TEST_ONLY;
-					asset._username = "testing";
-					asset._connected = true;
-					GpDatabase::insertAsset(asset);
-#endif
-*/
+
 					// If this is a Controller, try to connect to the Asset.
 					
 					std::cout << "[" << __func__ << "] User type: "  << typeid(user).name() << std::endl;
@@ -734,19 +747,40 @@ bool GpUavServer::_send_message(GpMessage & msg, GpUser & user){
 	
 	// SEND TCP
 	
-	ssize_t retVal = send(user._fd, byteVect.data(), byteVect.size(), 0);	//this will be a new size based on the actual size of the serialized data (not the default above)
-	if(retVal == -1){
+	if(user._isOnline){
+	
+		
+		
+		signal(SIGPIPE, SIG_IGN);
+		
+		
+		
+		
+		
+		ssize_t retVal = send(user._fd, byteVect.data(), byteVect.size(), 0); // SO_NOSIGPIPE	//this will be a new size based on the actual size of the serialized data (not the default above)
+		if(retVal == -1){
 
-		perror((boost::format("[%s] Error %d:")  % __func__ % errno).str().c_str() );
+			perror((boost::format("[%s] Error %d:")  % __func__ % errno).str().c_str() );
 
-		/*
-		if(errno == EPIPE){
 			
-			// client disconnected; clean up. Mark client disconnected. Remove from controller list.
+			if(errno == EPIPE){
+				
+				// client disconnected; clean up. Mark client disconnected. Remove from controller list.
 
+				std::cout << "[" << __func__ << "] "  << "EPIPE on user: " << user._username << std::endl;
+
+				
+				
+				user.logout();
+				
+			}
 			
+			
+			return false;
 		}
-		*/
+	}
+	else{
+		std::cout << "[" << __func__ << "] "  << "EPIPE previously received. No longer online: " << user._username << std::endl;
 		
 		return false;
 	}

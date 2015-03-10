@@ -35,8 +35,11 @@ class GpDatabase {
 	
 	
 public:
+
+	
 	static bool authenticateUser(std::string username, std::string key);
-	static bool authenticateAsset(int id);
+	static void logoutUser(GpUser & user);
+	
 	
 	static bool authenticateUserForAsset(GpControllerUser & user, int asset_id);
 	

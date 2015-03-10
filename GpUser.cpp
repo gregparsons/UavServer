@@ -25,29 +25,22 @@ bool GpUser::authenticate(std::string username, std::string key){
 	
 	if(GpDatabase::authenticateUser(username, key) == true){
 		_isAuthenticated = true;
+		_isOnline = true;
+
 		
-		
-		
-		_user_id = rand();		//this would be the unique key returned from the database
-		
-		
-		
-		
-		
-		
+
 		// If ASSET:
-		
 		// insert into database (list of active assets)
-		
 		if(typeid(*this).name() == typeid(GpAssetUser).name()){
 
+			//TEST
+			_user_id = GP_ASSET_ID_TEST_ONLY ;
 			
-			_user_id = GP_ASSET_ID_TEST_ONLY ; 
-			
-			
-			
-			if(GpDatabase::insertAsset(dynamic_cast<GpAssetUser &>(*this)) == true)
-				 (dynamic_cast<GpAssetUser &>(*this))._connected = true;
+			// Add asset to database if not already there
+			if(GpDatabase::insertAsset(dynamic_cast<GpAssetUser &>(*this))==false){
+				std::cout << "[" << __func__ << "] Error adding/inserting asset: " << _user_id << std::endl;
+				
+			}
 		
 		}
 		else if(typeid(*this).name() == typeid(GpControllerUser).name()){
@@ -56,13 +49,10 @@ bool GpUser::authenticate(std::string username, std::string key){
 			
 			// check if asset is active:
 			
-			
 			std::cout << "[" << __func__ << "] A controller is requesting asset: " << GP_ASSET_ID_TEST_ONLY << std::endl;
 			
-			
-			
-			
-			// ALERT HARD CODED TEST!!
+			//TEST:
+			_user_id = rand();					//TEST: this would be the unique key returned from the database
 			int ASSET_ID = GP_ASSET_ID_TEST_ONLY;
 			
 			
@@ -73,42 +63,21 @@ bool GpUser::authenticate(std::string username, std::string key){
 			// Request a connection with an asset
 			// This would better go in a separate message handler after controller specifically requested a connection.
 			// Here I'm lumping this in with the login request to save dev time.
-			bool assetReqResult = controller.requestConnectionToAsset(ASSET_ID);
+			bool assetReqResult = controller.requestConnectionToAsset(ASSET_ID);	//sets _isConnectedToPartner for both controller and asset
 		
 			if(assetReqResult){
 				// authorized to use this asset_id
-
-				
-				
-				
-				// I didn't intend for this call to GPDatabase::getAsset to come out of private GpDatabase.
-				// I'd prefer, as originally intended, that the asset is set in requestConnectionToAsset.
-				// This is basically circumventing the security I was going for to prevent any old code from
-				// getting ANY asset.  DB was going to handle that logic.
-				//GpDatabase::getAsset(ASSET_ID, controller._asset);
-				
-
-				
-				
 				std::cout << "[" << __func__ << "] Asset request approved." << std::endl;
-				
-				
 			}
 			else{
 				std::cout << "[" << __func__ << "] Asset request failed. Need code here to poll until it's available...or what if it will never be available?" << std::endl;
 			}
 		}
 		
-		
-		
-		
-		
-		
 	}
 	else{
 		_isAuthenticated=false;
 	}
-	
 	
 	return _isAuthenticated;
 	
@@ -116,13 +85,17 @@ bool GpUser::authenticate(std::string username, std::string key){
 
 
 GpAssetUser::GpAssetUser(){
+	_user_type = GP_USER_TYPE_ASSET;
+	
+	
 
 };
 
 
 
 GpControllerUser::GpControllerUser(){
-
+	_user_type = GP_USER_TYPE_CONTROLLER;
+	
 };
 
 
@@ -139,7 +112,31 @@ GpControllerUser::requestConnectionToAsset(int assetId){
 	std::cout << "[" << __func__ << "]" << std::endl;
 	
 	
-	return GpDatabase::authenticateUserForAsset(*this, assetId);
+	return GpDatabase::authenticateUserForAsset(*this, assetId);	//sets _isConnectedToPartner for both controller and asset
 	
 	
 }
+
+
+
+void
+GpUser::logout(){
+	
+	GpDatabase::logoutUser(*this);
+	
+	
+	
+}
+
+void
+GpAssetUser::refresh(){
+	
+	GpAssetUser & thisAsset = (*this);
+	
+	// Fill this asset object with the version currently in the database
+	GpDatabase::getAsset(_user_id, thisAsset);
+	
+	
+}
+
+
