@@ -21,30 +21,34 @@ GpAsset::GpAsset(){}
 
 
 bool GpAsset::connectServer(){
-	
-	GpClientNet net;
-	//if(net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_ASSET_SERVER_PORT) == false){
-	
-	
-	
-	// CHANGE TO ASSET PORT?
-	
-	if(net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT) == false){
-		std::cout << "[" << __func__ << "] "  << "No server at ip/port?" << std::endl;
-		return false;
-	}
-	
-	net.startListenerAsThread(GpAsset::handle_messages); 
 
 	
-	net.sendAuthenticationRequest(GP_ASSET_TEST_USERNAME, GP_ASSET_TEST_PASSWORD, GP_MSG_TYPE_ASSET_LOGIN);
+	for(;;){
+	
+		GpClientNet net;
+		//if(net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_ASSET_SERVER_PORT) == false){
+		
+		
+		
+		// CHANGE TO ASSET PORT?
+		
+		if(net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT) == false){
+			std::cout << "[" << __func__ << "] "  << "No server at ip/port?" << std::endl;
+			return false;
+		}
+		
+		net.startListenerAsThread(GpAsset::handle_messages); 
+
+		net.sendAuthenticationRequest(GP_ASSET_TEST_USERNAME, GP_ASSET_TEST_PASSWORD, GP_MSG_TYPE_ASSET_LOGIN);
+		
+		
+		
+		// need to block doing something
+		net.sendHeartbeat();
+	
+	}
 	
 	
-	
-	
-	
-	
-	while(1);
 
 	
 	return true;
@@ -72,7 +76,7 @@ bool GpAsset::handle_messages(GpMessage & message, GpClientNet & net){
 			// START SENDING HEARTBEAT TO SERVER FROM ASSET HERE
 			
 			
-			net.startBackgroundHeartbeat();
+			//net.startBackgroundHeartbeat();
 			
 			
 			

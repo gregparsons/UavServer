@@ -59,33 +59,33 @@ bool GpGroundController::start(){
 	for(;;){
 	
 	
-	// CONNECT SOCKET (with server)
-	
-	bool connectRes = _net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT);
+		// CONNECT SOCKET (with server)
+		
+		bool connectRes = _net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT);
 
-	if(connectRes == false){
-		std::cout << "[" << __func__ << "] "  <<  "connect() fail: " << strerror(errno) << std::endl;
-		return false;
-	}
-	
-	
-	
-	
-	
-	// LISTENER THREAD (for messages from server)
+		if(connectRes == false){
+			std::cout << "[" << __func__ << "] "  <<  "connect() fail: " << strerror(errno) << std::endl;
+			return false;
+		}
+		
+		
+		
+		
+		
+		// LISTENER THREAD (for messages from server)
 
-	_net.startListenerAsThread(GpGroundController::handle_messages);
-	
+		_net.startListenerAsThread(GpGroundController::handle_messages);
+		
 
-	
-	// LOGIN
-	
-	_net.sendAuthenticationRequest(GP_CONTROLLER_TEST_USERNAME, GP_CONTROLLER_TEST_PASSWORD, GP_MSG_TYPE_CONTROLLER_LOGIN);
+		
+		// LOGIN
+		
+		_net.sendAuthenticationRequest(GP_CONTROLLER_TEST_USERNAME, GP_CONTROLLER_TEST_PASSWORD, GP_MSG_TYPE_CONTROLLER_LOGIN);
 
-	
-	
-	_net.sendHeartbeat();
-	
+		
+		
+		_net.sendHeartbeat();
+		
 	}
 	
 

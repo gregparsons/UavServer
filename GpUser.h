@@ -9,7 +9,7 @@
 #ifndef __UavServer__GpUser__
 #define __UavServer__GpUser__
 
-
+#include "GpIpAddress.h"	//TEST
 
 /**
  *  GpUser Class
@@ -69,6 +69,8 @@ public:
 	GpControllerUser();
 	
 	GpAssetUser _asset;
+	
+	int _assetLastRequested = GP_ASSET_ID_TEST_ONLY;		// TEST
 	
 	//GpAssetUser *_assetPtr = nullptr;
 	

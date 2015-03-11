@@ -503,7 +503,7 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 						
 						
 						// see if we can reconnect
-						controller.requestConnectionToAsset(controller._asset._user_id);
+						controller.requestConnectionToAsset(controller._assetLastRequested);
 						
 
 						if(controller._isConnectedToPartner)

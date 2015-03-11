@@ -42,67 +42,82 @@ GpClientNet::~GpClientNet(){ }
 bool
 GpClientNet::connectToServer(std::string ip, std::string port){
 	
+	
+	for(;;){
+	
+	
 
-	struct addrinfo hints, *server_info, *server_info_backup;
-	memset(&hints, 0, sizeof(addrinfo));
-	hints.ai_family = AF_UNSPEC;		//ipv4 or ipv6
-	hints.ai_socktype = SOCK_STREAM;	//defaults to udp otherwise?
+		struct addrinfo hints, *server_info, *server_info_backup;
+		memset(&hints, 0, sizeof(addrinfo));
+		hints.ai_family = AF_UNSPEC;		//ipv4 or ipv6
+		hints.ai_socktype = SOCK_STREAM;	//defaults to udp otherwise?
 
-	if(::getaddrinfo(ip.c_str(), port.c_str(), &hints, &server_info) == -1){
-		perror((boost::format("%s") % __func__ ).str().c_str() );
-		return false;
-	}
-	
-	
-	
-	
-	//ref: Stevens/Fenner/Rudoff
-	server_info_backup = server_info;
-	do {
-		
-		// Socket
-		
-		_fd = ::socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
-		if(_fd < 0){
-			continue;
+		if(::getaddrinfo(ip.c_str(), port.c_str(), &hints, &server_info) == -1){
+			perror((boost::format("%s") % __func__ ).str().c_str() );
+			goto GP_WAIT_AND_TRY_AGAIN_IN_A_BIT;
+			//return false;
 		}
 		
-#ifdef GP_OSX	// Only works on mac. on linux the option is set in send()
-		
-		int yes = 1;
-		if((setsockopt(_fd, SOL_SOCKET, SO_NOSIGPIPE, &yes, sizeof(int))) == -1){
-			std::cout << "socket options error SO_NOSIGPIPE" << std::endl;
-			exit(1);
-		}
-#endif
 		
 		
-		// Connect
 		
-		if(0 == ::connect(_fd, server_info->ai_addr, server_info->ai_addrlen)){
+		//ref: Stevens/Fenner/Rudoff
+		server_info_backup = server_info;
+		do {
 			
-
-			// Print IP address connected to
+			// Socket
 			
-			if(server_info->ai_family == AF_INET){
-				char str[INET_ADDRSTRLEN];
-				inet_ntop(AF_INET, &(((struct sockaddr_in *)server_info->ai_addr)->sin_addr), str, INET_ADDRSTRLEN);
-			
-				std::cout << "[" << __func__ << "] " << "Connected to " << str << std::endl;
+			_fd = ::socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
+			if(_fd < 0){
+				continue;
 			}
-			break;			// break if good connect
-		}
+			
+	#ifdef GP_OSX	// Only works on mac. on linux the option is set in send()
+			
+			int yes = 1;
+			if((setsockopt(_fd, SOL_SOCKET, SO_NOSIGPIPE, &yes, sizeof(int))) == -1){
+				std::cout << "socket options error SO_NOSIGPIPE" << std::endl;
+				goto GP_WAIT_AND_TRY_AGAIN_IN_A_BIT;
+
+				//exit(1);
+			}
+	#endif
+			
+			
+			// Connect
+			
+			if(0 == ::connect(_fd, server_info->ai_addr, server_info->ai_addrlen)){
+				
+
+				// Print IP address connected to
+				
+				if(server_info->ai_family == AF_INET){
+					char str[INET_ADDRSTRLEN];
+					inet_ntop(AF_INET, &(((struct sockaddr_in *)server_info->ai_addr)->sin_addr), str, INET_ADDRSTRLEN);
+				
+					std::cout << "[" << __func__ << "] " << "Connected to " << str << std::endl;
+				}
+				break;			// break if good connect
+			}
+			
+			close(_fd);			// otherwise close, keep trying
+			server_info = server_info->ai_next;
+		} while (server_info != nullptr);
 		
-		close(_fd);			// otherwise close, keep trying
-		server_info = server_info->ai_next;
-	} while (server_info != nullptr);
-	
-	if(server_info == nullptr){
-		std::cout << "[" << __func__ << "] "  << "Error: connect 2" << strerror(errno) << std::endl;
-		return false;
-	}
-	::freeaddrinfo(server_info_backup);
-	
+		if(server_info == nullptr){
+			std::cout << "[" << __func__ << "] "  << "" << strerror(errno) << std::endl;
+			goto GP_WAIT_AND_TRY_AGAIN_IN_A_BIT;
+			//return false;
+		}
+		::freeaddrinfo(server_info_backup);
+
+			
+		return true;	//if you get this far it worked. Otherwise you skipped passed, slept, then tried again.
+			
+		GP_WAIT_AND_TRY_AGAIN_IN_A_BIT:
+			usleep(5000000);		//deprecated for nanosleep...
+		
+	} // for(;;)
 	return true;
 }
 
