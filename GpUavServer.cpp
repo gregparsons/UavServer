@@ -169,7 +169,7 @@ GpUavServer::startNetwork(){
 			std::cout << "Socket error" << std::endl;
 			continue;
 		}
-#ifdef GP_OSX
+#ifdef GP_OSX	// Only works on mac. on linux the option is set in send()
 		result = setsockopt(_listen_fd, SOL_SOCKET, SO_NOSIGPIPE, &yes, sizeof(int));
 
 		if(result == -1){
@@ -710,9 +710,14 @@ bool GpUavServer::_send_message(GpMessage & msg, GpUser & user){
 		
 		
 		
-		
-		
-		ssize_t retVal = send(user._fd, byteVect.data(), byteVect.size(), 0); //MSG_NOSIGNAL  SO_NOSIGPIPE	//this will be a new size based on the actual size of the serialized data (not the default above)
+		ssize_t retVal;
+#ifdef GP_OSX
+		retVal = send(user._fd, byteVect.data(), byteVect.size(), 0); //MSG_NOSIGNAL  SO_NOSIGPIPE	//this will be a new size based on the actual size of the serialized data (not the default above)
+#else
+#ifdef GP_LINUX
+		retVal = send(user._fd, byteVect.data(), byteVect.size(), MSG_NOSIGNAL); //MSG_NOSIGNAL  SO_NOSIGPIPE	//this will be a new size based on the actual size of the serialized data (not the default above)
+#endif
+#endif
 		if(retVal == -1){
 
 			perror((boost::format("[%s] Error %d:")  % __func__ % errno).str().c_str() );
