@@ -81,6 +81,8 @@ public:
 	void sendHeartbeat();
 
 	
+	bool _isConnected = false;
+	
 private:
 	int _fd = 0;
 	

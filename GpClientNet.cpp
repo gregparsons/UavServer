@@ -110,12 +110,14 @@ GpClientNet::connectToServer(std::string ip, std::string port){
 			//return false;
 		}
 		::freeaddrinfo(server_info_backup);
-
+		
+		_isConnected = true;
 			
 		return true;	//if you get this far it worked. Otherwise you skipped passed, slept, then tried again.
 			
 		GP_WAIT_AND_TRY_AGAIN_IN_A_BIT:
-			usleep(5000000);		//deprecated for nanosleep...
+		_isConnected = false;
+		usleep(5000000);		//deprecated for nanosleep...
 		
 	} // for(;;)
 	return true;

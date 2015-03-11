@@ -125,7 +125,19 @@ void GpGameController::_controller_thread(){
 									
 									
 									
-									net.sendMessage(cmdMessage);
+									
+									// Hacky. Making game controller thread end if the network ended.
+									//if(false == net.sendMessage(cmdMessage))
+									//	return;
+									
+									
+									// TEST...IS THIS THE SAME NET, IF SERVER RECONNECT HAPPENS? IT'S A POINTER TO A REFERENCE...TO A THING THAT WENT OUT OF SCOPE.
+									if(net._isConnected){
+										net.sendMessage(cmdMessage);
+									}else{
+										std::cout << "[" << __func__ << "] "  << "Can't send message. Net is offline." << std::endl;
+
+									}
 									
 									
 								}
