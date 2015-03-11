@@ -47,9 +47,12 @@ public:
 
 	
 	static bool getAsset(int assetId, GpAssetUser & user);
-	static bool insertAsset(GpAssetUser & asset);
-	static bool updateAsset(GpAssetUser &asset);
+//	static bool insertAsset(GpAssetUser & asset);
+//	static bool updateAsset(GpAssetUser &asset);
 
+	static void insertUpdateAsset(GpAssetUser & asset);
+	
+	
 private:
 	
 	static std::unordered_map<int, GpAssetUser> assets;

@@ -49,14 +49,15 @@ bool GpDatabase::authenticateUser(std::string username, std::string key){
 bool GpDatabase::getAsset(int assetId, GpAssetUser & user){
 
 	std::lock_guard<std::mutex> lock(assets_mutex);
-
+	bool returnValue = false;
 	try {
-		user = assets.at(assetId);
-		return true;
+		user = assets.at(assetId);			//this is doing a full operator=.....hmmm.
+		returnValue = true;
 	} catch (const std::out_of_range & oor) {
 		std::cout << "[" << __func__ << "] "  << "Asset Id "<< assetId <<" not found" << std::endl;
-		return false;
+		returnValue = false;
 	}
+	return returnValue;
 	
 }
 
@@ -68,25 +69,27 @@ bool GpDatabase::authenticateUserForAsset(GpControllerUser & controller, int ass
 
 	if(	(getAsset(asset_id, controller._asset) == true) /* && user owns asset */){
 
+			if(controller._asset._isOnline){
+			
+			// TEST
+			std::cout << "[" << __func__ << "] "  << "[checking asset exists only] User " << controller._username << " authorized to use asset id: " << asset_id << std::endl;
 		
-		// TEST
-		std::cout << "[" << __func__ << "] "  << "[checking asset exists only] User " << controller._username << " authorized to use asset id: " << asset_id << std::endl;
-	
 
-		controller._asset._connected_owner = &controller;
-		controller._asset._isConnectedToPartner = true;
-		controller._isConnectedToPartner = true;
-		
-		updateAsset(controller._asset);
-		
-		return true;
+			controller._asset._connected_owner = &controller;
+			controller._asset._isConnectedToPartner = true;
+			controller._isConnectedToPartner = true;
+			
+			insertUpdateAsset(controller._asset);
+			
+			return true;
+		}
 	}
 	
 	return false;
 }
 
 
-
+/*
 bool GpDatabase::insertAsset(GpAssetUser &asset){
 	
 	std::lock_guard<std::mutex> lock(assets_mutex);
@@ -108,8 +111,9 @@ bool GpDatabase::insertAsset(GpAssetUser &asset){
 		return true;
 	}
 }
+*/
 
-
+/*
 bool GpDatabase::updateAsset(GpAssetUser &asset){
 
 	try{
@@ -117,6 +121,10 @@ bool GpDatabase::updateAsset(GpAssetUser &asset){
 		std::lock_guard<std::mutex> lock(assets_mutex);
 		
 		assets.at(asset._user_id);
+		// assets[asset._user_id]
+		assets[asset._user_id]._user_type = asset._user_type;
+		assets[asset._user_id]._username = asset._username;
+
 		assets[asset._user_id]._isAuthenticated = asset._isAuthenticated;
 		assets[asset._user_id]._isOnline = asset._isOnline;
 		assets[asset._user_id]._isConnectedToPartner = asset._isConnectedToPartner;
@@ -129,9 +137,28 @@ bool GpDatabase::updateAsset(GpAssetUser &asset){
 		return false;
 	}
 }
+*/
+
+
+/*
+ If k does not match the key of any element in the container, the function inserts a new element with that key and returns a reference to its mapped value. Notice that this always increases the container size by one, even if no mapped value is assigned to the element (the element is constructed using its default constructor).
+ */
+
+void GpDatabase::insertUpdateAsset(GpAssetUser &asset){
+	
+	std::lock_guard<std::mutex> lock(assets_mutex);
+	
+	assets[asset._user_id] = asset;	//copy contents of the inbound asset to the one stored in the database
+	
+	
+}
+
+
 
 
 void GpDatabase::logoutUser(GpUser & user){
+
+	std::cout << "[" << __func__ << "] Logging out: " << user._username << " on socket: " << user._fd << std::endl;
 
 	
 	if(user._user_type == GpUser::GP_USER_TYPE_CONTROLLER){
@@ -144,7 +171,7 @@ void GpDatabase::logoutUser(GpUser & user){
 			controller._asset._isConnectedToPartner = false;
 			controller._asset._connected_owner = nullptr;
 			
-			updateAsset(controller._asset);
+			insertUpdateAsset(controller._asset);
 		}
 		controller._isConnectedToPartner = false;
 		controller._isAuthenticated = false;

@@ -20,7 +20,17 @@ GpUser::GpUser(){
 
 GpUser::~GpUser(){};
 
-bool GpUser::authenticate(std::string username, std::string key){
+void
+GpUser::logout(){
+	
+	GpDatabase::logoutUser(*this);
+	
+	
+	
+}
+
+bool
+GpUser::authenticate(std::string username, std::string key){
 	_username = username;
 	
 	if(GpDatabase::authenticateUser(username, key) == true){
@@ -37,11 +47,14 @@ bool GpUser::authenticate(std::string username, std::string key){
 			_user_id = GP_ASSET_ID_TEST_ONLY ;
 			
 			// Add asset to database if not already there
+			GpDatabase::insertUpdateAsset(dynamic_cast<GpAssetUser &>(*this));
+			
+			/*
 			if(GpDatabase::insertAsset(dynamic_cast<GpAssetUser &>(*this))==false){
 				std::cout << "[" << __func__ << "] Error adding/inserting asset: " << _user_id << std::endl;
 				
 			}
-		
+			*/
 		}
 		else if(typeid(*this).name() == typeid(GpControllerUser).name()){
 		
@@ -84,14 +97,13 @@ bool GpUser::authenticate(std::string username, std::string key){
 }
 
 
-GpAssetUser::GpAssetUser(){
-	_user_type = GP_USER_TYPE_ASSET;
-	
-	
-
-};
 
 
+//
+
+// Controller
+
+//
 
 GpControllerUser::GpControllerUser(){
 	_user_type = GP_USER_TYPE_CONTROLLER;
@@ -105,28 +117,27 @@ GpControllerUser::requestConnectionToAsset(int assetId){
 	
 	// Check database. Does this assetId exist?
 	// Check permissions. Is this user allowed to use this asset? aka, does user "own" asset?
-	
-	
-	
-	
 	std::cout << "[" << __func__ << "]" << std::endl;
-	
 	
 	return GpDatabase::authenticateUserForAsset(*this, assetId);	//sets _isConnectedToPartner for both controller and asset
 	
-	
 }
 
 
 
-void
-GpUser::logout(){
+
+
+
+//
+
+// Asset
+
+//
+
+GpAssetUser::GpAssetUser(){
+	_user_type = GP_USER_TYPE_ASSET;
 	
-	GpDatabase::logoutUser(*this);
-	
-	
-	
-}
+};
 
 void
 GpAssetUser::refresh(){
@@ -139,4 +150,21 @@ GpAssetUser::refresh(){
 	
 }
 
+GpAssetUser & GpAssetUser::operator=(const GpAssetUser & newAsset){
+	
+	if(&newAsset == this)
+		return *this;
+	
+	_user_id = newAsset._user_id;
+	_fd = newAsset._fd;
+	_username = newAsset._username;
+	_user_type = newAsset._user_type;
+	_isAuthenticated = newAsset._isAuthenticated;
+	_isOnline = newAsset._isOnline;
+	_isConnectedToPartner = newAsset._isConnectedToPartner;
+	_connected_owner = newAsset._connected_owner;
+	
+	
+	return *this;
+}
 

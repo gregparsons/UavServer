@@ -55,10 +55,11 @@ public:
 class GpAssetUser:public GpUser{
 public:
 	GpAssetUser();
-//	bool _connected = false;
 	GpControllerUser* _connected_owner = nullptr;
 	
 	void refresh();
+
+	GpAssetUser & operator=(const GpAssetUser & asset);
 	
 };
 
@@ -66,9 +67,10 @@ public:
 class GpControllerUser:public GpUser{
 public:
 	GpControllerUser();
+	
 	GpAssetUser _asset;
 	
-	GpAssetUser *_assetPtr = nullptr;
+	//GpAssetUser *_assetPtr = nullptr;
 	
 	
 	
