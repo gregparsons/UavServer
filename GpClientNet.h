@@ -12,7 +12,7 @@
 #include <sys/socket.h>
 #include <vector>
 #include <mutex>
-
+#include <thread>
 
 
 class GpMessage;		// forward declare
@@ -58,7 +58,8 @@ public:
 	 *  @returns void
 	 */
 	void startListenerAsThread(GpClientNet::gp_message_handler);
-	
+	void startListenerAsThread(GpClientNet::gp_message_handler, std::thread * listenThread);
+
 	
 	
 	
@@ -77,8 +78,7 @@ public:
 
 	
 	void startBackgroundHeartbeat();
-	void sendHeartbeat(int fd);
-//	void sendHeartbeat(int fd);
+	void sendHeartbeat();
 
 	
 private:

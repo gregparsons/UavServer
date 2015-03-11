@@ -54,6 +54,8 @@ GpClientNet::connectToServer(std::string ip, std::string port){
 	}
 	
 	
+	
+	
 	//ref: Stevens/Fenner/Rudoff
 	server_info_backup = server_info;
 	do {
@@ -64,6 +66,16 @@ GpClientNet::connectToServer(std::string ip, std::string port){
 		if(_fd < 0){
 			continue;
 		}
+		
+#ifdef GP_OSX	// Only works on mac. on linux the option is set in send()
+		
+		int yes = 1;
+		if((setsockopt(_fd, SOL_SOCKET, SO_NOSIGPIPE, &yes, sizeof(int))) == -1){
+			std::cout << "socket options error SO_NOSIGPIPE" << std::endl;
+			exit(1);
+		}
+#endif
+		
 		
 		// Connect
 		
@@ -136,15 +148,28 @@ GpClientNet::_sendMessage(GpMessage &message){
 	message.serialize(bytes);
 	
 	ssize_t result = send(_fd, bytes.data(), bytes.size(), MSG_DONTWAIT);	//MSG_DONTWAIT -- If set send returns EAGAIN if outbond traffic is clogged. A one-time "skip it."
-
+																			//MSG_NOSIGNAL
 	if(result == -1){
+		perror((boost::format("[%s] Error %d:")  % __func__ % errno).str().c_str() );
+
 		if(EAGAIN == errno){
 
-			;
+			std::cout << "[" << __func__ << "] "  << "EAGAIN" << std::endl;
 			// message was skipped. Try again? Or disgregard? Might depend on message type.
 
 		}
-		perror(__func__);		//prints function name and error
+		else if(errno == EPIPE){
+			
+			// Server's gone. Need to quit this thread and reconnect.
+			
+			std::cout << "[" << __func__ << "] "  << "EPIPE" << std::endl;
+			
+			//user.logout();
+			
+			//exit(EPIPE);
+			
+			
+		}
 		return false;
 	}
 	else if (result == 0){
@@ -157,8 +182,18 @@ GpClientNet::_sendMessage(GpMessage &message){
 
 
 
-
-
+void GpClientNet::startListenerAsThread(GpClientNet::gp_message_handler message_handler, std::thread * listenThread){
+	
+	if(message_handler != nullptr){
+		
+		_message_handler = message_handler;
+		
+		std::thread listenThread(&GpClientNet::_listen_for_TCP_messages, this);
+		listenThread.detach();
+		
+	}
+	
+}
 
 void GpClientNet::startListenerAsThread(GpClientNet::gp_message_handler message_handler){
 
@@ -168,7 +203,9 @@ void GpClientNet::startListenerAsThread(GpClientNet::gp_message_handler message_
 
 		std::thread listenThread(&GpClientNet::_listen_for_TCP_messages, this);
 		listenThread.detach();
+	
 	}
+	
 }
 
 
@@ -255,6 +292,9 @@ void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message){
 
 void GpClientNet::_receiveDataAndParseMessage()
 {
+	
+	
+	
 	
 	
 	std::cout << "[" << __func__ << "] "  <<  "" << std::endl;
@@ -419,7 +459,7 @@ void GpClientNet::sendAuthenticationRequest(std::string username, std::string ke
 
 
 //void GpClientNet::sendHeartbeat(){
-void GpClientNet::sendHeartbeat(int fd){
+void GpClientNet::sendHeartbeat(){
 	
 	for(;;){
 		
@@ -429,7 +469,8 @@ void GpClientNet::sendHeartbeat(int fd){
 		 uint8_t *payload = nullptr;
 		 GpMessage msgLoginComplete(GP_MSG_TYPE_HEARTBEAT, 0, payload);
 		
-		 sendMessage(msgLoginComplete);
+		 if(sendMessage(msgLoginComplete)==false)
+			 return;
 		 
 		
 		
@@ -443,7 +484,7 @@ void GpClientNet::startBackgroundHeartbeat(){
 	if(GP_SHOULD_SEND_HEARTBEAT_TO_SERVER_FROM_ASSET){
 		std::cout << "[" << __func__ << "] "  << "TEST: Starting heartbeat" << std::endl;
 		
-		std::thread serverHeartbeat(&GpClientNet::sendHeartbeat,this, _fd);
+		std::thread serverHeartbeat(&GpClientNet::sendHeartbeat,this);
 		serverHeartbeat.detach();
 		
 	}

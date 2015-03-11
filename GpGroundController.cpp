@@ -56,6 +56,8 @@ bool GpGroundController::start(){
 	}
 	*/
 	
+	for(;;){
+	
 	
 	// CONNECT SOCKET (with server)
 	
@@ -82,7 +84,10 @@ bool GpGroundController::start(){
 
 	
 	
-	while(1);
+	_net.sendHeartbeat();
+	
+	}
+	
 
 	return true;
 }
@@ -93,14 +98,14 @@ bool GpGroundController::start(){
  *  signalHandler(): Clean up zombie processes.
  *
  */
-
+/*
 void
 GpGroundController::signalHandler(int signal)
 {
 	while(waitpid(-1, NULL, WNOHANG) > 0);
 	std::cout << "signalHandler()" << std::endl;
 }
-
+*/
 
 
 
