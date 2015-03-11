@@ -4,7 +4,7 @@ all:uav
 uav:mac
 
 mac:
-	g++ -std=c++11 -stdlib=libc++ -I . -I ./lib/ -I/usr/local/include/SDL2 -D_REENTRANT -L/usr/local/lib -Wl,-rpath,/usr/local/lib -o uav GpUser.cpp GpAsset.cpp GpClientNet.cpp GpMessage_Login.cpp GpMessage.cpp GpDatabase.cpp GpControllerEvent.cpp GpGameController.cpp GpMavlink.cpp GpUavServer.cpp GpGroundController.cpp main.cpp -lpthread -lSDL2
+	g++ -D GP_OSX -std=c++11 -stdlib=libc++ -I . -I ./lib/ -I/usr/local/include/SDL2 -D_REENTRANT -L/usr/local/lib -Wl,-rpath,/usr/local/lib -o uav GpUser.cpp GpAsset.cpp GpClientNet.cpp GpMessage_Login.cpp GpMessage.cpp GpDatabase.cpp GpControllerEvent.cpp GpGameController.cpp GpMavlink.cpp GpUavServer.cpp GpGroundController.cpp main.cpp -lpthread -lSDL2
 
 #ubuntu 12
 ubuntu:

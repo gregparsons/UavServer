@@ -169,13 +169,14 @@ GpUavServer::startNetwork(){
 			std::cout << "Socket error" << std::endl;
 			continue;
 		}
-
+#ifdef GP_OSX
 		result = setsockopt(_listen_fd, SOL_SOCKET, SO_NOSIGPIPE, &yes, sizeof(int));
 
 		if(result == -1){
 			std::cout << "socket options error SO_NOSIGPIPE" << std::endl;
 			exit(1);
 		}
+#endif
 		result = setsockopt(_listen_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 		if(result == -1){
 			std::cout << "socket options error SO_REUSEADDR" << std::endl;
