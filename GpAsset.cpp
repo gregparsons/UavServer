@@ -123,7 +123,7 @@ bool GpAsset::handle_messages(GpMessage & message, GpClientNet & net){
 	
 	
 	
-	std::cout << "[" << __func__ << "] "  << "Message Type: " << int(message._message_type) << std::endl;
+	// std::cout << "[" << __func__ << "] "  << "Message Type: " << int(message._message_type) << std::endl;
 
 	return true;
 }

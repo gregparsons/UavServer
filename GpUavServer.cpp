@@ -250,14 +250,14 @@ void GpUavServer::client_listener_thread(int fd)
 		
 		bytesInRecvBuffer = recv(fd, recvInPtr, length, 0);		//blocks if no data, returns zero if no data and shutdown occurred
 		if(bytesInRecvBuffer == -1){
-			std::cout << "Error: recv()" << std::endl;
+			// std::cout << "Error: recv()" << std::endl;
 			break;
 		}
 		else if(bytesInRecvBuffer == 0){
 			break;
 		}
 
-		std::cout << "[" << __func__ << "] "  << "recv(): " << bytesInRecvBuffer << " bytes" <<std::endl;
+		// std::cout << "[" << __func__ << "] "  << "recv(): " << bytesInRecvBuffer << " bytes" <<std::endl;
 		
 		
 		// If there are bytes on the receive queue, turn them into a message or return to recv until a message can be formed.

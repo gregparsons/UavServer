@@ -352,7 +352,7 @@ void GpClientNet::_receiveDataAndParseMessage()
 		
 		bytesInRecvBuffer = recv(_fd, recvInPtr, length, 0);		//blocks if no data, returns zero if no data and shutdown occurred
 		if(bytesInRecvBuffer == -1){
-			std::cout << "[" << __func__ << "] "  << "recv() error" << std::endl;
+			// std::cout << "[" << __func__ << "] "  << "recv() error" << std::endl;
 			return;
 		}
 		else if(bytesInRecvBuffer == 0){
@@ -361,7 +361,7 @@ void GpClientNet::_receiveDataAndParseMessage()
 		}
 		
 		
-		std::cout << "[" << __func__ << "] "  << "recv() read: " << bytesInRecvBuffer << " bytes" << std::endl;
+		// std::cout << "[" << __func__ << "] "  << "recv() read: " << bytesInRecvBuffer << " bytes" << std::endl;
 		
 		
 		
@@ -481,7 +481,7 @@ void GpClientNet::sendHeartbeat(){
 	for(;;){
 		
 		 // FAKE MESSAGE
-		 std::cout << "[" << __func__ << "] "  << "Sending fake heartbeat to server on socket: " << _fd << std::endl;
+		 std::cout << "[" << __func__ << "] "  << "Sending heartbeat to server on socket: " << _fd << std::endl;
 		
 		 uint8_t *payload = nullptr;
 		 GpMessage msgLoginComplete(GP_MSG_TYPE_HEARTBEAT, 0, payload);
