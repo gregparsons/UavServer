@@ -77,14 +77,13 @@ bool GpGroundController::start(){
  *  @returns bool result
  */
 bool GpGroundController::handle_messages(GpMessage & msg, GpClientNet & net){
-	std::cout << "[" << __func__ << "] "  <<  "GpGroundController funct* called in GpClientNet.cpp" << std::endl;
-	
+
 	
 	switch (msg._message_type) {
 		case GP_MSG_TYPE_AUTHENTICATED_BY_SERVER:
 		{
 			// START SENDING MESSAGES
-			std::cout << "[" << __func__ << "] Client received GP_MSG_TYPE_AUTHENTICATED_BY_SERVER: setting _shouldSendControllerOutput = true" << std::endl;
+			std::cout << "[" << __func__ << "] Received GP_MSG_TYPE_AUTHENTICATED_BY_SERVER" << std::endl;
 			
 			// start sending asset commands
 			

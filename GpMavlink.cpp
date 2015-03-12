@@ -182,7 +182,7 @@ void GpMavlink::encodeControllerEventAsMavlink(int left_x, int left_y, int right
 	
 	// Now mavlinkMessage has the ready-to-send mavlink message. This function returns with it filled.
 	
-	printMavChannelsOverride(rcChannelOverrideMessage);
+	// printMavChannelsOverride(rcChannelOverrideMessage);
 	
 	
 }

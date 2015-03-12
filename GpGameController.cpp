@@ -128,7 +128,7 @@ void GpGameController::_controller_thread(){
 										// and sent to the server for forwarding to the asset.
 										
 										
-										
+										GpMavlink::printMavFromGpMessage(cmdMessage);
 										net.sendMessage(cmdMessage);
 
 									
@@ -152,6 +152,10 @@ void GpGameController::_controller_thread(){
 		}
 		SDL_Quit();
 		
+	}
+	if(gameController != nullptr){
+		SDL_GameControllerClose(gameController);
+		SDL_Quit();
 	}
 }
 

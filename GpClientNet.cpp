@@ -2,7 +2,6 @@
 //
 //  GpClientNet.cpp
 //  UavServer
-//  3/7/15
 //
 // ********************************************************************************
 #include <sys/types.h>
@@ -179,7 +178,7 @@ GpClientNet::_sendMessage(GpMessage &message){
 			
 			// Server's gone. Need to quit this thread and reconnect.
 			
-			std::cout << "[" << __func__ << "] "  << "EPIPE" << std::endl;
+			std::cout << "[" << __func__ << "] "  << "EPIPE: Server disconnected." << std::endl;
 			
 			//user.logout();
 			
@@ -248,7 +247,7 @@ GpClientNet::_listen_for_TCP_messages(){
 	}
 	else{
 	
-		std::cout << "[" << __func__ << "] "  <<  "_message_handler or _fd weren't set" << std::endl;
+		//std::cout << "[" << __func__ << "] "  <<  "_message_handler or _fd weren't set" << std::endl;
 		return false;
 		
 	}
@@ -314,7 +313,7 @@ void GpClientNet::_receiveDataAndParseMessage()
 	
 	
 	
-	std::cout << "[" << __func__ << "] "  <<  "" << std::endl;
+	// std::cout << "[" << __func__ << "] "  <<  "" << std::endl;
 	
 	
 	// 2 BUFFERS: receive, message

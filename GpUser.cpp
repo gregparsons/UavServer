@@ -83,7 +83,7 @@ GpUser::authenticate(std::string username, std::string key){
 				std::cout << "[" << __func__ << "] Asset request approved." << std::endl;
 			}
 			else{
-				std::cout << "[" << __func__ << "] Asset request failed. Need code here to poll until it's available...or what if it will never be available?" << std::endl;
+				std::cout << "[" << __func__ << "] Asset request failed. Will try again." << std::endl;
 			}
 		}
 		
