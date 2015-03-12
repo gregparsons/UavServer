@@ -168,11 +168,11 @@ GpClientNet::_sendMessage(GpMessage &message){
 	// Don't change a pong's timestamp
 	if(message._message_type != GP_MSG_TYPE_PONG)
 		message.setTimestampToNow();
-	else
-		std::cout << "Sending Pong" << std::endl;
+	//else
+	//	std::cout << "Sending Pong" << std::endl;
 	
 	
-	std::cout << "[" << __func__ << "] "  << "Sending message type: " << int(message._message_type) << " on socket: " << _fd << " , time: " << uint32_t(message._timestamp) << std::endl;
+	// std::cout << "[" << __func__ << "] "  << "Sending message type: " << int(message._message_type) << " on socket: " << _fd << " , time: " << uint32_t(message._timestamp) << std::endl;
 	
 	
 	
@@ -207,7 +207,7 @@ GpClientNet::_sendMessage(GpMessage &message){
 			
 			// Server's gone. Need to quit this thread and reconnect.
 			
-			std::cout << "[" << __func__ << "] "  << "EPIPE: Server disconnected." << std::endl;
+			std::cout << "[" << __func__ << "] "  << "Server disconnected (EPIPE)." << std::endl;
 			
 			//user.logout();
 			
@@ -266,7 +266,7 @@ void GpClientNet::startListenerAsThread(GpClientNet::gp_message_handler message_
  */
 bool
 GpClientNet::_listen_for_TCP_messages(){
-	std::cout << "[" << __func__ << "] "  <<  "" << std::endl;
+	// std::cout << "[" << __func__ << "] "  <<  "" << std::endl;
 
 
 	if(_message_handler != nullptr && _fd > 0){
@@ -541,7 +541,7 @@ void GpClientNet::sendAuthenticationRequest(std::string username, std::string ke
 	
 	GpMessage_Login loginMessage(username, key);
 	GpMessage message(loginMessage, gp_msg_source_type); // GP_MSG_TYPE_ASSET_LOGIN or GP_MSG_TYPE_CONTROLLER_LOGIN
-	std::cout << "[" << __func__ << "] "  << "username/pwd: " << loginMessage.username() << "/" << loginMessage.key() << std::endl;
+	// std::cout << "[" << __func__ << "] "  << "username/pwd: " << loginMessage.username() << "/" << loginMessage.key() << std::endl;
 	
 	
 	sendMessage(message);
@@ -589,7 +589,7 @@ void GpClientNet::startBackgroundHeartbeat(){
 void GpClientNet::startBackgroundPing(){
 	
 	if(GP_SHOULD_SEND_HEARTBEAT_TO_SERVER_FROM_ASSET){
-		std::cout << "[" << __func__ << "] "  << "Starting ping thread" << std::endl;
+		// std::cout << "[" << __func__ << "] "  << "Starting ping thread" << std::endl;
 		
 		std::thread serverHeartbeat(&GpClientNet::_sendPing,this);
 		serverHeartbeat.detach();
@@ -601,7 +601,7 @@ void GpClientNet::_sendPing(){
 	
 	for(;;){
 		
-		std::cout << "[" << __func__ << "] "  << "Sending ping: " << _fd << std::endl;
+		// std::cout << "[" << __func__ << "] "  << "Sending ping: " << _fd << std::endl;
 		
 		uint8_t *payload = nullptr;
 		GpMessage heartbeat(GP_MSG_TYPE_PING, 0, payload);
@@ -623,8 +623,9 @@ void GpClientNet::compareRoundTripTime(GpMessage & msg){
 	//drop the upper four bytes. Don't need years, etc.
 	uint32_t now =(uint32_t) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	
-	std::cout << "\n\n[" << __func__ << "] " << "Now: " << uint32_t(now)
-			<< "\nSent " << msg._timestamp
+	std::cout
+			//<< "\n\n[" << __func__ << "] " << "Now: " << uint32_t(now)
+			//<< "\nSent " << msg._timestamp
 			<< "\nRTT (ms)" << (now - msg._timestamp) << "\n\n"
 			<< std::endl;
 	

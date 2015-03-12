@@ -89,13 +89,6 @@ bool GpControllerEvent::serializeAsNetworkOrderBytes(uint8_t * &bytes, int & siz
 	uint8_t *data = bytes;
 
 	
-	
-/*
-		int ts = timestamp();
-		cout << "1(host): " << ts << ": " << (bitset<32>)ts << endl;
-		cout << "1(net) : " << ts << ": " << (bitset<32>)htonl(ts) << endl;
-*/
-	
 	// Timestamp
 	// to network order then to byte array
 	*data++ = timestamp() >>24;
@@ -104,47 +97,17 @@ bool GpControllerEvent::serializeAsNetworkOrderBytes(uint8_t * &bytes, int & siz
 	*data++ = timestamp();
 	//ptr+=4;
 	
-/*		//Test after
-		int ts2 = (ptr[0]<<24) | (ptr[1]<<16) | (ptr[2]<<8) | (ptr[3]);
-		cout << "2(host): " << ts2 << ": " << (bitset<32>)ts2 << endl;
-		cout << "2(net) : " << ts2 << ": " << (bitset<32>)htonl(ts2) << endl;
-		ptr+=4;
-*/
-	
 	// Event Left X
 	*data++ = leftX() >>24;
 	*data++ = leftX()>>16;
 	*data++ = leftX()>>8;
 	*data++ = leftX();
-	//ptr+=4;
-
-	
-	
-	/*
-	
-		//Test before
-		int ts = leftY();
-		cout << "LY1(host): " << ts << ": " << (bitset<32>)ts << endl;
-		cout << "LY1(net) : " << ts << ": " << (bitset<32>)htonl(ts) << endl;
-	*/
 	
 	// Event Left Y
 	*data++ = leftY() >>24;
 	*data++ = leftY() >>16;
 	*data++ = leftY() >>8;
 	*data++ = leftY();
-	
-	/*
-		//Test after
-		int ts2 = (ptr[0]<<24) | (ptr[1]<<16) | (ptr[2]<<8) | (ptr[3]);
-		cout << "LY2(host): " << ts2 << ": " << (bitset<32>)ts2 << endl;
-		cout << "LY2(net) : " << ts2 << ": " << (bitset<32>)htonl(ts2) << endl;
-	ptr+=4;
-	
-	*/
-
-		
-		
 	
 	// Event Right X
 	*data++ = rightX() >>24;
@@ -182,14 +145,8 @@ bool GpControllerEvent::deserializeToObjectCopy(){
 	setRX(ntohl(*temp++));
 	setRY(ntohl(*temp++));
 	
-	cout << "Received: [" << timestamp() << "] LX " << leftX() << ", LY " << leftY() << ", RX " << rightX() << ", RY " << rightY() << endl;
+	// cout << "Received: [" << timestamp() << "] LX " << leftX() << ", LY " << leftY() << ", RX " << rightX() << ", RY " << rightY() << endl;
 
-	//cout << "TS: " << evtCopy.timestamp() << ": " << (bitset<32>)evtCopy.timestamp() << endl;
-	//cout << "LX: "<< evtCopy.leftX() << ": " << (bitset<32>)evtCopy.leftX() << endl;
-	//cout << "LY: "<< evtCopy.leftY() << ": " << (bitset<32>)evtCopy.leftY() << endl;
-	//cout << "RX: "<< evtCopy.rightX() << ": " << (bitset<32>)evtCopy.rightX() << endl;
-	//cout << "RY: "<< evtCopy.rightY() << ": " << (bitset<32>)evtCopy.rightY() << endl;
-	
 	
 	return true;
 	
@@ -214,12 +171,6 @@ bool GpControllerEvent::deserializeToObjectCopy(GpControllerEvent &evtCopy, uint
 	evtCopy.setLY(ntohl(*temp++));
 	evtCopy.setRX(ntohl(*temp++));
 	evtCopy.setRY(ntohl(*temp++));
-	
-	//cout << "TS: " << evtCopy.timestamp() << ": " << (bitset<32>)evtCopy.timestamp() << endl;
-	//cout << "LX: "<< evtCopy.leftX() << ": " << (bitset<32>)evtCopy.leftX() << endl;
-	//cout << "LY: "<< evtCopy.leftY() << ": " << (bitset<32>)evtCopy.leftY() << endl;
-	//cout << "RX: "<< evtCopy.rightX() << ": " << (bitset<32>)evtCopy.rightX() << endl;
-	//cout << "RY: "<< evtCopy.rightY() << ": " << (bitset<32>)evtCopy.rightY() << endl;
 
 	
 	return true;

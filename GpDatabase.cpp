@@ -25,7 +25,7 @@ std::mutex GpDatabase::assets_mutex;
 
 bool GpDatabase::authenticateUser(std::string username, std::string key){
 	
-	std::cout << "[" << __func__ << "] "  << "Does nothing. All users return true." <<std::endl;
+	// std::cout << "[" << __func__ << "] "  << "Does nothing. All users return true." <<std::endl;
 
 
 	
@@ -89,55 +89,7 @@ bool GpDatabase::authenticateUserForAsset(GpControllerUser & controller, int ass
 }
 
 
-/*
-bool GpDatabase::insertAsset(GpAssetUser &asset){
-	
-	std::lock_guard<std::mutex> lock(assets_mutex);
-	
-	std::pair<std::unordered_map<int, GpAssetUser>::iterator, bool> result;
-	result = assets.insert(std::pair<int, GpAssetUser>(asset._user_id, asset));
-	if(result.second == false){
-		//insert failed
-		
-		std::cout << "[" << __func__ << "] "  << "Asset insert failed. Duplicate. Updating instead." << std::endl;
-		
-		
-		return updateAsset(asset);
-		
-	}
-	else{
-		std::cout << "[" << __func__ << "] "  << "Asset insert succeeded." << std::endl;
-	
-		return true;
-	}
-}
-*/
 
-/*
-bool GpDatabase::updateAsset(GpAssetUser &asset){
-
-	try{
-		
-		std::lock_guard<std::mutex> lock(assets_mutex);
-		
-		assets.at(asset._user_id);
-		// assets[asset._user_id]
-		assets[asset._user_id]._user_type = asset._user_type;
-		assets[asset._user_id]._username = asset._username;
-
-		assets[asset._user_id]._isAuthenticated = asset._isAuthenticated;
-		assets[asset._user_id]._isOnline = asset._isOnline;
-		assets[asset._user_id]._isConnectedToPartner = asset._isConnectedToPartner;
-		assets[asset._user_id]._connected_owner = asset._connected_owner;
-		return true;
-	
-	} catch (const std::out_of_range & oor) {
-	
-		std::cout << "[" << __func__ << "] "  << "Asset Id "<< asset._user_id <<" not found" << std::endl;
-		return false;
-	}
-}
-*/
 
 
 /*
