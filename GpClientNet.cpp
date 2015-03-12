@@ -151,7 +151,7 @@ GpClientNet::sendMessage(GpMessage &message){
 bool
 GpClientNet::_sendMessage(GpMessage &message){
 	
-	std::cout << "[" << __func__ << "] "  << "Sending message type: " << message._message_type << "on socket: " << _fd << std::endl;
+	std::cout << "[" << __func__ << "] "  << "Sending message type: " << int(message._message_type) << " on socket: " << _fd << std::endl;
 
 	
 	if(_fd == 0){
@@ -482,9 +482,9 @@ void GpClientNet::sendHeartbeat(){
 		 std::cout << "[" << __func__ << "] "  << "Sending heartbeat to server on socket: " << _fd << std::endl;
 		
 		 uint8_t *payload = nullptr;
-		 GpMessage msgLoginComplete(GP_MSG_TYPE_HEARTBEAT, 0, payload);
+		 GpMessage heartbeat(GP_MSG_TYPE_HEARTBEAT, 0, payload);
 		
-		 if(sendMessage(msgLoginComplete)==false)
+		 if(sendMessage(heartbeat)==false)
 			 return;
 		 
 		

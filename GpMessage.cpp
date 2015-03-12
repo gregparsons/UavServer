@@ -49,7 +49,9 @@ GpMessage::GpMessage(GpMessage_Login & loginMessage, int login_source_type){
  *  Create a message with a message type and comprised of a previously serialized payload of bytes.
  *
  */
-GpMessage::GpMessage(uint8_t messageType, uint16_t payloadSize, uint8_t *&payload):_message_type(messageType),_payloadSize(payloadSize),_payload(payload) {
+GpMessage::GpMessage(uint8_t messageType, uint16_t payloadSize, uint8_t *&payload):
+	_message_type(messageType),
+	_payloadSize(payloadSize),_payload(payload) {
 	_payLd_vec.reserve(payloadSize);
 	
 	
