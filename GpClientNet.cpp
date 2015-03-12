@@ -75,7 +75,7 @@ GpClientNet::connectToServer(std::string ip, std::string port){
 			
 			int yes = 1;
 			if((setsockopt(_fd, SOL_SOCKET, SO_NOSIGPIPE, &yes, sizeof(int))) == -1){
-				std::cout << "socket options error SO_NOSIGPIPE" << std::endl;
+				std::cout << "Socket options error SO_NOSIGPIPE" << std::endl;
 				goto GP_WAIT_AND_TRY_AGAIN_IN_A_BIT;
 
 				//exit(1);
@@ -419,7 +419,7 @@ void GpClientNet::_receiveDataAndParseMessage()
 				uint8_t *tempPayloadPtr = msgHead + GP_MSG_HEADER_LEN;
 				newMessage.setPayload(tempPayloadPtr, newMessage._payloadSize);		//payload to vector
 				
-				std::cout << "[" << __func__ << "] "  << "Received message with type: " << int(newMessage._message_type) << " and payload size: " << newMessage._payloadSize << std::endl;
+				//std::cout << "[" << __func__ << "] "  << "Received message with type: " << int(newMessage._message_type) << " and payload size: " << newMessage._payloadSize << std::endl;
 
 				
 				// Clean up (before getting guard on message_handler)
@@ -479,7 +479,6 @@ void GpClientNet::sendHeartbeat(){
 	
 	for(;;){
 		
-		 // FAKE MESSAGE
 		 std::cout << "[" << __func__ << "] "  << "Sending heartbeat to server on socket: " << _fd << std::endl;
 		
 		 uint8_t *payload = nullptr;
@@ -498,7 +497,7 @@ void GpClientNet::sendHeartbeat(){
 void GpClientNet::startBackgroundHeartbeat(){
 	
 	if(GP_SHOULD_SEND_HEARTBEAT_TO_SERVER_FROM_ASSET){
-		std::cout << "[" << __func__ << "] "  << "TEST: Starting heartbeat" << std::endl;
+		std::cout << "[" << __func__ << "] "  << "Starting heartbeat thread" << std::endl;
 		
 		std::thread serverHeartbeat(&GpClientNet::sendHeartbeat,this);
 		serverHeartbeat.detach();
