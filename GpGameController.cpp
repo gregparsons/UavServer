@@ -35,6 +35,10 @@ using namespace std;
 
 const int CONTROLLER_DEAD_ZONE = 5000;
 
+GpGameController::GpGameController(){
+
+
+}
 
 
 void GpGameController::startGameControllerThread(GpClientNet & net){

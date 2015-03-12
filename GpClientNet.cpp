@@ -181,6 +181,15 @@ GpClientNet::_sendMessage(GpMessage &message){
 	bytes.reserve(message.size());
 	message.serialize(bytes);
 	
+	
+	
+	
+	// Need mac/linux #ifdefs here for SIGPIPE
+	
+	
+	
+	
+	
 	ssize_t result = send(_fd, bytes.data(), bytes.size(), MSG_DONTWAIT);	//MSG_DONTWAIT -- If set send returns EAGAIN if outbond traffic is clogged. A one-time "skip it."
 																			//MSG_NOSIGNAL
 	if(result == -1){
@@ -450,7 +459,10 @@ void GpClientNet::_receiveDataAndParseMessage()
 				uint8_t *tempPayloadPtr = msgHead + GP_MSG_HEADER_LEN;
 				newMessage.setPayload(tempPayloadPtr, newMessage._payloadSize);		//payload to vector
 				
-				std::cout << "[" << __func__ << "] "  << "Received message with type: " << int(newMessage._message_type) << " and payload size: " << newMessage._payloadSize << std::endl;
+				std::cout << "[" << __func__ << "] "  << "Received type: " << int(newMessage._message_type)
+						<< " , payload size: " << newMessage._payloadSize
+						<< " , timestamp: " << uint32_t(newMessage._timestamp)
+						<< std::endl;
 
 				
 				// Clean up (before getting guard on message_handler)

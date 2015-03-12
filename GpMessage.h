@@ -100,7 +100,7 @@ public:
 	// Header: 3 Bytes + 4 bytes timestamp
 	uint8_t _message_type = GP_MSG_TYPE_NONE_ZERO;		// 1 byte
 	uint16_t _payloadSize = 0;							// 2 bytes
-	time_t _timestamp = 0;								// 4 bytes
+	uint32_t _timestamp = 0;								// 4 bytes
 	
 	// Payload
 	std::vector<uint8_t> _payLd_vec;

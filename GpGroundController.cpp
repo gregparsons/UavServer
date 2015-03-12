@@ -29,32 +29,31 @@ bool GpGroundController::start(){
 	
 	std::cout << "[" << __func__ << "] "  <<  "" << std::endl;
 	
+	_game_controller.startGameControllerThread(_net);
+
+	
+	
 	for(;;){
 	
 	
 		// CONNECT SOCKET (with server)
-		
 		bool connectRes = _net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT);
-
 		if(connectRes == false){
 			std::cout << "[" << __func__ << "] "  <<  "connect() fail: " << strerror(errno) << std::endl;
 			return false;
 		}
 		
 		// LISTENER THREAD (for messages from server)
-
 		_net.startListenerAsThread(GpGroundController::handle_messages);
 
 		
 
 		// LOGIN
-		
 		_net.sendAuthenticationRequest(GP_CONTROLLER_TEST_USERNAME, GP_CONTROLLER_TEST_PASSWORD, GP_MSG_TYPE_CONTROLLER_LOGIN);
 
 		
 		
 		// In lieu of something else, this keeps the main thread going. If this fails to send, loop repeats and attempts to reconnect.
-		
 		_net.startBackgroundPing();
 		_net.sendHeartbeat();
 		
@@ -88,7 +87,7 @@ bool GpGroundController::handle_messages(GpMessage & msg, GpClientNet & net){
 			
 			// start sending asset commands
 			
-			_game_controller.startGameControllerThread(net);
+			//_game_controller.startGameControllerThread(net);
 
 			
 			break;

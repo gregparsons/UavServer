@@ -212,6 +212,13 @@ void GpUavServer::client_listener_thread(int fd)
 	
 	
 	
+	std::vector<uint8_t> inVector;
+	
+	
+	
+	
+	
+	
 	// RECVBUFFER
 	
 	size_t length =  READ_VECTOR_BYTES_MAX;  // MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE_LEN;
@@ -251,6 +258,12 @@ void GpUavServer::client_listener_thread(int fd)
 		
 		
 		bytesInRecvBuffer = recv(fd, recvInPtr, length, 0);		//blocks if no data, returns zero if no data and shutdown occurred
+		
+		
+		GpMessage::pushBytesToVector(inVector, recvInPtr, bytesInRecvBuffer);
+		
+		
+		
 		if(bytesInRecvBuffer == -1){
 			// std::cout << "Error: recv()" << std::endl;
 			break;
@@ -630,15 +643,15 @@ void GpUavServer::putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & me
 	uint16_t pSize = 0;
 	GpMessage::byteUnpack16(sizePtr, pSize);
 	message._payloadSize = pSize;			//GP_MSG_LOGIN_LEN;
-	buffer+= (sizeof(uint16_t));
-	
+	//buffer+= (sizeof(uint16_t));
+	//sizePtr+=2; //byteunpack does this!!
 	
 	// Timestamp (4)
-	sizePtr = buffer;
+	//sizePtr = buffer;
 	uint32_t timestamp = 0;
 	GpMessage::byteUnpack32(sizePtr, timestamp);
 	message._timestamp = timestamp;
-	buffer+= (sizeof(uint32_t));
+	// buffer+= (sizeof(uint32_t)); //byteunpack does this
 	
 	
 	

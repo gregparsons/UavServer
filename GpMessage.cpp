@@ -118,22 +118,37 @@ GpMessage::~GpMessage(){
  */
 void
 GpMessage::serialize(std::vector<uint8_t> & byteVect){
-	byteVect.push_back(_message_type);
-	uint16_t netSize = htons(_payloadSize);
-	uint32_t timeStamp = htonl(_timestamp);
+	
+	byteVect.clear();
+	byteVect.reserve(GP_MSG_HEADER_LEN + _payloadSize);
 
+	// Message Type
+	byteVect.push_back(_message_type);
+	
+	// Payload Size
+	uint16_t netSize = htons(_payloadSize);
 	byteVect.push_back((uint8_t)netSize);
 	byteVect.push_back((uint8_t)(netSize >> 8));
 	
-	byteVect.push_back((uint8_t)timeStamp);
-	byteVect.push_back((uint8_t)(timeStamp >> 8));
-	byteVect.push_back((uint8_t)(timeStamp >> 16));
-	byteVect.push_back((uint8_t)(timeStamp >> 24));
+	
+	// Timestamp to vector
+	uint32_t ts = htonl(_timestamp);
+
+	uint8_t b1 =(uint8_t)(ts >> 24) & 0xFF;
+	uint8_t b2 =(uint8_t)(ts >> 16) & 0xFF;
+	uint8_t b3 =(uint8_t)(ts >> 8) & 0xFF;
+	uint8_t b4 =(uint8_t)(ts) & 0xFF;
+	
+	byteVect.push_back(b1);
+	byteVect.push_back(b2);
+	byteVect.push_back(b3);
+	byteVect.push_back(b4);
 	
 	
+	// Payload vector to serialized vector
 	pushVectorToVector(byteVect, _payLd_vec);
 
-	std::cout << "Serialized Time: " << std::bitset<32>( _timestamp) << " (" << _timestamp << ") net: (" <<  timeStamp << ")" << std::endl;
+	std::cout << "Serialized Time: " << std::bitset<32>( _timestamp) << " (" << _timestamp << ") \nnet: " << std::bitset<32>(ts) << " (" << ts << ")" << std::endl;
 //	std::cout << "Serialized Time: " << _timestamp << std::endl;
 
 	
@@ -248,6 +263,7 @@ void GpMessage::bytePack16(uint8_t *&buffer, const uint16_t & value){
 void GpMessage::byteUnpack16(uint8_t *&buffer, uint16_t & value){
 	uint8_t *ptr = buffer;
 	uint16_t temp = 0;
+	
 	memcpy(&temp, ptr, sizeof(uint16_t));
 	value = ntohs(temp);
 
@@ -260,28 +276,54 @@ void GpMessage::bytePack32(uint8_t *&buffer, const uint32_t & value){
 	uint32_t temp = htonl(value);
 	uint8_t *ptr = buffer;
 	
-	*ptr++ = temp;
-	*ptr++ = temp >> 8;
-	*ptr++ = temp >> 16;
-	*ptr++ = temp >> 24;
+
 	
 	buffer+= sizeof(uint32_t);	// 4
 
 	std::cout << "Packing 32: " << std::bitset<32>(temp) << " (" << uint32_t(temp) << ")" << std::endl;
 
+	
+	
+	
+	//TEST
+	ptr -= 4;
+	uint32_t tempval = 0;
+	byteUnpack32(ptr, tempval);
+	std::cout << tempval << std::endl;
+	
 
 }
 
 // pull a short, increment pointer by 2 bytes
 void GpMessage::byteUnpack32(uint8_t *&buffer, uint32_t & value){
+	
+	/*
+	uint32_t timePackets = (bytes[i] | bytes[i+1] << 8 | bytes[i+2] << 16 | bytes[i+3] << 24 );
+	_timestamp = ntohl(timePackets);
+	
+	*/
+	
+	
+	
 	uint8_t *ptr = buffer;
 	uint32_t temp = 0;
-	memcpy(&temp, ptr, sizeof(uint32_t));
+	
+	
+	uint8_t b0 =(uint8_t)(*ptr) & 0xFF;
+	uint8_t b1 =(uint8_t)(*(ptr+1)) & 0xFF;
+	uint8_t b2 =(uint8_t)(*(ptr+2)) & 0xFF;
+	uint8_t b3 =(uint8_t)(*(ptr+3)) & 0xFF;
+	
+	temp = b3 | b2 << 8 | b1 << 16 | b0 << 24;
+	
+	
+	
+	// memcpy(&temp, ptr, sizeof(uint32_t));
 	value = ntohl(temp);
 	
 	std::cout << "Unpacking 32: " << std::bitset<32>(value) << " (" << uint32_t(value) << ") net (" << uint32_t(temp)<< ")" << std::endl;
 	
-	buffer+=2;
+	buffer+= sizeof(uint32_t);
 }
 
 

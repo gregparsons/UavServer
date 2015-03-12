@@ -17,6 +17,7 @@ class GpClientNet;
 
 class GpGameController{
 public:
+	GpGameController();
 	
 	void startGameControllerThread(GpClientNet & net);
 	
