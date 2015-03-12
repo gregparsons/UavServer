@@ -83,6 +83,9 @@ public:
 	
 	bool _isConnected = false;
 	
+	
+	void startBackgroundPing();
+	
 private:
 	int _fd = 0;
 	
@@ -131,7 +134,10 @@ private:
 	// CRAP from old code
 	void _receiveDataAndParseMessage();
 
-	
+	void _sendPing();
+
+	void compareRoundTripTime(GpMessage & msg);
+
 	
 };
 

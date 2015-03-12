@@ -138,7 +138,6 @@ GpClientNet::connectToServer(std::string ip, std::string port){
 bool
 GpClientNet::sendMessage(GpMessage &message){
 	
-	std::lock_guard<std::mutex> sendGuard(_send_mutex);		// when guard class is destroyed at end of function the lock is released
 	return _sendMessage(message);
 	
 }
@@ -151,13 +150,32 @@ GpClientNet::sendMessage(GpMessage &message){
 bool
 GpClientNet::_sendMessage(GpMessage &message){
 	
-	std::cout << "[" << __func__ << "] "  << "Sending message type: " << int(message._message_type) << " on socket: " << _fd << std::endl;
 
+	std::lock_guard<std::mutex> sendGuard(_send_mutex);		// when guard class is destroyed at end of function the lock is released
+	
+	
 	
 	if(_fd == 0){
 		std::cout << "[" << __func__ << "] "  << "Can't send. _fd closed." << std::endl;
 		return false;
 	}
+	
+	
+	
+	
+	// Don't change a pong's timestamp
+	if(message._message_type != GP_MSG_TYPE_PONG)
+		message.setTimestampToNow();
+	else
+		std::cout << "Sending Pong" << std::endl;
+	
+	
+	std::cout << "[" << __func__ << "] "  << "Sending message type: " << int(message._message_type) << " on socket: " << _fd << " , time: " << uint32_t(message._timestamp) << std::endl;
+	
+	
+	
+	
+	
 	
 	byte_vector bytes;
 	bytes.reserve(message.size());
@@ -291,14 +309,26 @@ void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message){
 	
 	// Message_Type
 	message._message_type = *buffer; //GP_MSG_TYPE_CONTROLLER_LOGIN;
-	
-	
+	buffer+=1;
 	
 	// Payload Size
-	uint8_t *sizePtr = buffer + 1;
+	uint8_t *sizePtr = buffer;
 	uint16_t pSize = 0;
-	GpMessage::bitUnstuff16(sizePtr, pSize);
+	GpMessage::byteUnpack16(sizePtr, pSize);
 	message._payloadSize = pSize;			//GP_MSG_LOGIN_LEN;
+	buffer+= (sizeof(uint16_t));
+	
+	
+	
+	sizePtr = buffer;
+	uint32_t timestamp = 0;
+	GpMessage::byteUnpack32(sizePtr, timestamp);
+	message._timestamp = timestamp;
+	buffer+= (sizeof(uint32_t));
+	
+	
+	
+	
 	
 	
 	return;
@@ -344,6 +374,8 @@ void GpClientNet::_receiveDataAndParseMessage()
 	
 	// RECEIVE LOOP
 	long bytesToTransfer = 0;
+	GpMessage newMessage;		// dynamically allocate? or overwrite each time?
+
 	for(;;){
 		
 		
@@ -366,12 +398,11 @@ void GpClientNet::_receiveDataAndParseMessage()
 		
 		while(bytesInRecvBuffer > 0){
 			
-			GpMessage newMessage;		// dynamically allocate? or overwrite each time?
 			
 			if(messageStarted != true){
 				
 				// Start a message
-				newMessage.clear();			// re-use
+				newMessage.clear();
 				
 				
 				if(bytesInRecvBuffer >= GP_MSG_HEADER_LEN)
@@ -419,7 +450,7 @@ void GpClientNet::_receiveDataAndParseMessage()
 				uint8_t *tempPayloadPtr = msgHead + GP_MSG_HEADER_LEN;
 				newMessage.setPayload(tempPayloadPtr, newMessage._payloadSize);		//payload to vector
 				
-				//std::cout << "[" << __func__ << "] "  << "Received message with type: " << int(newMessage._message_type) << " and payload size: " << newMessage._payloadSize << std::endl;
+				std::cout << "[" << __func__ << "] "  << "Received message with type: " << int(newMessage._message_type) << " and payload size: " << newMessage._payloadSize << std::endl;
 
 				
 				// Clean up (before getting guard on message_handler)
@@ -430,14 +461,49 @@ void GpClientNet::_receiveDataAndParseMessage()
 				messageLenMax = 0;
 				
 				
-
+/*
 				
 				// HANDLE_MESSAGE
 				
 				// Get a lock in case message_handler isn't thread safe.
 				std::lock_guard<std::mutex> sendGuard(_message_handler_mutex);		// when guard class is destroyed at end of scope the lock is released
-				_message_handler(newMessage, *this);		// Do the code given by the calling entity.
+*/
+				
 
+				
+				if(newMessage._message_type == GP_MSG_TYPE_PING){
+					
+					//bounce it back to sender with a pong and new message type. time stamp stays the same.
+
+					newMessage._message_type = GP_MSG_TYPE_PONG;
+
+					sendMessage(newMessage);
+				
+				}
+				else if(newMessage._message_type == GP_MSG_TYPE_PONG){
+					
+					// analyze round trip time
+					
+					compareRoundTripTime(newMessage);
+					
+				}
+				else{
+					
+					
+					// Get a lock in case message_handler isn't thread safe.
+					std::lock_guard<std::mutex> sendGuard(_message_handler_mutex);		// when guard class is destroyed at end of scope the lock is released
+
+					
+					_message_handler(newMessage, *this);		// Do the code given by the calling entity.
+					
+				}
+
+				
+				
+				
+				
+				
+				
 				
 				
 				newMessage.clear();
@@ -479,7 +545,7 @@ void GpClientNet::sendHeartbeat(){
 	
 	for(;;){
 		
-		 std::cout << "[" << __func__ << "] "  << "Sending heartbeat to server on socket: " << _fd << std::endl;
+//		 std::cout << "[" << __func__ << "] "  << "Sending heartbeat to server on socket: " << _fd << std::endl;
 		
 		 uint8_t *payload = nullptr;
 		 GpMessage heartbeat(GP_MSG_TYPE_HEARTBEAT, 0, payload);
@@ -497,15 +563,65 @@ void GpClientNet::sendHeartbeat(){
 void GpClientNet::startBackgroundHeartbeat(){
 	
 	if(GP_SHOULD_SEND_HEARTBEAT_TO_SERVER_FROM_ASSET){
-		std::cout << "[" << __func__ << "] "  << "Starting heartbeat thread" << std::endl;
+		//std::cout << "[" << __func__ << "] "  << "Starting heartbeat thread" << std::endl;
 		
 		std::thread serverHeartbeat(&GpClientNet::sendHeartbeat,this);
 		serverHeartbeat.detach();
 		
 	}
+}
+
+
+void GpClientNet::startBackgroundPing(){
 	
+	if(GP_SHOULD_SEND_HEARTBEAT_TO_SERVER_FROM_ASSET){
+		std::cout << "[" << __func__ << "] "  << "Starting ping thread" << std::endl;
+		
+		std::thread serverHeartbeat(&GpClientNet::_sendPing,this);
+		serverHeartbeat.detach();
+		
+	}
+}
+
+void GpClientNet::_sendPing(){
+	
+	for(;;){
+		
+		std::cout << "[" << __func__ << "] "  << "Sending ping: " << _fd << std::endl;
+		
+		uint8_t *payload = nullptr;
+		GpMessage heartbeat(GP_MSG_TYPE_PING, 0, payload);
+		
+		if(sendMessage(heartbeat)==false)
+			return;
+		
+		
+		
+		usleep(3000000);
+	}
 	
 }
 
 
+void GpClientNet::compareRoundTripTime(GpMessage & msg){
+	
+	
+	//drop the upper four bytes. Don't need years, etc.
+	uint32_t now =(uint32_t) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	
+	std::cout << "\n\n[" << __func__ << "] " << "Now: " << uint32_t(now)
+			<< "\nSent " << msg._timestamp
+			<< "\nRTT (ms)" << (now - msg._timestamp) << "\n\n"
+			<< std::endl;
+	
 
+	//std::cout << "[" << __func__ << "] " << "Timenow: " << uint32_t(now) << std::endl;
+	
+	
+	
+	
+	
+	
+	
+	
+}

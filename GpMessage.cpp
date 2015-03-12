@@ -23,6 +23,58 @@ GpMessage::GpMessage(){
 };
 
 
+
+
+
+
+
+void GpMessage::setTimestampToNow(){
+	
+	
+	
+	//drop the upper four bytes. Don't need years, etc.
+	uint32_t now =(uint32_t) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	
+	//std::cout << "[" << __func__ << "] " << "Timestamp set: " << uint32_t(now) << std::endl;
+	
+	_timestamp = now;
+
+	
+	
+}
+
+
+
+
+
+
+
+/**
+ *  Constructor
+ *
+ *  Create a message with a message type and comprised of a previously serialized payload of bytes.
+ *
+ */
+GpMessage::GpMessage(uint8_t messageType, uint16_t payloadSize, uint8_t *&payload)
+{
+	_message_type = messageType;
+	_payloadSize = payloadSize;
+	_payLd_vec.reserve(payloadSize);
+	pushBytesToVector(_payLd_vec, payload, payloadSize);
+
+	//setTimestampToNow();		// wait until message send
+	
+	
+};
+
+
+
+
+
+
+
+
+
 // Construct with a LOGIN message
 
 GpMessage::GpMessage(GpMessage_Login & loginMessage, int login_source_type){
@@ -43,21 +95,7 @@ GpMessage::GpMessage(GpMessage_Login & loginMessage, int login_source_type){
 }
 
 
-/**
- *  Constructor
- *
- *  Create a message with a message type and comprised of a previously serialized payload of bytes.
- *
- */
-GpMessage::GpMessage(uint8_t messageType, uint16_t payloadSize, uint8_t *&payload):
-	_message_type(messageType),
-	_payloadSize(payloadSize),_payload(payload) {
-	_payLd_vec.reserve(payloadSize);
-	
-	
-	pushBytesToVector(_payLd_vec, payload, payloadSize);
-	
-};
+
 
 
 
@@ -65,8 +103,6 @@ GpMessage::GpMessage(uint8_t messageType, uint16_t payloadSize, uint8_t *&payloa
 GpMessage::~GpMessage(){
 	_payLd_vec.reserve(GP_MSG_MAX_LEN);
 
-	//if(_payload != nullptr)
-	//	delete _payload;
 
 };
 
@@ -84,11 +120,43 @@ void
 GpMessage::serialize(std::vector<uint8_t> & byteVect){
 	byteVect.push_back(_message_type);
 	uint16_t netSize = htons(_payloadSize);
+	uint32_t timeStamp = htonl(_timestamp);
 
 	byteVect.push_back((uint8_t)netSize);
 	byteVect.push_back((uint8_t)(netSize >> 8));
 	
+	byteVect.push_back((uint8_t)timeStamp);
+	byteVect.push_back((uint8_t)(timeStamp >> 8));
+	byteVect.push_back((uint8_t)(timeStamp >> 16));
+	byteVect.push_back((uint8_t)(timeStamp >> 24));
+	
+	
 	pushVectorToVector(byteVect, _payLd_vec);
+
+	std::cout << "Serialized Time: " << std::bitset<32>( _timestamp) << " (" << _timestamp << ") net: (" <<  timeStamp << ")" << std::endl;
+//	std::cout << "Serialized Time: " << _timestamp << std::endl;
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// deserialize(byteVect);
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }
 
@@ -110,7 +178,28 @@ void GpMessage::deserialize(std::vector<uint8_t> & bytes){
 	// PAYLOAD SIZE
 	uint16_t netPayloadSize = (bytes[i] << 8) | bytes[i+1];	//https://stackoverflow.com/questions/300808/c-how-to-cast-2-bytes-in-an-array-to-an-unsigned-short
 	_payloadSize = ntohs(netPayloadSize);
-	i+=2;
+	i+=sizeof(uint16_t);	// 2
+	
+	uint32_t timePackets = (bytes[i] | bytes[i+1] << 8 | bytes[i+2] << 16 | bytes[i+3] << 24 );
+	_timestamp = ntohl(timePackets);
+	i+=sizeof(uint32_t);	// 4
+	
+	
+	
+	
+	
+	
+	
+	
+	//std::cout << "Deserialized Time: " << std::bitset<32>( _timestamp) << std::endl;
+	//std::cout << "Deserialized Time: " << _timestamp << std::endl;
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	// PAYLOAD
@@ -120,12 +209,31 @@ void GpMessage::deserialize(std::vector<uint8_t> & bytes){
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	// What does this do? What happened to the copy to *this?
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
 
 
 
 // push a short and increment the pointer passed by 2 bytes
-void GpMessage::bitStuff16(uint8_t *&buffer, const uint16_t & value){
+void GpMessage::bytePack16(uint8_t *&buffer, const uint16_t & value){
 
 	uint16_t temp = htons(value);
 	uint8_t *ptr = buffer;
@@ -133,18 +241,49 @@ void GpMessage::bitStuff16(uint8_t *&buffer, const uint16_t & value){
 	*ptr++ = temp;
 	*ptr = temp >> 8;
 
-	buffer+=2;
+	buffer+=sizeof(uint16_t);
 }
 
 // pull a short, increment pointer by 2 bytes
-void GpMessage::bitUnstuff16(uint8_t *&buffer, uint16_t & value){
+void GpMessage::byteUnpack16(uint8_t *&buffer, uint16_t & value){
 	uint8_t *ptr = buffer;
 	uint16_t temp = 0;
-	memcpy(&temp, ptr, 2);
+	memcpy(&temp, ptr, sizeof(uint16_t));
 	value = ntohs(temp);
 
+	buffer+=sizeof(uint16_t);  // 2
+}
+
+// push a short and increment the pointer passed by 2 bytes
+void GpMessage::bytePack32(uint8_t *&buffer, const uint32_t & value){
+	
+	uint32_t temp = htonl(value);
+	uint8_t *ptr = buffer;
+	
+	*ptr++ = temp;
+	*ptr++ = temp >> 8;
+	*ptr++ = temp >> 16;
+	*ptr++ = temp >> 24;
+	
+	buffer+= sizeof(uint32_t);	// 4
+
+	std::cout << "Packing 32: " << std::bitset<32>(temp) << " (" << uint32_t(temp) << ")" << std::endl;
+
+
+}
+
+// pull a short, increment pointer by 2 bytes
+void GpMessage::byteUnpack32(uint8_t *&buffer, uint32_t & value){
+	uint8_t *ptr = buffer;
+	uint32_t temp = 0;
+	memcpy(&temp, ptr, sizeof(uint32_t));
+	value = ntohl(temp);
+	
+	std::cout << "Unpacking 32: " << std::bitset<32>(value) << " (" << uint32_t(value) << ") net (" << uint32_t(temp)<< ")" << std::endl;
+	
 	buffer+=2;
 }
+
 
 
 uint16_t GpMessage::size(){
@@ -157,8 +296,8 @@ uint16_t GpMessage::size(){
 void GpMessage::clear(){
 	
 	_message_type = 0;
-	_payload = nullptr;
 	_payloadSize = 0;
+	_timestamp = 0;
 	
 	_payLd_vec.clear();
 	

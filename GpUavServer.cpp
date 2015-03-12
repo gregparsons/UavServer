@@ -241,6 +241,8 @@ void GpUavServer::client_listener_thread(int fd)
 	
 	
 	// RECEIVE LOOP
+
+	GpMessage newMessage;
 	
 	for(;;){
 		
@@ -257,15 +259,16 @@ void GpUavServer::client_listener_thread(int fd)
 			break;
 		}
 
-		// std::cout << "[" << __func__ << "] "  << "recv(): " << bytesInRecvBuffer << " bytes" <<std::endl;
+		std::cout << "[" << __func__ << "] "  << "recv(): " << bytesInRecvBuffer << " bytes" <<std::endl;
 		
 		
 		// If there are bytes on the receive queue, turn them into a message or return to recv until a message can be formed.
 		while(bytesInRecvBuffer > 0){
 			
-			GpMessage newMessage;
 			if(messageStarted != true){
+
 				newMessage.clear();			// re-use
+
 				if(bytesInRecvBuffer >= GP_MSG_HEADER_LEN){
 					putHeaderInMessage(recvOutPtr, bytesInRecvBuffer, newMessage);		//this is the same as deserialize
 				}
@@ -357,7 +360,7 @@ void GpUavServer::client_listener_thread(int fd)
 void GpUavServer::handle_message(GpMessage & msg, GpUser & user){
 
 	
-	std::cout << "[" << __func__ << "] "  << "Received message type: " << int(msg._message_type) << " and payload size: " << msg._payloadSize << std::endl;
+	std::cout << "[" << __func__ << "] "  << "Received message type: " << int(msg._message_type) << " , payload size: " << msg._payloadSize << " , and time: " << uint32_t(msg._timestamp) << std::endl;
 	
 	if(user._isAuthenticated){
 		
@@ -401,6 +404,30 @@ void GpUavServer::handle_message(GpMessage & msg, GpUser & user){
 				break;
 				
 			}
+			case GP_MSG_TYPE_PONG:
+			case GP_MSG_TYPE_PING:
+			{
+				if(user._isConnectedToPartner){
+					
+					if(user._user_type == GpUser::GP_USER_TYPE_CONTROLLER && dynamic_cast<GpControllerUser &>(user)._asset._isConnectedToPartner)
+					{
+						// Send to controller's asset
+						_send_message(msg, dynamic_cast<GpControllerUser &>(user)._asset);
+					}
+					else if(user._user_type == GpUser::GP_USER_TYPE_ASSET && dynamic_cast<GpAssetUser &>(user)._connected_owner->_isConnectedToPartner)
+					{
+						// Send to asset's owner/controller.
+						_send_message(msg, *(dynamic_cast<GpAssetUser &>(user)._connected_owner));
+						
+					}
+				}
+				
+				
+				
+			}
+				
+				break;
+				
 			case GP_MSG_TYPE_LOGOUT:
 			{
 				
@@ -453,7 +480,7 @@ void GpUavServer::handle_message(GpMessage & msg, GpUser & user){
 			}
 			default:
 			{
-				std::cout << "[" << __func__ << "] "  << "Message type: "<< msg._message_type << std::endl;
+				std::cout << "[" << __func__ << "] "  << "Message type: "<< int(msg._message_type) << std::endl;
 				break;
 			}
 		}
@@ -595,14 +622,31 @@ void GpUavServer::sendLoginConfirmationMessageTo(GpUser & user){
  */
 void GpUavServer::putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message){
 	
-	// Message_Type
+	// Message_Type (1 byte)
 	message._message_type = *buffer; //GP_MSG_TYPE_CONTROLLER_LOGIN;
 	
-	// Payload Size
+	// Payload Size (2)
 	uint8_t *sizePtr = buffer + 1;
 	uint16_t pSize = 0;
-	GpMessage::bitUnstuff16(sizePtr, pSize);
+	GpMessage::byteUnpack16(sizePtr, pSize);
 	message._payloadSize = pSize;			//GP_MSG_LOGIN_LEN;
+	buffer+= (sizeof(uint16_t));
+	
+	
+	// Timestamp (4)
+	sizePtr = buffer;
+	uint32_t timestamp = 0;
+	GpMessage::byteUnpack32(sizePtr, timestamp);
+	message._timestamp = timestamp;
+	buffer+= (sizeof(uint32_t));
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	return;
