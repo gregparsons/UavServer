@@ -551,7 +551,8 @@ bool GpUavServer::_send_message(GpMessage & msg, GpUser & user){
 				std::cout << "[" << __func__ << "] "  <<  user._username << " disconnected." << std::endl;
 
 				// Log out if the socket disconnected.
-				user.logout();
+				if(user._isOnline)
+					user.logout();
 				
 			}
 			return false;
