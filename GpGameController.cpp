@@ -1,3 +1,10 @@
+//
+//  GpGameController.cpp
+//
+//
+//
+// Connects to USB game controller and captures button/joystick events.
+//
 
 /**
  
@@ -5,11 +12,8 @@
  framework: /Library/Frameworks/SDL2.framework (build phases / link binary with libraries).
  
  
- 
  References:
- Thanks for the basic how-to here:
  http://lazyfoo.net/tutorials/SDL/19_gamepads_and_joysticks/index.php
- 
  
  */
 
@@ -37,24 +41,18 @@ void GpGameController::startGameControllerThread(GpClientNet & net){
 	
 	_net = &net;
 	
-	
-	
-	
 	std::thread game_controller_thread(&GpGameController::_controller_thread, this);
 	game_controller_thread.detach();
 	
-	
-	
 }
+
+
 
 
 void GpGameController::_controller_thread(){
 	
 	
 	GpClientNet & net = *_net;
-	
-	
-	
 	
 	SDL_GameController *gameController = nullptr;
 
@@ -113,27 +111,27 @@ void GpGameController::_controller_thread(){
 									
 									if(msgLen == 0){
 										
-										std::cout << "[" << __func__ << "] "  << "mavlink encoded message was size 0" << std::endl;
+										std::cout << "[" << __func__ << "] "  << "Mavlink encoded payload was size 0" << std::endl;
 										break;
 									}
 									
 									
 									
-									// GpMessage(uint8_t messageType, uint16_t payloadSize, uint8_t *&payload);
+									
 									uint8_t *ptr = reinterpret_cast<uint8_t*>(&mavlinkMsg);
 									GpMessage cmdMessage(GP_MSG_TYPE_COMMAND, msgLen, ptr);
-									
-									
-									
-									
-									// Hacky. Making game controller thread end if the network ended.
-									//if(false == net.sendMessage(cmdMessage))
-									//	return;
-									
-									
-									// TEST...IS THIS THE SAME NET, IF SERVER RECONNECT HAPPENS? IT'S A POINTER TO A REFERENCE...TO A THING THAT WENT OUT OF SCOPE.
 									if(net._isConnected){
+
+
+										// This is the heart of this class, the controller output is converted to
+										// a MAVLink payload in a GpMessage
+										// and sent to the server for forwarding to the asset.
+										
+										
+										
 										net.sendMessage(cmdMessage);
+
+									
 									}else{
 										std::cout << "[" << __func__ << "] "  << "Can't send message. Net is offline." << std::endl;
 

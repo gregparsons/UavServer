@@ -2,12 +2,8 @@
 //
 //  GpUavAsset.h
 //  UavServer
-//  2/25/15
 //
 // ********************************************************************************
-
-
-
 
 #include <mavlink/c_library/common/mavlink.h>
 #include <iostream>
@@ -22,10 +18,7 @@
 #include <string.h>			//memset, bzero
 #include <sys/wait.h>
 #include <boost/format.hpp>
-
 #include <typeinfo>	//required by Raspbian for typeid
-
-
 #include <thread>
 #include <mutex>
 
@@ -38,53 +31,8 @@
 #include "GpUser.h"
 
 
-
-
-
-
-
-
-void GpUavServer::sendHeartbeat(GpUser user){
+GpUavServer::~GpUavServer(){
 	
-	for(;;){
-		
-		// FAKE MESSAGE
-		std::cout << "[" << __func__ << "] "  << "Sending fake heartbeat to user: " << user._username << " on socket: " << user._fd << std::endl;
-		
-		
-		// Send login complete message to client
-		uint8_t *payload = nullptr;
-		GpMessage msgLoginComplete(GP_MSG_TYPE_HEARTBEAT, 0, payload);
-		
-		if(false == _send_message(msgLoginComplete, user)){
-			std::cout << "[" << __func__ << "] "  << "Error sending heartbeat" << std::endl;
-			
-			return;
-		}
-		
-		usleep(3000000);
-	}
-	
-}
-
-
-
-/**
- *  signalHandler(): Clean up zombie processes.
- *
- */
-
-void
-signalHandler(int signal)
-{
-	if(signal == SIGPIPE)
-		std::cout << "SIGPIPE, keep going" << std::endl;
-	else{
-	
-		while(waitpid(-1, NULL, WNOHANG) > 0);
-		std::cout << "signalHandler()" << std::endl;
-			
-	}
 }
 
 
@@ -97,20 +45,13 @@ signalHandler(int signal)
  *
  */
 bool GpUavServer::start(){
-	
-	std::cout << "[" << __func__ << "] "  << "Server starting..." <<std::endl;
+	// std::cout << "[" << __func__ << "] "  << "Server starting..." <<std::endl;
 	
 	return startNetwork();
 	
 }
 
 
-
-
-
-GpUavServer::~GpUavServer(){
-	
-}
 
 
 /**
@@ -122,7 +63,7 @@ GpUavServer::~GpUavServer(){
  */
 bool
 GpUavServer::startNetwork(){
-	std::cout << "[" << __func__ << "] "  << "" <<std::endl;
+	// std::cout << "[" << __func__ << "] "  << "" <<std::endl;
 
 	struct addrinfo hintAddrInfo, *resSave = nullptr, *res = nullptr;
 	struct sockaddr_storage inboundAddress;
@@ -130,18 +71,8 @@ GpUavServer::startNetwork(){
 	int result = 0;
 	int yes = 1;
 	int client_fd = 0;
+
 	
-	// Handle SIGPIPE, etc processes
-	
-	struct sigaction signalAction;
-	signalAction.sa_handler = signalHandler;
-	sigemptyset(&signalAction.sa_mask);
-	signalAction.sa_flags = SA_RESTART;
-	result = sigaction(SIGPIPE, &signalAction, nullptr);
-	if(result == -1){
-		std::cout << "Error: sigpipe" << std::endl;
-		exit(1);
-	}
 	
 	// Network Begin
 	
@@ -152,6 +83,7 @@ GpUavServer::startNetwork(){
 	
 
 	// 0.0.0.0
+	
 	result = getaddrinfo("0.0.0.0", GP_CONTROLLER_SERVER_PORT.c_str(), &hintAddrInfo, &resSave);
 	if(result < 0){ //error
 		std::cout << "getaddrinfo() error" << std::endl;
@@ -226,31 +158,11 @@ GpUavServer::startNetwork(){
 			continue;
 		}
 		
-
+		// CLIENT LISTEN THREAD -- START
 		
-		
-		// CLIENT THREAD -- START
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		std::thread clientThread (&GpUavServer::threadClientRecv, this, client_fd);
+		std::thread clientThread (&GpUavServer::client_listener_thread, this, client_fd);
 		clientThread.detach();
 		usleep(10000);
-
-		
-		
-		
-		
-		
-		
-		
-		
 
 	}
 }
@@ -258,17 +170,47 @@ GpUavServer::startNetwork(){
 
 
 
+/**
+ *  sendHeartbeatTo
+ *
+ */
+void GpUavServer::sendHeartbeatTo(GpUser user){
+	
+	for(;;){
+		std::cout << "[" << __func__ << "] "  << "Sending server heartbeat to : " << user._username << " on socket: " << user._fd << std::endl;
+		
+		// Send login complete message to client
+		uint8_t *payload = nullptr;
+		GpMessage heartbeatMessage(GP_MSG_TYPE_HEARTBEAT, 0, payload);
+		
+		if(false == _send_message(heartbeatMessage, user)){
+			std::cout << "[" << __func__ << "] "  << "Error sending heartbeat." << std::endl;
+			
+			return;
+		}
+		
+		usleep(3000000);
+	}
+}
 
 
 
 
-
-
-void GpUavServer::threadClientRecv(int fd)
+/**
+ *  client_listener_thread
+ *
+ *  Function started as a thread when a client connects. This is the incoming message handler.
+ *
+ *  @param int file_descriptor
+ */
+void GpUavServer::client_listener_thread(int fd)
 {
-	std::cout << "[" << __func__ << "] "  << "Entering recv() thread " << std::this_thread::get_id() << std::endl;
+	std::cout << "[" << __func__ << "] "  << "Spawning client listener thread on socket " << fd << std::endl;
 	
 	GpUser *user = nullptr;
+	
+	
+	
 	
 	// RECVBUFFER
 	
@@ -280,6 +222,7 @@ void GpUavServer::threadClientRecv(int fd)
 	uint8_t *recvOutPtr = recvBuffer;
 	uint8_t *recvHead = recvBuffer;
 	long bytesInRecvBuffer = 0;
+	
 	
 	
 	
@@ -296,10 +239,10 @@ void GpUavServer::threadClientRecv(int fd)
 
 	
 	
+	
 	// RECEIVE LOOP
 	
 	for(;;){
-
 		
 		
  		// RECEIVE
@@ -320,25 +263,22 @@ void GpUavServer::threadClientRecv(int fd)
 		// If there are bytes on the receive queue, turn them into a message or return to recv until a message can be formed.
 		while(bytesInRecvBuffer > 0){
 			
-			GpMessage newMessage;		// dynamically allocate? or overwrite each time? 
-			
+			GpMessage newMessage;
 			if(messageStarted != true){
 				newMessage.clear();			// re-use
-				
 				if(bytesInRecvBuffer >= GP_MSG_HEADER_LEN){
 					putHeaderInMessage(recvOutPtr, bytesInRecvBuffer, newMessage);		//this is the same as deserialize
 				}
 				else{
-					break;	// Don't have enough bytes for a message header. Nothing to do but get more.
+					break;																// Don't have enough bytes for a message header. Nothing to do but get more.
 				}
-				
 				messageLenMax = newMessage._payloadSize + GP_MSG_HEADER_LEN;
 				msgBytesStillNeeded = messageLenMax;
 				bytesToTransfer = std::min(bytesInRecvBuffer, msgBytesStillNeeded);		//first time, copy as many as possible from packet buffer
 				memcpy(&messageBuffer, recvOutPtr, bytesToTransfer);
 				
 			}
-			else // if(messageStarted)
+			else																		// if(messageStarted)
 			{
 				
 				//copy the min of available and needed from PACKET to MESSAGE buffer
@@ -348,7 +288,7 @@ void GpUavServer::threadClientRecv(int fd)
 				
 			}
 			messageLenCurrent = bytesToTransfer;
-			bytesInRecvBuffer -= bytesToTransfer;		//are there bytes leftover in recvBuffer?
+			bytesInRecvBuffer -= bytesToTransfer;									//are there bytes leftover in recvBuffer?
 			
 			// MESSAGE COMPLETE.
 			if(messageLenCurrent == messageLenMax)
@@ -356,65 +296,36 @@ void GpUavServer::threadClientRecv(int fd)
 				
 				// PAYLOAD
 				uint8_t *tempPayloadPtr = msgHead + GP_MSG_HEADER_LEN;
-				newMessage.setPayload(tempPayloadPtr, newMessage._payloadSize);		//payload to vector
-				
-				
+				newMessage.setPayload(tempPayloadPtr, newMessage._payloadSize);				//payload to vector
 				
 				// Create User Object; Parse Message
 				// Dynamic allocate new user depending on type of login message received...
 				// ...if thread sigpipes in this infinite loop, will this memory get released?
 				
-				
 				if(user == nullptr){
 					if(newMessage._message_type == GP_MSG_TYPE_ASSET_LOGIN){
 						user = new GpAssetUser();
-						
+						user->_fd = fd;	//assign socket file descriptor received in function parameter
 					}
 					else if(newMessage._message_type == GP_MSG_TYPE_CONTROLLER_LOGIN){
 						user = new GpControllerUser();
-						
+						user->_fd = fd;	//assign socket file descriptor received in function parameter
 					}
-					else{
-						goto SKIP_THIS_MESSAGE_UNTIL_LOGGED_IN;
-					}
-					user->_fd = fd;	//assign socket file descriptor received in function parameter
-
-					
-					// **** HEARTBEAT move this to handler; run once logged in this is dumb that this is even here. *****
-					
-					
-					// This in only a heartbeat from the server to the controller or asset. Not currently used.
-					/*
-					if(GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER){
-						std::cout << "[" << __func__ << "] "  << "TEST: Starting heartbeat" << std::endl;
-						std::thread serverHeartbeat(&GpUavServer::sendHeartbeat, this, *user);
-						serverHeartbeat.detach();
-						
-					}
-					*/
 				}
 
 				
-				
-			SKIP_THIS_MESSAGE_UNTIL_LOGGED_IN:
-				
-				
-				
-				if(user!= nullptr)
-					processMessage(newMessage, *user);
+				if(user!= nullptr)								// Ignore inbound messages if not logged in first. Only message getting through is login request
+					handle_message(newMessage, *user);			// Only handle the message if the user has been created (aka is logged in)
 				
 				
-				
-				
-				recvOutPtr+= bytesToTransfer;
 				
 				// Reset the message buffer.
+
+				recvOutPtr+= bytesToTransfer;
 				messageStarted = false;
 				messageLenCurrent = 0;
 				messageLenMax = 0;
-				
 				newMessage.clear();
-				
 			}
 			
 		}	// while(bytesInRecvBuffer > 0)
@@ -425,7 +336,6 @@ void GpUavServer::threadClientRecv(int fd)
 		
 	}
 	
-
 	// Only reached if recv returns 0 and break in infinite loop occurs.
 	
 	if(user!=nullptr){
@@ -437,56 +347,33 @@ void GpUavServer::threadClientRecv(int fd)
 
 
 
+/**
+ *  handle_message
+ *
+ *  Message handler function.
+ *
+ *  @param   GpMessage & msg, GpUser & user
+ */
+void GpUavServer::handle_message(GpMessage & msg, GpUser & user){
 
-void GpUavServer::putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message){
 	
-	// Message_Type
-	message._message_type = *buffer; //GP_MSG_TYPE_CONTROLLER_LOGIN;
-	
-	
-	
-	// Payload Size
-	uint8_t *sizePtr = buffer + 1;
-	uint16_t pSize = 0;
-	GpMessage::bitUnstuff16(sizePtr, pSize);
-	message._payloadSize = pSize;			//GP_MSG_LOGIN_LEN;
-	
-	
-	return;
-}
-
-
-
-
-void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
-
-	// REMOVE user parameter. Not needed.
-	
-	
-	
-	
-	
-	
-	std::cout << "[" << __func__ << "] "  << "Received message with type: " << int(msg._message_type) << " and payload size: " << msg._payloadSize << std::endl;
-
+	std::cout << "[" << __func__ << "] "  << "Received message type: " << int(msg._message_type) << " and payload size: " << msg._payloadSize << std::endl;
 	
 	if(user._isAuthenticated){
+		
 		switch (msg._message_type) {
 			
 			case GP_MSG_TYPE_COMMAND:
 			{
-				std::cout << "[" << __func__ << "] "  << "GP_MSG_TYPE_COMMAND" << std::endl;
+				std::cout << "[" << __func__ << "] "  << "GP_MSG_TYPE_COMMAND from " << user._username << " on socket: " << user._fd  << std::endl;
 
-				GpMavlink::printMavFromGpMessage(msg);
+				//GpMavlink::printMavFromGpMessage(msg);
 				
 				//If command is inbound from a controller, find the asset it is connected to and forward.
 				
 				if(typeid(user).name() == typeid(GpControllerUser).name()){
+					
 					GpControllerUser &controller = (dynamic_cast<GpControllerUser&>(user));
-
-
-					
-					
 					if(controller._isConnectedToPartner){
 						std::cout << "[" << __func__ << "] "  << "Forwarding GP_MSG_TYPE_COMMAND to: " << controller._asset._username << " on socket: " << controller._asset._fd << std::endl;
 						
@@ -511,22 +398,9 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 					}
 
 				}
-				
-				/*
-				if(user._isConnectedToPartner){
-					
-					//send to partner
-				
-					//allow asset to send messages to controller also
-					_send_message(msg, user._partner);
-					
-				}
-				*/
-				
 				break;
 				
 			}
-				
 			case GP_MSG_TYPE_LOGOUT:
 			{
 				
@@ -545,57 +419,38 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 				//user.isAuthenticated set to false in db logout
 				std::cout << "[" << __func__ << "] "  << "GP_MSG_TYPE_HEARTBEAT from " << user._username << " on socket " << user._fd << std::endl;
 				
-				
 				// If message is inbound from an asset, forward to its connected controller.
 				
 				if(typeid(user).name() == typeid(GpAssetUser).name()){
-				
-					GpAssetUser & asset =  dynamic_cast<GpAssetUser &>(user);
-					
 
 					// If asset isn't connected t a controller, keep polling for a connect. Update version of asset in
 					// the database if connected, stop polling for connection and start forwarding heartbeats to controller.
-					
+					GpAssetUser & asset =  dynamic_cast<GpAssetUser &>(user);
 					if((asset._isConnectedToPartner == false) || (asset._connected_owner ==nullptr)){
-						
 
-						
-						
 						// POLL: when a controller requests an asset
 						
 						asset.refresh();
-						
-/*
-						GpAssetUser asset2;
-						GpDatabase::getAsset(asset._user_id, asset2);
-						asset._connected_owner = asset2._connected_owner;
-						asset._connected = asset2._connected;
-*/
 					}
 					
 
 					if(asset._isConnectedToPartner){
 						
-						
 						std::cout << "[" << __func__ << "] "  << "Forwarding GP_MSG_TYPE_HEARTBEAT to " << asset._connected_owner->_username << " on socket " << asset._connected_owner->_fd << std::endl;
 
 						if(_send_message(msg, *(asset._connected_owner)) == false){
+
+							
 							// Controller might be offline. That status would have been updated by user logout() and database would now reflect
 							// asset change in status (_isConnectedToPartner) but this asset user wouldn't know cause they're not shared memory.
 							// So update yourself, asset.
+							
 							asset.refresh();
-							
-							
 						};
 					}
-					
 				}
-				// Who is asset's owner? Need to send heartbeat to them.
-				
-				
 				break;
 			}
-				
 			default:
 			{
 				std::cout << "[" << __func__ << "] "  << "Message type: "<< msg._message_type << std::endl;
@@ -605,35 +460,20 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 	}
 	else
 	{
-
 		// If you're not authenticated, the only message you can even send is an authentication request.
-		
-		
 		switch (msg._message_type) {
 				
 			case GP_MSG_TYPE_CONTROLLER_LOGIN:
 			{
-				
-				std::cout << "[" << __func__ << "] "  << "CONTROLLER login message" << std::endl;
+				std::cout << "[" << __func__ << "] "  << "CONTROLLER login request from " << user._username << std::endl;
 				GpMessage_Login loginMsg(msg._payLd_vec);
 				
-				
-				
 				// AUTHENTICATE
-				
 				if(true == (user.authenticate(loginMsg.username(), loginMsg.key())   ))
 				{
+					std::cout << "[" << __func__ << "] "  << "Sending authentication confirmation to: " << user._username << " on socket " << user._fd << std::endl;
 					
-					std::cout << "[" << __func__ << "] "  << "Sending authentication confirmation to: " << user._username << "on socket " << user._fd << std::endl;
-					
-					
-					
-					// moved temporarily lower as response to asset connect request (signals controller to start sending game controller outputs)
-					//sendLoginConfirmationMessageTo(user);
-
-
 					// If this is a Controller, try to connect to the Asset.
-					
 					std::cout << "[" << __func__ << "] User type: "  << typeid(user).name() << std::endl;
 					if(typeid(user).name() == typeid(GpControllerUser).name()){
 						bool connectedToAsset = (dynamic_cast<GpControllerUser &>(user)).requestConnectionToAsset(GP_ASSET_ID_TEST_ONLY);
@@ -647,14 +487,13 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 				}
 				break;
 			}
-				
 			case GP_MSG_TYPE_ASSET_LOGIN:
 			{
+				
 				std::cout << "[" << __func__ << "] "  << "ASSET login message" << std::endl;
 				GpMessage_Login loginMsg(msg._payLd_vec);
 				
 				// AUTHENTICATE
-				
 				if(true == (user.authenticate(loginMsg.username(), loginMsg.key())   ))
 				{
 					std::cout << "[" << __func__ << "] "  << "Sending authentication confirmation to: " << user._username << "on socket " << user._fd << std::endl;
@@ -672,28 +511,15 @@ void GpUavServer::processMessage(GpMessage & msg, GpUser & user){
 
 
 
-
-
-
 /**
- *  Send serialized message to the controller over TCP.
+ *  Send serialized message to the controller over TCP. Thread guarded.
  *
  *  @param GpMessage & msg
  *  @returns Bool
  */
 bool GpUavServer::_send_message(GpMessage & msg, GpUser & user){
 	
-	
-	
-	
-	//
 	std::lock_guard<std::mutex> sendGuard(_send_mutex);		// when guard class is destroyed at end of function the lock is released
-
-	
-	
-	
-	
-	
 	
 	// SERIALIZE
 	
@@ -701,47 +527,38 @@ bool GpUavServer::_send_message(GpMessage & msg, GpUser & user){
 	byteVect.reserve(msg.size());
 	msg.serialize(byteVect);
 	
-	
 	// SEND TCP
 	
 	if(user._isOnline){
-	
-		
-		
-		
 		
 		ssize_t retVal;
 #ifdef GP_OSX
-		retVal = send(user._fd, byteVect.data(), byteVect.size(), 0); //MSG_NOSIGNAL  SO_NOSIGPIPE	//this will be a new size based on the actual size of the serialized data (not the default above)
+		retVal = send(user._fd, byteVect.data(), byteVect.size(), 0);				//	Apple version
 #else
 #ifdef GP_LINUX
-		retVal = send(user._fd, byteVect.data(), byteVect.size(), MSG_NOSIGNAL); //MSG_NOSIGNAL  SO_NOSIGPIPE	//this will be a new size based on the actual size of the serialized data (not the default above)
+		retVal = send(user._fd, byteVect.data(), byteVect.size(), MSG_NOSIGNAL);	//  Prevent SIGPIPE on Linux
 #endif
 #endif
 		if(retVal == -1){
-
 			perror((boost::format("[%s] Error %d:")  % __func__ % errno).str().c_str() );
-
+			
+			
+			// Socket error
 			
 			if(errno == EPIPE){
 				
 				// client disconnected; clean up. Mark client disconnected. Remove from controller list.
+				std::cout << "[" << __func__ << "] "  <<  user._username << " disconnected." << std::endl;
 
-				std::cout << "[" << __func__ << "] "  << "EPIPE on user: " << user._username << std::endl;
-
-				
-				
+				// Log out if the socket disconnected.
 				user.logout();
 				
 			}
-			
-			
 			return false;
 		}
 	}
 	else{
-		std::cout << "[" << __func__ << "] "  << "EPIPE previously received. No longer online: " << user._username << std::endl;
-		
+		std::cout << "[" << __func__ << "] "  <<  user._username << " no longer online: " << std::endl;
 		return false;
 	}
 	return true;
@@ -749,10 +566,13 @@ bool GpUavServer::_send_message(GpMessage & msg, GpUser & user){
 
 
 
-
+/**
+ *  SendLoginConfirmationMessageTo: user
+ *
+ *  @param GpUser & user
+ *
+ */
 void GpUavServer::sendLoginConfirmationMessageTo(GpUser & user){
-
-	
 	
 	// Send login complete message to client
 	uint8_t *payload = nullptr;	// No payload required, just a ref to a pointer needed for constructor.
@@ -763,5 +583,27 @@ void GpUavServer::sendLoginConfirmationMessageTo(GpUser & user){
 	}else{
 		std::cout << "[" << __func__ << "] "  << "Authentication confirmation sent." << std::endl;
 	}
-
 }
+
+
+
+
+/**
+ *  putHeaderInMessage (private)
+ *
+ */
+void GpUavServer::putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message){
+	
+	// Message_Type
+	message._message_type = *buffer; //GP_MSG_TYPE_CONTROLLER_LOGIN;
+	
+	// Payload Size
+	uint8_t *sizePtr = buffer + 1;
+	uint16_t pSize = 0;
+	GpMessage::bitUnstuff16(sizePtr, pSize);
+	message._payloadSize = pSize;			//GP_MSG_LOGIN_LEN;
+	
+	
+	return;
+}
+

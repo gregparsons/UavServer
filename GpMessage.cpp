@@ -72,9 +72,6 @@ GpMessage::~GpMessage(){
 
 
 
-
-
-
 /**
  *  Serialize this message.
  *
@@ -96,48 +93,6 @@ GpMessage::serialize(std::vector<uint8_t> & byteVect){
 
 
 
-
-
-/*
- 
- 
- Provide an empty buffer and the buffer size. When written, size is changed to actual bytes written.
- 
- */
-/*
-
-void GpMessage::serialize(uint8_t *&bytes, uint16_t &buffer_size){
-	std::cout << "[" << __func__ << "] "  << "ERROR DEPRECATED, use the other serialize with a vector instead" << std::endl;
-	if(buffer_size >= 3){
-		
-		
-		
-		
-		int byteCount = 0;
-		uint8_t *ptr = bytes;
-
-		
-		
-		*ptr++ = _message_type;
-		
-		byteCount++;
-		
-		
-		bitStuff16(ptr, _payloadSize);		//put payload size in buffer
-		byteCount+=2;
-		
-		
-		memcpy(ptr, _payload, _payloadSize);
-
-		
-		ptr+= _payloadSize;
-
-		buffer_size = GP_MSG_HEADER_LEN + _payloadSize;
-	
-	}
-	 
-}
-*/
 
 void GpMessage::deserialize(std::vector<uint8_t> & bytes){
 	if(bytes.size() < GP_MSG_HEADER_LEN){
@@ -165,33 +120,7 @@ void GpMessage::deserialize(std::vector<uint8_t> & bytes){
 	
 }
 
-/*
-void GpMessage::deserialize(uint8_t *&bytes, uint16_t &buffer_size){
-	std::cout << "[" << __func__ << "] "  << "ERROR DEPRECATED, use the other deserialize with a vector instead" << std::endl;
-	
-	if(buffer_size >= 3){
-		int byteCount =0;
-		uint8_t *ptr = bytes;
-		
-		_message_type =	*ptr;	//1 byte
-		byteCount++;
-		ptr++;					
-		
-		bitUnstuff16(ptr, _payloadSize);
-		byteCount+=2;
- 
-		_payload = new uint8_t[_payloadSize];
- 
-		
-		if(_payloadSize > 0)
-			memcpy(_payload, ptr, _payloadSize);
-		
-		setPayload(ptr, _payloadSize);
-		
- 
-	}
-}
-*/
+
 
 // push a short and increment the pointer passed by 2 bytes
 void GpMessage::bitStuff16(uint8_t *&buffer, const uint16_t & value){
@@ -252,11 +181,10 @@ void GpMessage::insertBytesToVectorAtLocation(std::vector<uint8_t> & vec, long v
 		vec.insert(itr + vecStartPoint, tempVector.begin(), tempVector.end());
 	
 	}
-	
-	//Don't waste time if bytes are zero.
-	
-
 }
+
+
+
 
 /**
  *  Copy bytes to the end of a vector.
@@ -265,6 +193,8 @@ void GpMessage::insertBytesToVectorAtLocation(std::vector<uint8_t> & vec, long v
 void GpMessage::pushBytesToVector(std::vector<uint8_t> & vec, uint8_t *&bytes, long numBytes){
 	insertBytesToVectorAtLocation(vec, vec.size(), bytes, numBytes);
 }
+
+
 
 
 /**
@@ -309,7 +239,6 @@ void GpMessage::setPayload(std::vector<uint8_t> payLdVect){
 	_payLd_vec.swap(payLdVect);
 	
 }
-
 
 void GpMessage::setPayload(uint8_t *& bytes, long numBytes){
 	

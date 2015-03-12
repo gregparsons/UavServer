@@ -15,39 +15,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "492"
             endingLineNumber = "492"
-            landmarkName = "GpUavServer::processMessage(GpMessage &amp; msg, GpUser &amp; user)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GpUavServer.cpp"
-            timestampString = "447742755.205835"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "489"
-            endingLineNumber = "489"
-            landmarkName = "GpUavServer::processMessage(GpMessage &amp; msg, GpUser &amp; user)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GpUavServer.cpp"
-            timestampString = "447616442.977888"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
-            landmarkName = "GpUavServer::sendHeartbeat(GpUser user)"
+            landmarkName = "GpUavServer::handle_message(GpMessage &amp; msg, GpUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -63,7 +31,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "536"
             endingLineNumber = "536"
-            landmarkName = "GpUavServer::processMessage(GpMessage &amp; msg, GpUser &amp; user)"
+            landmarkName = "GpUavServer::handle_message(GpMessage &amp; msg, GpUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -79,23 +47,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "475"
             endingLineNumber = "475"
-            landmarkName = "GpUavServer::processMessage(GpMessage &amp; msg, GpUser &amp; user)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GpUavServer.cpp"
-            timestampString = "447743960.221688"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "733"
-            endingLineNumber = "733"
-            landmarkName = "GpUavServer::_send_message(GpMessage &amp; msg, GpUser &amp; user)"
+            landmarkName = "GpUavServer::handle_message(GpMessage &amp; msg, GpUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -111,7 +63,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "505"
             endingLineNumber = "505"
-            landmarkName = "GpUavServer::processMessage(GpMessage &amp; msg, GpUser &amp; user)"
+            landmarkName = "GpUavServer::handle_message(GpMessage &amp; msg, GpUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -127,23 +79,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "497"
             endingLineNumber = "497"
-            landmarkName = "GpUavServer::processMessage(GpMessage &amp; msg, GpUser &amp; user)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GpUavServer.cpp"
-            timestampString = "447742755.205835"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "430"
-            endingLineNumber = "430"
-            landmarkName = "GpUavServer::threadClientRecv(int fd)"
+            landmarkName = "GpUavServer::handle_message(GpMessage &amp; msg, GpUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -191,7 +127,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "638"
             endingLineNumber = "638"
-            landmarkName = "GpUavServer::processMessage(GpMessage &amp; msg, GpUser &amp; user)"
+            landmarkName = "GpUavServer::handle_message(GpMessage &amp; msg, GpUser &amp; user)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -208,22 +144,6 @@
             startingLineNumber = "54"
             endingLineNumber = "54"
             landmarkName = "GpDatabase::getAsset(int assetId, GpAssetUser &amp; user)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GpUavServer.cpp"
-            timestampString = "447742755.205835"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "373"
-            endingLineNumber = "373"
-            landmarkName = "GpUavServer::threadClientRecv(int fd)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -265,22 +185,6 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GpUavServer.cpp"
-            timestampString = "447741756.113156"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "142"
-            endingLineNumber = "142"
-            landmarkName = "GpUavServer::startNetwork()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "GpClientNet.cpp"
             timestampString = "447752170.03239"
             startingColumnNumber = "9223372036854775807"
@@ -297,22 +201,6 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GpGameController.cpp"
-            timestampString = "447751936.243785"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "132"
-            endingLineNumber = "132"
-            landmarkName = "GpGameController::_controller_thread()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "GpClientNet.cpp"
             timestampString = "447752170.03239"
             startingColumnNumber = "9223372036854775807"
@@ -320,22 +208,6 @@
             startingLineNumber = "360"
             endingLineNumber = "360"
             landmarkName = "GpClientNet::_receiveDataAndParseMessage()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GpGroundController.cpp"
-            timestampString = "447751674.429177"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "131"
-            endingLineNumber = "131"
-            landmarkName = "GpGroundController::handle_messages(GpMessage &amp; msg, GpClientNet &amp; net)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

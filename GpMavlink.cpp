@@ -2,7 +2,6 @@
 //
 //  GpMavlink.cpp
 //  UavServer
-//  2/25/15
 //
 // ********************************************************************************
 
@@ -24,9 +23,6 @@ void GpMavlink::printMavFromGpMessage(GpMessage & msg){
 		std::cout << "[" << __func__ << "] "  << "Can't decode. Not a Mavlink message." << std::endl;
 		return;
 	}
-	
-	
-
 	
 	// GpMessage Payload to Mavlink
 	mavlink_message_t mav;
@@ -59,7 +55,10 @@ void GpMavlink::deserializePayloadToChannelOverride(mavlink_message_t & mavlink,
 void GpMavlink::printMavlinkMessage(mavlink_message_t & mav)
 {
 	
+	std::cout << "[" << __func__ << "] "  << "MAVLink Message" << std::endl;
+
 	switch (mav.msgid) {
+		
 		case MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE:
 		{
 			std::cout << "[" << __func__ << "] "  << "MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE" << std::endl;
@@ -83,20 +82,21 @@ void GpMavlink::printMavChannelsOverride(mavlink_rc_channels_override_t & ch)
 {
 	
 	///< RC channel 1 value, in microseconds. A value of UINT16_MAX means to ignore this field.
-	std::cout << "Channels Override:\n";
+	
+	std::cout << "\nRC Override:\n";
 	std::cout << "ch1: " << (int)ch.chan1_raw << "\n";
 	std::cout << "ch2: " << (int)ch.chan2_raw << "\n";
 	std::cout << "ch3: " << (int)ch.chan3_raw << "\n";
 	std::cout << "ch4: " << (int)ch.chan4_raw << "\n";
-	std::cout << "target component: " << ch.target_component << "\n";
-	std::cout << "target system: " << ch.target_system << "\n";
+	//std::cout << "target component: " << ch.target_component << "\n";
+	//std::cout << "target system: " << ch.target_system << "\n";
 	std::cout << std::endl;
 }
 
 
 
 
-
+/*
 void GpMavlink::sendTestMessage(){
 	///< RC channel 1 value scaled, (-100%) -10000, (0%) 0, (100%) 10000, (invalid) INT16_MAX.
 	mavlink_rc_channels_override_t channels;
@@ -122,10 +122,11 @@ void GpMavlink::sendTestMessage(){
 	
 	
 }
+*/
 
 
 
-
+/*
 void GpMavlink::receiveTestMessage(mavlink_message_t & mesg){
 	
 	
@@ -135,9 +136,9 @@ void GpMavlink::receiveTestMessage(mavlink_message_t & mesg){
 	mavlink_rc_channels_override_t incomingObject;
 	mavlink_msg_rc_channels_override_decode(&mesg, &incomingObject);
 
-	std::cout << "Received:" << std::endl;
+	//std::cout << "Received:" << std::endl;
 }
-
+*/
 
 
 
@@ -171,8 +172,8 @@ void GpMavlink::encodeControllerEventAsMavlink(int left_x, int left_y, int right
 	mavlinkMessage.compid = 7;
 	*/
 	
-	uint8_t systemId = 1;				// HARD CODED SYSTEM ID!!!!
-	uint8_t compId = 1;
+	uint8_t systemId = 99;				// HARD CODED SYSTEM ID!!!!
+	uint8_t compId = 99;
 	
 	
 	// mavlink_msg_rc_channels_override_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t *msg, const mavlink_rc_channels_override_t *rc_channels_override)

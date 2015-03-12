@@ -2,7 +2,10 @@
 //
 //  GpUavAsset.h
 //  UavServer
-//  2/25/15
+//
+//	Class implementing the ground controller. Starts a network connection to the
+//	server, attempts to login, then connects with game controller and begins
+//	sending game controller events to server for forwarding to the requested asset.
 //
 // ********************************************************************************
 
@@ -17,29 +20,26 @@ class GpMessage;
 
 class GpGroundController
 {
+
+
 public:
-	bool start();
-	int controllerSend();
+
 	
-//	void listen();
+	bool start();
+	
+	int controllerSend();
 	
 	
 private:
 	
 	bool _isLoggedIn = false;
 	
-	/**
-	 *  signalHandler(): Clean up zombie processes.
-	 *
-	 */
-	static void signalHandler(int signal);
-
-	// Type GpClientNet::gp_message_hander
 	static bool handle_messages(GpMessage & msg, GpClientNet & net);
-
+	
+	
+	
+	
 	GpClientNet _net;
-	
-	
 	static GpGameController _game_controller;
 	
 };
