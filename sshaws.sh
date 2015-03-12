@@ -1,0 +1,1 @@
+ssh -i "/Users/aaa/Spider/__dev/_KEY/AWS/private--used with ssh auths me to server/20140309-ucsb-amazon" ubuntu@52.11.30.229

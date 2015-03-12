@@ -12,6 +12,8 @@
 #include <arpa/inet.h> //only for inet_ntop()
 #include <strings.h>	//bzero
 #include <string.h>		//memcpy, memset
+#include <chrono>
+#include <bitset>
 
 
 #include "GpClientNet.h"

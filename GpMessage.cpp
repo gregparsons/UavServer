@@ -12,6 +12,8 @@
 #include <string.h> //bzero memset
 #include <netinet/in.h>
 #include <vector>
+#include <chrono>
+#include <bitset>
 
 #include "GpMessage.h"
 #include "GpMessage_Login.h"
