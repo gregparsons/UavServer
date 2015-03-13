@@ -260,7 +260,7 @@ void GpMessage::byteUnpack16(uint8_t *&buffer, uint16_t & value){
 // push a short and increment the pointer passed by 2 bytes
 void GpMessage::bytePack32(uint8_t *&buffer, const uint32_t & value){
 	
-	uint32_t temp = htonl(value);
+	//uint32_t temp = htonl(value);
 	uint8_t *ptr = buffer;
 	
 
