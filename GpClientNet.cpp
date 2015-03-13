@@ -505,10 +505,10 @@ void GpClientNet::_receiveDataAndParseMessage()
 					
 					
 					// Get a lock in case message_handler isn't thread safe.
-					std::lock_guard<std::mutex> sendGuard(_message_handler_mutex);		// when guard class is destroyed at end of scope the lock is released
-
+					//std::lock_guard<std::mutex> sendGuard(_message_handler_mutex);		// when guard class is destroyed at end of scope the lock is released
+					//_message_handler(newMessage, *this);		// Do the code given by the calling entity.
 					
-					_message_handler(newMessage, *this);		// Do the code given by the calling entity.
+					callMessageHandler(newMessage);
 					
 				}
 
@@ -529,7 +529,13 @@ void GpClientNet::_receiveDataAndParseMessage()
 	}
 }
 
-
+void GpClientNet::callMessageHandler(GpMessage & msg){
+	// Get a lock in case message_handler isn't thread safe.
+	std::lock_guard<std::mutex> sendGuard(_message_handler_mutex);		// when guard class is destroyed at end of scope the lock is released
+	_message_handler(msg, *this);		// Do the code given by the calling entity.
+	
+	
+}
 
 
 

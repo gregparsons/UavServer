@@ -134,6 +134,8 @@ private:
 	// CRAP from old code
 	void _receiveDataAndParseMessage();
 
+	void callMessageHandler(GpMessage & msg);
+	
 	void _sendPing();
 
 	void compareRoundTripTime(GpMessage & msg);

@@ -3,15 +3,14 @@
 #define __controllerHello__GpIpAddress__
 
 
+// Server IP Address and Port
+
 //const std::string GP_CONTROLLER_SERVER_IP = "192.168.113.240";
 //const std::string GP_CONTROLLER_SERVER_IP = "172.26.48.1";
-const std::string GP_CONTROLLER_SERVER_IP = "52.11.30.229";
-//const std::string GP_CONTROLLER_SERVER_IP = "127.0.0.1";
+//const std::string GP_CONTROLLER_SERVER_IP = "52.11.30.229";
+const std::string GP_CONTROLLER_SERVER_IP = "127.0.0.1";
 
 const std::string GP_CONTROLLER_SERVER_PORT = "11222";
-// const std::string GP_ASSET_SERVER_PORT = "11223";
-
-
 
 
 #define MAX_CONNECTION_BACKLOG 10
@@ -19,21 +18,29 @@ const std::string GP_CONTROLLER_SERVER_PORT = "11222";
 
 
 
-// Debug stuff:
-
-#define GP_ASSET_ID_TEST_ONLY 12345
-const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = false;
-const bool GP_SHOULD_SEND_HEARTBEAT_TO_SERVER_FROM_ASSET= true;
 
 
+// Test Bench User and Password
 
+// (Simulated Database will match these two as a previously paired owner-asset
+// relationship. This is in lieu of the full web signup/login site and actual database.
 
 const std::string GP_CONTROLLER_TEST_USERNAME = "MyLongUserName";
 const std::string GP_CONTROLLER_TEST_PASSWORD = "My really long password sentence could be an HMAC.";
 
 const std::string GP_ASSET_TEST_USERNAME = "Asset123456";
 const std::string GP_ASSET_TEST_PASSWORD = "My really long password sentence could be an HMAC.";
+#define GP_ASSET_ID_TEST_ONLY 12345 // this would be a unique id assigned by the database module
 
+
+
+
+// Test Bench:
+
+//#define GP_INSTRUMENTATION_ON
+
+const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = false;
+const bool GP_SHOULD_SEND_HEARTBEAT_TO_SERVER_FROM_ASSET= true;
 
 
 #endif
