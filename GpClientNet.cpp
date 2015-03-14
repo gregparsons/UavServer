@@ -15,6 +15,13 @@
 #include <chrono>
 #include <bitset>
 
+#include <sys/stat.h>	// mkdir
+#include <sstream>
+#include <fstream>
+#include <iomanip>
+#include <cstdlib>
+#include <signal.h>
+
 
 #include "GpClientNet.h"
 #include "GpMessage.h"
@@ -22,22 +29,103 @@
 #include "GpIpAddress.h"
 
 
-//TEMP FORWARD DECLARE!!!!!!!!!!!!!!!! DELETE
-void receiveDataAndParseMessage(bool message_handler(GpMessage & mesg), int _fd);
+//Statics
+std::ofstream GpClientNet::_metricsFile;
+
+void GpClientNet::_interruptHandler(int s){
+	std::cout << "Caught signal: " << s << std::endl;
+
+	_closeLogging();
+	exit(1);
+	
+}
+
+void GpClientNet::_catchSignals(){
+
+	
+	void (*func)(int);
+	func = &GpClientNet::_interruptHandler;
+	
+	
+	
+	struct sigaction sigIntHandler;
+	
+	sigIntHandler.sa_handler = func;
+	sigemptyset(&sigIntHandler.sa_mask);
+	sigIntHandler.sa_flags = 0;
+	
+	sigaction(SIGINT, &sigIntHandler, NULL);
+	
+}
 
 
+void GpClientNet::_closeLogging(){
+	
+	if(GpClientNet::_metricsFile.is_open()){
+		GpClientNet::_metricsFile.close();
+		
+	}
+
+	
+}
 
 
 GpClientNet::GpClientNet(){
 
+	_catchSignals();
+	
+	if(GP_INSTRUMENTATION_ON)
+		turnOnLogging(true);
 }
 
 GpClientNet::GpClientNet(gp_message_handler message_handler){
 	
+	
+
+	_catchSignals();
+	
+	
+	
 	_message_handler = message_handler;
+	if(GP_INSTRUMENTATION_ON)
+		turnOnLogging(true);
 }
 
-GpClientNet::~GpClientNet(){ }
+GpClientNet::~GpClientNet(){
+	
+	_closeLogging();
+}
+
+
+void GpClientNet::turnOnLogging(bool shouldTurnOnLogging){
+	
+	if(shouldTurnOnLogging){
+
+		std::string dir = "log";
+		int mkdirResult = mkdir(dir.c_str(), 0700);
+		if(mkdirResult != EEXIST)
+			std::cout << "[" << __func__ << "] " << "Logfile mkdir error: " << mkdirResult <<  ": "<< strerror(errno) << std::endl;
+		
+		//drop the upper four bytes. Don't need years, etc.
+		uint32_t now =(uint32_t) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		
+		//create filename from current time
+		std::string logFilename = (boost::format("%s/%u.csv") % dir % now ).str();
+		
+		
+		std::cout << "[" << __func__ << "] " << "Opening logfile: " << logFilename <<std::endl;
+		
+		GpClientNet::_metricsFile.open(logFilename);
+		if(!(GpClientNet::_metricsFile.is_open())){
+			std::cout << "[" << __func__ << "] " << "Can't create metrics.csv" << std::endl;
+		}else{
+			std::cout << "[" << __func__ << "] " << "Logging to " << logFilename << std::endl;
+			GpClientNet::_metricsFile << "DTG,RTT" << std::endl;
+		}
+	}
+}
+
+
 
 
 bool
@@ -484,7 +572,6 @@ void GpClientNet::_receiveDataAndParseMessage()
 */
 				
 
-				
 				if(newMessage._message_type == GP_MSG_TYPE_PING){
 					
 					//bounce it back to sender with a pong and new message type. time stamp stays the same.
@@ -502,17 +589,13 @@ void GpClientNet::_receiveDataAndParseMessage()
 					
 				}
 				else{
-					
-					
+
 					// Get a lock in case message_handler isn't thread safe.
 					//std::lock_guard<std::mutex> sendGuard(_message_handler_mutex);		// when guard class is destroyed at end of scope the lock is released
 					//_message_handler(newMessage, *this);		// Do the code given by the calling entity.
 					
 					callMessageHandler(newMessage);
-					
 				}
-
-				
 				
 				
 				
@@ -592,6 +675,8 @@ void GpClientNet::startBackgroundHeartbeat(){
 }
 
 
+
+
 void GpClientNet::startBackgroundPing(){
 	
 	if(GP_SHOULD_SEND_HEARTBEAT_TO_SERVER_FROM_ASSET){
@@ -617,10 +702,12 @@ void GpClientNet::_sendPing(){
 		
 		
 		
-		usleep(3000000);
+		usleep(250000);		// 0.25 seconds  = 4 pings per second
 	}
 	
 }
+
+
 
 
 void GpClientNet::compareRoundTripTime(GpMessage & msg){
@@ -629,13 +716,29 @@ void GpClientNet::compareRoundTripTime(GpMessage & msg){
 	//drop the upper four bytes. Don't need years, etc.
 	uint32_t now =(uint32_t) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	
+	uint32_t rtt = (now - msg._timestamp);
+	
 	std::cout
 			//<< "\n\n[" << __func__ << "] " << "Now: " << uint32_t(now)
 			//<< "\nSent " << msg._timestamp
-			<< "\nRTT (ms)" << (now - msg._timestamp) << "\n\n"
+			<< "\nRTT (ms)" << rtt << "\n\n"
 			<< std::endl;
 	
+	
+	
+	if(GP_INSTRUMENTATION_ON && GpClientNet::_metricsFile.is_open()){
+	
+		
+		//create filename from current time
+		std::string logFilename = (boost::format("%u.csv") % now ).str();
+		
+		uint64_t completeTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		GpClientNet::_metricsFile << (boost::format("%u,%u") % completeTime % rtt ).str() << std::endl;
+	
 
+		
+		
+	}
 	//std::cout << "[" << __func__ << "] " << "Timenow: " << uint32_t(now) << std::endl;
 	
 	

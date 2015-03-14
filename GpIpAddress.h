@@ -7,8 +7,14 @@
 
 //const std::string GP_CONTROLLER_SERVER_IP = "192.168.113.240";
 //const std::string GP_CONTROLLER_SERVER_IP = "172.26.48.1";
-//const std::string GP_CONTROLLER_SERVER_IP = "52.11.30.229";
-const std::string GP_CONTROLLER_SERVER_IP = "127.0.0.1";
+// const std::string GP_CONTROLLER_SERVER_IP = "52.11.30.229";
+// const std::string GP_CONTROLLER_SERVER_IP = "127.0.0.1";
+
+
+//AWS
+// const std::string GP_CONTROLLER_SERVER_IP = "52.64.12.25";		// Sydney, Australia
+const std::string GP_CONTROLLER_SERVER_IP = "52.1.73.170";			// Virginia
+
 
 const std::string GP_CONTROLLER_SERVER_PORT = "11222";
 
@@ -37,7 +43,7 @@ const std::string GP_ASSET_TEST_PASSWORD = "My really long password sentence cou
 
 // Test Bench:
 
-//#define GP_INSTRUMENTATION_ON
+const bool GP_INSTRUMENTATION_ON = true;
 
 const bool GP_SHOULD_SEND_HEARTBEAT_SERVER_TO_CONTROLLER = false;
 const bool GP_SHOULD_SEND_HEARTBEAT_TO_SERVER_FROM_ASSET= true;

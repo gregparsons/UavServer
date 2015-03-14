@@ -37,8 +37,11 @@ enum {
 	GP_MSG_TYPE_MATCH_CONNECTED,		//a controller receives this when a requested asset connects, asset receives when paired with a controller
 	GP_MSG_TYPE_MATCH_DISCONNECTED,		//notify controller that the asset dropped off, or notify the asset that the controller isn't connected
 	GP_MSG_ASSET_HEARTBEAT,
+
+	//instrumentation_on
 	GP_MSG_TYPE_PING,
 	GP_MSG_TYPE_PONG,
+	
 	GP_MSG_TYPE_MAX_DONT_USE
 
 };

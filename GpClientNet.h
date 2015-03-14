@@ -13,6 +13,7 @@
 #include <vector>
 #include <mutex>
 #include <thread>
+#include <fstream>
 
 
 class GpMessage;		// forward declare
@@ -31,8 +32,12 @@ public:
 	
 	GpClientNet();
 	GpClientNet(gp_message_handler);
+	
+	
 	~GpClientNet();
 	
+
+	void turnOnLogging(bool shouldTurnOnLogging);
 	
 	
 	bool connectToServer(std::string ip, std::string port); // to server
@@ -83,9 +88,9 @@ public:
 	
 	bool _isConnected = false;
 	
-	
+	//INSTRUMENTATION_ON	
 	void startBackgroundPing();
-	
+
 private:
 	int _fd = 0;
 	
@@ -135,10 +140,18 @@ private:
 	void _receiveDataAndParseMessage();
 
 	void callMessageHandler(GpMessage & msg);
-	
+
+	//instrumentation_on
 	void _sendPing();
 
 	void compareRoundTripTime(GpMessage & msg);
+
+	
+	static std::ofstream _metricsFile;
+
+	static void _interruptHandler(int s);
+	void _catchSignals();
+	static void _closeLogging();
 
 	
 };

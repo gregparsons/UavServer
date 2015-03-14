@@ -311,13 +311,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GpGameController.cpp"
-            timestampString = "447891860.351792"
+            filePath = "GpClientNet.cpp"
+            timestampString = "447979511.496798"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
-            landmarkName = "GpGameController::_controller_thread()"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
+            landmarkName = "GpClientNet::GpClientNet(gp_message_handler message_handler)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -327,59 +327,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GpGameController.cpp"
-            timestampString = "447891857.190278"
+            filePath = "GpClientNet.cpp"
+            timestampString = "447979511.496798"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
-            landmarkName = "GpGameController::GpGameController()"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "GpGameController::GpGameController()"
-                  moduleName = "UavServer"
-                  urlString = "file:///Users/aaa/Spider/__dev/uav/176b/UavServer/GpGameController.cpp"
-                  timestampString = "447892352.203424"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "41"
-                  endingLineNumber = "41"
-                  offsetFromSymbolStart = "19">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "GpGameController::GpGameController()"
-                  moduleName = "UavServer"
-                  urlString = "file:///Users/aaa/Spider/__dev/uav/176b/UavServer/GpGameController.cpp"
-                  timestampString = "447892352.203605"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "41"
-                  endingLineNumber = "41"
-                  offsetFromSymbolStart = "16">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GpGameController.cpp"
-            timestampString = "447891962.774587"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
-            landmarkName = "GpGameController::_controller_thread()"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "GpClientNet::GpClientNet()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -389,13 +343,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GpGameController.cpp"
-            timestampString = "447892014.244071"
+            filePath = "GpClientNet.cpp"
+            timestampString = "447976629.677343"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "136"
-            endingLineNumber = "136"
-            landmarkName = "GpGameController::_controller_thread()"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "GpClientNet::_interruptHandler(int s)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -405,45 +359,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "GpGameController.cpp"
-            timestampString = "447892348.222817"
+            filePath = "GpClientNet.cpp"
+            timestampString = "447980146.09752"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "160"
-            endingLineNumber = "160"
-            landmarkName = "GpGameController::_controller_thread()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GpGameController.cpp"
-            timestampString = "447892349.140147"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "161"
-            endingLineNumber = "161"
-            landmarkName = "GpGameController::_controller_thread()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "GpGameController.cpp"
-            timestampString = "447892349.869365"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "162"
-            endingLineNumber = "162"
-            landmarkName = "GpGameController::_controller_thread()"
+            startingLineNumber = "110"
+            endingLineNumber = "110"
+            landmarkName = "GpClientNet::turnOnLogging(bool shouldTurnOnLogging)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

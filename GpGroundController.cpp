@@ -55,9 +55,7 @@ bool GpGroundController::start(){
 		
 		// In lieu of something else, this keeps the main thread going. If this fails to send, loop repeats and attempts to reconnect.
 
-#ifdef GP_INSTRUMENTATION_ON
 		_net.startBackgroundPing();
-#endif
 		_net.sendHeartbeat();
 		
 	}
