@@ -32,31 +32,7 @@
 //Statics
 std::ofstream GpClientNet::_metricsFile;
 
-void GpClientNet::_interruptHandler(int s){
-	std::cout << "Caught signal: " << s << std::endl;
 
-	_closeLogging();
-	exit(1);
-	
-}
-
-void GpClientNet::_catchSignals(){
-
-	
-	void (*func)(int);
-	func = &GpClientNet::_interruptHandler;
-	
-	
-	
-	struct sigaction sigIntHandler;
-	
-	sigIntHandler.sa_handler = func;
-	sigemptyset(&sigIntHandler.sa_mask);
-	sigIntHandler.sa_flags = 0;
-	
-	sigaction(SIGINT, &sigIntHandler, NULL);
-	
-}
 
 
 void GpClientNet::_closeLogging(){
@@ -65,8 +41,6 @@ void GpClientNet::_closeLogging(){
 		GpClientNet::_metricsFile.close();
 		
 	}
-
-	
 }
 
 
@@ -78,7 +52,7 @@ GpClientNet::GpClientNet(){
 		turnOnLogging(true);
 }
 
-GpClientNet::GpClientNet(gp_message_handler message_handler){
+GpClientNet::GpClientNet(gp_message_handler message_handler, bool loggingOn){
 	
 	
 
@@ -87,7 +61,7 @@ GpClientNet::GpClientNet(gp_message_handler message_handler){
 	
 	
 	_message_handler = message_handler;
-	if(GP_INSTRUMENTATION_ON)
+	if(loggingOn)
 		turnOnLogging(true);
 }
 
@@ -97,14 +71,18 @@ GpClientNet::~GpClientNet(){
 }
 
 
+
+
+
 void GpClientNet::turnOnLogging(bool shouldTurnOnLogging){
 	
 	if(shouldTurnOnLogging){
 
 		std::string dir = "log";
-		int mkdirResult = mkdir(dir.c_str(), 0700);
-		if(mkdirResult != EEXIST)
-			std::cout << "[" << __func__ << "] " << "Logfile mkdir error: " << mkdirResult <<  ": "<< strerror(errno) << std::endl;
+		//int mkdirResult =
+		mkdir(dir.c_str(), 0700);
+//		if(mkdirResult != EEXIST)
+//			std::cout << "[" << __func__ << "] " << "Logfile mkdir error: " << mkdirResult <<  ": "<< strerror(errno) << std::endl;
 		
 		//drop the upper four bytes. Don't need years, etc.
 		uint32_t now =(uint32_t) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -113,7 +91,7 @@ void GpClientNet::turnOnLogging(bool shouldTurnOnLogging){
 		std::string logFilename = (boost::format("%s/%u.csv") % dir % now ).str();
 		
 		
-		std::cout << "[" << __func__ << "] " << "Opening logfile: " << logFilename <<std::endl;
+//		std::cout << "[" << __func__ << "] " << "Opening logfile: " << logFilename <<std::endl;
 		
 		GpClientNet::_metricsFile.open(logFilename);
 		if(!(GpClientNet::_metricsFile.is_open())){
@@ -314,7 +292,7 @@ GpClientNet::_sendMessage(GpMessage &message){
 
 
 
-
+/*
 void GpClientNet::startListenerAsThread(GpClientNet::gp_message_handler message_handler, std::thread * listenThread){
 	
 	if(message_handler != nullptr){
@@ -327,7 +305,9 @@ void GpClientNet::startListenerAsThread(GpClientNet::gp_message_handler message_
 	}
 	
 }
-
+*/
+ 
+ 
 void GpClientNet::startListenerAsThread(GpClientNet::gp_message_handler message_handler){
 
 	if(message_handler != nullptr){
@@ -341,6 +321,21 @@ void GpClientNet::startListenerAsThread(GpClientNet::gp_message_handler message_
 	
 }
 
+bool GpClientNet::startListenerAsThread(){
+	
+	if(_message_handler == nullptr){
+		
+		std::cout << "[" << __func__ << "] "  <<  "No message handlers for GpClientNet. Should be passed in constructor." << std::endl;
+		
+		return false;
+	}
+	
+	std::thread listenThread(&GpClientNet::_listen_for_TCP_messages, this);
+	listenThread.detach();
+
+	return true;
+	
+}
 
 
 
@@ -741,11 +736,31 @@ void GpClientNet::compareRoundTripTime(GpMessage & msg){
 	}
 	//std::cout << "[" << __func__ << "] " << "Timenow: " << uint32_t(now) << std::endl;
 	
+}
+
+
+void GpClientNet::_interruptHandler(int s){
+	std::cout << "Caught signal: " << s << std::endl;
+	
+	_closeLogging();
+	exit(1);
+	
+}
+
+void GpClientNet::_catchSignals(){
+	
+	
+	void (*func)(int);
+	func = &GpClientNet::_interruptHandler;
 	
 	
 	
+	struct sigaction sigIntHandler;
 	
+	sigIntHandler.sa_handler = func;
+	sigemptyset(&sigIntHandler.sa_mask);
+	sigIntHandler.sa_flags = 0;
 	
-	
+	sigaction(SIGINT, &sigIntHandler, NULL);
 	
 }

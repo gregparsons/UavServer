@@ -25,19 +25,15 @@ bool GpAsset::connectServer(){
 	
 	for(;;){
 	
-		GpClientNet net;
-		//if(net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_ASSET_SERVER_PORT) == false){
+		GpClientNet net(GpAsset::handle_messages, false); // GP_INSTRUMENTATION_ON);
 		
-		
-		
-		// CHANGE TO ASSET PORT?
 		
 		if(net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT) == false){
 			std::cout << "[" << __func__ << "] "  << "No server at ip/port?" << std::endl;
 			return false;
 		}
 		
-		net.startListenerAsThread(GpAsset::handle_messages); 
+		net.startListenerAsThread();
 
 		net.sendAuthenticationRequest(GP_ASSET_TEST_USERNAME, GP_ASSET_TEST_PASSWORD, GP_MSG_TYPE_ASSET_LOGIN);
 		

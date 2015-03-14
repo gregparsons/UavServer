@@ -12,8 +12,11 @@
 
 
 //AWS
-// const std::string GP_CONTROLLER_SERVER_IP = "52.64.12.25";		// Sydney, Australia
-const std::string GP_CONTROLLER_SERVER_IP = "52.1.73.170";			// Virginia
+// const std::string GP_CONTROLLER_SERVER_IP = "52.64.12.25";			// Sydney, Australia
+// const std::string GP_CONTROLLER_SERVER_IP = "52.1.73.170";			// Virginia
+const std::string GP_CONTROLLER_SERVER_IP = "54.68.112.167";			// Oregon
+
+
 
 
 const std::string GP_CONTROLLER_SERVER_PORT = "11222";

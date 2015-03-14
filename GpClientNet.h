@@ -31,7 +31,7 @@ public:
 	typedef bool (*gp_message_handler)(GpMessage & message, GpClientNet & net);
 	
 	GpClientNet();
-	GpClientNet(gp_message_handler);
+	GpClientNet(gp_message_handler message_handler, bool loggingOn);
 	
 	
 	~GpClientNet();
@@ -62,8 +62,9 @@ public:
 	 *  @param GpClientNet::gp_message_handler
 	 *  @returns void
 	 */
+	bool startListenerAsThread();
 	void startListenerAsThread(GpClientNet::gp_message_handler);
-	void startListenerAsThread(GpClientNet::gp_message_handler, std::thread * listenThread);
+	// void startListenerAsThread(GpClientNet::gp_message_handler, std::thread * listenThread);
 
 	
 	

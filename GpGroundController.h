@@ -24,6 +24,8 @@ class GpGroundController
 
 public:
 
+	GpGroundController();
+	~GpGroundController();
 	
 	bool start();
 	
@@ -39,7 +41,7 @@ private:
 	
 	
 	
-	GpClientNet _net;
+	GpClientNet * _net = nullptr;
 	static GpGameController _game_controller;
 	
 };
