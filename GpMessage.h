@@ -34,7 +34,7 @@ enum {
 	GP_MSG_TYPE_AUTHENTICATED_BY_SERVER,
 	GP_MSG_TYPE_HEARTBEAT,
 	GP_MSG_TYPE_ASSET_LOGIN,
-	GP_MSG_TYPE_MATCH_CONNECTED,		//a controller receives this when a requested asset connects, asset receives when paired with a controller
+	GP_MSG_TYPE_MATCH_CONNECTED,		//[currently not implemented] a controller receives this when a requested asset connects, asset receives when paired with a controller
 	GP_MSG_TYPE_MATCH_DISCONNECTED,		//notify controller that the asset dropped off, or notify the asset that the controller isn't connected
 	GP_MSG_ASSET_HEARTBEAT,
 
@@ -48,8 +48,6 @@ enum {
 
 
 enum{
-	GP_MSG_TYPE_PING_LEN = 10,
-	GP_MSG_TYPE_PONG_LEN = 10,
 	GP_MSG_HEADER_LEN = 7,			// 3 without timestamp
 	GP_MSG_MAX_LEN = 512
 	

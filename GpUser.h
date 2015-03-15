@@ -9,7 +9,7 @@
 #ifndef __UavServer__GpUser__
 #define __UavServer__GpUser__
 
-#include "GpIpAddress.h"	//TEST
+#include "GpIpAddress.h"	
 
 /**
  *  GpUser Class
