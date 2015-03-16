@@ -238,7 +238,7 @@ GpClientNet::_sendMessage(GpMessage &message){
 	//	std::cout << "Sending Pong" << std::endl;
 	
 	
-	// std::cout << "[" << __func__ << "] "  << "Sending message type: " << int(message._message_type) << " on socket: " << _fd << " , time: " << uint32_t(message._timestamp) << std::endl;
+	std::cout << "[" << __func__ << "] "  << "Sending message type: " << int(message._message_type) << " on socket: " << _fd << " , time: " << uint32_t(message._timestamp) << std::endl;
 	
 	
 	
@@ -393,32 +393,29 @@ GpClientNet::_listen_for_TCP_messages(){
 
 
 // JUNK FROM OLD CONTROLLER CLIENT, CLEAN UP AND PUT IN _list_for_TCP_messages()
-
-
-
-// Only required by receiveDataAndParseMessage (DELETE EVENTUALLY)
+// Make buffer pointer const.
 void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message){
 	
-	//uint8_t *ptr = buffer;
 	
-	// Message_Type
+	
+	// Message_Type (1 byte)
 	message._message_type = *buffer; //GP_MSG_TYPE_CONTROLLER_LOGIN;
-	buffer+=1;
 	
-	// Payload Size
-	uint8_t *sizePtr = buffer;
+	// Payload Size (2)
+	uint8_t *sizePtr = buffer + 1;
 	uint16_t pSize = 0;
 	GpMessage::byteUnpack16(sizePtr, pSize);
 	message._payloadSize = pSize;			//GP_MSG_LOGIN_LEN;
-	buffer+= (sizeof(uint16_t));
+	//sizePtr+=2; //byteunpack does this!!
 	
-	
-	
-	sizePtr = buffer;
+	// Timestamp (4)
 	uint32_t timestamp = 0;
 	GpMessage::byteUnpack32(sizePtr, timestamp);
 	message._timestamp = timestamp;
-	buffer+= (sizeof(uint32_t));
+	
+	
+	
+	
 	
 	
 	
@@ -426,6 +423,7 @@ void putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & message){
 	
 	
 	return;
+
 }
 
 

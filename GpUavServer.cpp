@@ -643,15 +643,12 @@ void GpUavServer::putHeaderInMessage(uint8_t *&buffer, long size, GpMessage & me
 	uint16_t pSize = 0;
 	GpMessage::byteUnpack16(sizePtr, pSize);
 	message._payloadSize = pSize;			//GP_MSG_LOGIN_LEN;
-	//buffer+= (sizeof(uint16_t));
 	//sizePtr+=2; //byteunpack does this!!
 	
 	// Timestamp (4)
-	//sizePtr = buffer;
 	uint32_t timestamp = 0;
 	GpMessage::byteUnpack32(sizePtr, timestamp);
 	message._timestamp = timestamp;
-	// buffer+= (sizeof(uint32_t)); //byteunpack does this
 	
 	
 	

@@ -7,6 +7,7 @@
 // ********************************************************************************
 
 #include <iostream>
+#include <unistd.h>	//usleep
 
 #include "GpAsset.h"
 #include "GpClientNet.h"
@@ -25,7 +26,7 @@ bool GpAsset::connectServer(){
 	
 	for(;;){
 	
-		GpClientNet net(GpAsset::handle_messages, false); // GP_INSTRUMENTATION_ON);
+		GpClientNet net(GpAsset::handle_messages, GP_INSTRUMENTATION_ON); // GP_INSTRUMENTATION_ON);
 		
 		
 		if(net.connectToServer(GP_CONTROLLER_SERVER_IP, GP_CONTROLLER_SERVER_PORT) == false){
@@ -35,6 +36,10 @@ bool GpAsset::connectServer(){
 		
 		net.startListenerAsThread();
 
+		usleep(2000000);
+		
+		
+		// Shouldn't be sending this before the listener thread is for sure ready to receive a reply.
 		net.sendAuthenticationRequest(GP_ASSET_TEST_USERNAME, GP_ASSET_TEST_PASSWORD, GP_MSG_TYPE_ASSET_LOGIN);
 		
 		
