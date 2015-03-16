@@ -509,7 +509,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "610"
             endingLineNumber = "610"
-            landmarkName = "GpClientNet::_receiveDataAndParseMessage()"
+            landmarkName = "GpClientNet::callMessageHandler(GpMessage &amp; msg)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

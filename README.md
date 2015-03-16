@@ -1,4 +1,6 @@
 # UavServer
+Modify GpIpAddress.h with intended server IP address and port.
+
 
 To compile on OSX:
 
