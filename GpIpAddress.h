@@ -5,16 +5,14 @@
 
 // Server IP Address and Port
 
-//const std::string GP_CONTROLLER_SERVER_IP = "192.168.113.240";
-//const std::string GP_CONTROLLER_SERVER_IP = "172.26.48.1";
-// const std::string GP_CONTROLLER_SERVER_IP = "52.11.30.229";
-// const std::string GP_CONTROLLER_SERVER_IP = "127.0.0.1";
+// const std::string GP_CONTROLLER_SERVER_IP = "192.168.113.240";
+const std::string GP_CONTROLLER_SERVER_IP = "127.0.0.1";
 
 
 //AWS
 // const std::string GP_CONTROLLER_SERVER_IP = "52.64.12.25";			// Sydney, Australia
 // const std::string GP_CONTROLLER_SERVER_IP = "52.1.73.170";			// Virginia
-const std::string GP_CONTROLLER_SERVER_IP = "54.68.112.167";			// Oregon
+//const std::string GP_CONTROLLER_SERVER_IP = "54.68.112.167";			// Oregon
 
 
 
